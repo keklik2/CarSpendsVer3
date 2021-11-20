@@ -1,4 +1,4 @@
-package com.demo.carspends.domain
+package com.demo.carspends.domain.note
 
 data class NoteItem (
     val id: Int,
