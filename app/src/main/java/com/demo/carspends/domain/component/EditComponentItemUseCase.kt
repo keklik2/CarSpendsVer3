@@ -1,4 +1,7 @@
 package com.demo.carspends.domain.component
 
-class EditComponentItemUseCase {
+class EditComponentItemUseCase(private val repository: ComponentRepository) {
+    operator fun invoke(componentItem: ComponentItem) {
+        repository.editComponentItemUseCase(componentItem)
+    }
 }
