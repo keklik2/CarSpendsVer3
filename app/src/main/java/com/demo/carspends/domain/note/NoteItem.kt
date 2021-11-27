@@ -7,7 +7,8 @@ data class NoteItem (
     val price: Double = UNDEFINED_DOUBLE,
     val liters: Double = UNDEFINED_DOUBLE,
     val mileage: Int = UNDEFINED_INT,
-    val date: Long
+    val date: Long,
+    val type: NoteType
     ) {
 
     companion object {

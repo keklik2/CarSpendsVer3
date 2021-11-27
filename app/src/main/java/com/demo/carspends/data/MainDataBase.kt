@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.demo.carspends.data.component.ComponentDao
+import com.demo.carspends.data.component.ComponentItemDbModel
 import com.demo.carspends.data.note.NoteDao
 import com.demo.carspends.data.note.NoteItemDbModel
 
-@Database(entities = [NoteItemDbModel::class], version = 1, exportSchema = false)
+@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class], version = 2, exportSchema = false)
+@TypeConverters(DbConverters::class)
 abstract class MainDataBase: RoomDatabase() {
     companion object {
         private var db: MainDataBase? = null
@@ -24,7 +27,9 @@ abstract class MainDataBase: RoomDatabase() {
                         context,
                         MainDataBase::class.java,
                         DB_NAME
-                    ).build()
+                    )
+                        .fallbackToDestructiveMigration()
+                        .build()
                 db = instance
                 return instance
             }
