@@ -1,3 +1,30 @@
 <resources>
+    <!-- App Resources -->
     <string name="app_name">CarSpends</string>
+
+    <!-- Layouts Visible Resources (textVies mainly) -->
+    <string name="resource_text">Ресурс:</string>
+
+    <!-- Description labels -->
+    <string name="description_add_new_note">Добавить новую запись</string>
+    <string name="description_add_new_note_extra">Добавить новую запись, категория "прочее"</string>
+    <string name="description_add_new_note_repair">Добавить новую запись, категория "ремонт"</string>
+    <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
+    <string name="description_img_info">Иконка "информация об автомобиле"</string>
+    <string name="description_img_tools">Иконка "тип записи"</string>
+
+    <!-- Test Elements -->
+    <string-array name="note_type_values">
+        <item>Все записи</item>
+        <item>Заправка</item>
+        <item>Ремонт</item>
+        <item>Прочее</item>
+    </string-array>
+
+    <string-array name="date_values">
+        <item>Всё время</item>
+        <item>За год</item>
+        <item>За месяц</item>
+        <item>За неделю</item>
+    </string-array>
 </resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Button Styles -->
+    <style name="floatingButton">
+        <item name="backgroundColor">@color/light_light_vine</item>
+        <item name="backgroundTint">@color/light_light_vine</item>
+    </style>
+
+    <!-- Text Styles -->
+    <style name="carTitleText">
+        <item name="android:textSize">10pt</item>
+        <item name="android:textColor">@color/vine</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+    </style>
+
+    <style name="itemTitleText">
+        <item name="android:textSize">8pt</item>
+        <item name="android:textColor">@color/light_vine</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+    </style>
+
+    <style name="priceText">
+        <item name="android:textSize">6pt</item>
+        <item name="android:textColor">@color/dark_green</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+    </style>
+
+    <style name="extraInfoText">
+        <item name="android:textSize">6pt</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="resourceStatementText">
+        <item name="android:textSize">6pt</item>
+        <item name="android:textColor">@color/green</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">viewStart</item>
+    </style>
+
+    <style name="dateText">
+        <item name="android:textSize">6pt</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="progressBarText">
+        <item name="android:textSize">3pt</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

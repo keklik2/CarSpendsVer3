@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+
+    <ImageView
+        android:id="@+id/ni_iv_tool"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_local_gas_station_24"
+
+        android:paddingVertical="10dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:contentDescription="@string/description_img_tools" />
+
+    <!--Добавить стиль для "заголовков"-->
+    <TextView
+        android:id="@+id/ci_tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
+        app:layout_constraintStart_toEndOf="@+id/ni_iv_tool"
+        app:layout_constraintTop_toTopOf="parent"
+
+        style="@style/itemTitleText"
+        android:layout_marginEnd="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        tools:text="Заправка" />
+
+    <!--Добавить стиль для "цена"-->
+    <TextView
+        android:id="@+id/ci_tv_resource"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/ni_iv_tool"
+        app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+
+        style="@style/priceText"
+        tools:text="2000.10P"/>
+
+    <!--Добавить стиль для "доп. информация"-->
+    <TextView
+        android:id="@+id/ci_tv_resource_statement"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
+        app:layout_constraintStart_toEndOf="@+id/ci_tv_resource"
+        app:layout_constraintTop_toTopOf="@+id/ci_tv_resource"
+
+        style="@style/extraInfoText"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+
+        tools:text="(95й, 41.6л)" />
+
+    <!--Добавить стиль для "дата"-->
+    <TextView
+        android:id="@+id/ci_tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        style="@style/dateText"
+
+        tools:text="11.18.21" />
+</androidx.constraintlayout.widget.ConstraintLayout>
