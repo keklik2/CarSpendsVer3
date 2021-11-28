@@ -3,7 +3,15 @@
     <string name="app_name">CarSpends</string>
 
     <!-- Layouts Visible Resources (textVies mainly) -->
-    <string name="resource_text">Ресурс:</string>
+    <string name="text_resource">Ресурс:</string>
+    <string name="button_apply">Принять</string>
+    <string name="text_detail_resource">Ресурс детали</string>
+    <string name="text_extra">Прочее</string>
+    <string name="hint_works_name">Название работы</string>
+    <string name="hint_amount">Сумма</string>
+    <string name="hint_name">Название детали</string>
+    <string name="hint_detail_resource">Ресурс детали</string>
+    <string name="hint_replace_mileage">Заменён на пробеге</string>
 
     <!-- Description labels -->
     <string name="description_add_new_note">Добавить новую запись</string>
@@ -12,6 +20,8 @@
     <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
     <string name="description_img_info">Иконка "информация об автомобиле"</string>
     <string name="description_img_tools">Иконка "тип записи"</string>
+    <string name="description_img_choose_date">Иконка выбора даты</string>
+    <string name="description_img_currency">Иконка валюты</string>
 
     <!-- Test Elements -->
     <string-array name="note_type_values">
