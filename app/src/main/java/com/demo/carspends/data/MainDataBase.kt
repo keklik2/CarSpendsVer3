@@ -7,10 +7,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.demo.carspends.data.component.ComponentDao
 import com.demo.carspends.data.component.ComponentItemDbModel
+import com.demo.carspends.data.mapper.DbConverters
 import com.demo.carspends.data.note.NoteDao
 import com.demo.carspends.data.note.NoteItemDbModel
 
-@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class], version = 2, exportSchema = false)
+@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class], version = 3, exportSchema = false)
 @TypeConverters(DbConverters::class)
 abstract class MainDataBase: RoomDatabase() {
     companion object {

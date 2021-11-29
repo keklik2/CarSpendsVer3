@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.demo.carspends.presentation.fragments.NotesListFragment"
+        android:name="com.demo.carspends.presentation.fragments.notesListFragment.NotesListFragment"
         android:label="@string/menu_home"
         tools:layout="@layout/notes_list_fragment"/>
     <fragment
         android:id="@+id/navigation_components"
-        android:name="com.demo.carspends.presentation.fragments.ComponentsListFragment"
+        android:name="com.demo.carspends.presentation.fragments.componentsListFragment.ComponentsListFragment"
         android:label="@string/menu_resources"
         tools:layout="@layout/components_list_fragment"/>
 

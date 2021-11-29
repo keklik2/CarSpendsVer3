@@ -1,5 +1,6 @@
-package com.demo.carspends.domain.note
+package com.demo.carspends.domain.note.usecases
 
+import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteRepository.Companion.ALL_TIME
 
 class GetNoteItemsListUseCase(private val repository: NoteRepository) {

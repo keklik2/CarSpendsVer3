@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments
+package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

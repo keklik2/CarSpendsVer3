@@ -35,6 +35,15 @@
     <string name="description_img_choose_date">Иконка выбора даты</string>
     <string name="description_img_currency">Иконка валюты</string>
 
+    <!-- String Arrays for using in Code -->
+    <string name="F92">АИ-92</string>
+    <string name="F95">АИ-95</string>
+    <string name="F98">АИ-98</string>
+    <string name="F100">АИ-100</string>
+    <string name="DT">ДТ</string>
+    <string name="GAS">Газ</string>
+    <string name="Electricity">Электричество</string>
+
     <!-- Test Elements -->
     <string-array name="note_type_values">
         <item>Все записи</item>

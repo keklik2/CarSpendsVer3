@@ -13,7 +13,8 @@ class NoteMapper {
         noteItemDbModel.liters,
         noteItemDbModel.mileage,
         noteItemDbModel.date,
-        noteItemDbModel.type
+        noteItemDbModel.type,
+        noteItemDbModel.fuelType
     )
 
     fun mapEntityToNoteDbModel(entity: NoteItem): NoteItemDbModel = NoteItemDbModel(
@@ -24,6 +25,7 @@ class NoteMapper {
         entity.liters,
         entity.mileage,
         entity.date,
-        entity.type
+        entity.type,
+        entity.fuelType
     )
 }

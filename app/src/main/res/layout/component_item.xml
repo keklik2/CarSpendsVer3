@@ -20,13 +20,13 @@
 
         <ProgressBar
             android:id="@+id/ci_pb_left_mileage"
+            style="?android:attr/progressBarStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_centerInParent="true"
 
-            style="?android:attr/progressBarStyle"
-            android:layout_centerInParent="true"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Добавить стиль текста для "внутренний прогресс" -->
         <TextView
