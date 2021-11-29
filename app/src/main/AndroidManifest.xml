@@ -10,7 +10,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarSpends">
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.activities.DetailElementsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".BottomNavMenuActivity"
+            android:exported="false"
+            android:label="@string/title_activity_bottom_nav_menu" />
+        <activity
+            android:name=".presentation.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
