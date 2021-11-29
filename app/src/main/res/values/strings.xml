@@ -7,11 +7,18 @@
     <string name="button_apply">Принять</string>
     <string name="text_detail_resource">Ресурс детали</string>
     <string name="text_extra">Прочее</string>
+    <string name="text_repair">Ремонт, запчасти</string>
+    <string name="text_refill">Заправка</string>
     <string name="hint_works_name">Название работы</string>
     <string name="hint_amount">Сумма</string>
-    <string name="hint_name">Название детали</string>
+    <string name="hint_name_detail">Название детали</string>
+    <string name="hint_name_repair">Наименование работ</string>
     <string name="hint_detail_resource">Ресурс детали</string>
     <string name="hint_replace_mileage">Заменён на пробеге</string>
+    <string name="hint_work_mileage">Произведено на пробеге</string>
+    <string name="hint_fuel_volume">Количество</string>
+    <string name="hint_fuel_amount">Сумма</string>
+    <string name="hint_fuel_price">р/л</string>
 
     <!-- Description labels -->
     <string name="description_add_new_note">Добавить новую запись</string>
@@ -36,5 +43,15 @@
         <item>За год</item>
         <item>За месяц</item>
         <item>За неделю</item>
+    </string-array>
+
+    <string-array name="fuel_values">
+        <item>АИ-92</item>
+        <item>АИ-95</item>
+        <item>АИ-98</item>
+        <item>АИ-100</item>
+        <item>ДТ</item>
+        <item>Газ</item>
+        <item>Электричество</item>
     </string-array>
 </resources>
