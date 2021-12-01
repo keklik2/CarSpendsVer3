@@ -2,6 +2,8 @@ package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
@@ -10,6 +12,7 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.domain.others.Fuel
+import kotlinx.coroutines.launch
 import java.util.*
 
 class NotesListViewModel(app: Application): AndroidViewModel(app) {
@@ -27,18 +30,20 @@ class NotesListViewModel(app: Application): AndroidViewModel(app) {
     val notesList get() = _notesList
 
     fun addNote() {
-        addNoteItemUseCase(
-            NoteItem(
-            0,
-            "test",
-            10.0,
-            10.0,
-            10.0,
-            133000,
-                GregorianCalendar.getInstance().timeInMillis,
-                NoteType.FUEL,
-                Fuel.F95
+        viewModelScope.launch {
+            addNoteItemUseCase(
+                NoteItem(
+                    0,
+                    "test",
+                    10.0,
+                    10.0,
+                    10.0,
+                    133000,
+                    GregorianCalendar.getInstance().timeInMillis,
+                    NoteType.FUEL,
+                    Fuel.F95
+                )
             )
-        )
+        }
     }
 }

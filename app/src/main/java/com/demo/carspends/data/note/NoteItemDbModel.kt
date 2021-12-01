@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.domain.note.NoteType
 
-@Entity(tableName = "notes")
+@Entity(tableName = "notes_table")
 data class NoteItemDbModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int = UNDEFINED_ID,

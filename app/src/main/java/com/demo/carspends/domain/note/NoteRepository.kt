@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 
 interface NoteRepository {
 
-    fun addNoteItemUseCase(noteItem: NoteItem)
+    suspend fun addNoteItemUseCase(noteItem: NoteItem)
     fun deleteNoteItemUseCase(noteItem: NoteItem)
     fun editNoteItemUseCase(noteItem: NoteItem)
     fun getNoteItemsListUseCase(type: NoteType, date: Long): LiveData<List<NoteItem>>

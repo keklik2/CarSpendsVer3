@@ -16,7 +16,7 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
     private val noteDao = MainDataBase.getInstance(application).noteDao()
     private val mapper = NoteMapper()
 
-    override fun addNoteItemUseCase(noteItem: NoteItem) {
+    override suspend fun addNoteItemUseCase(noteItem: NoteItem) {
         noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
