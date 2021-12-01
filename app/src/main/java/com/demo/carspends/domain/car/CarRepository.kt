@@ -6,7 +6,6 @@ interface CarRepository {
     fun addCarItemUseCase(carItem: CarItem)
     fun deleteCarItemUseCase(carItem: CarItem)
     fun editCarItemUseCase(carItem: CarItem)
-    fun getCarItemsListLD(): LiveData<List<CarItem>>
-    fun getCarItemsList(): List<CarItem>
-    fun getCarItem(id: Int): CarItem
+    fun getCarItemsListUseCase(): LiveData<List<CarItem>>
+    fun getCarItemUseCase(id: Int): CarItem
 }

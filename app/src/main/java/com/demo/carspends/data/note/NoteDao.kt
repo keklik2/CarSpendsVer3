@@ -10,10 +10,7 @@ interface NoteDao {
     fun getNotesListLD(date: Long): LiveData<List<NoteItemDbModel>>
 
     @Query("SELECT * FROM notes WHERE date >= :date AND type == :type ORDER BY date DESC")
-    fun getSelectedNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
-
-    @Query("SELECT * FROM notes ORDER BY date DESC")
-    fun getNotesList(): List<NoteItemDbModel>
+    fun getNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
 
     @Query("SELECT * FROM notes WHERE id == :requestedId LIMIT 1")
     fun getNoteById(requestedId: Int): NoteItemDbModel

@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "cars")
 data class CarItemDbModel (
-        @PrimaryKey
-        val id: Int,
+        @PrimaryKey(autoGenerate = true)
+        val id: Int = UNDEFINED_ID,
         val title: String,
         val mileage: Int,
         val engineVolume: Int,
@@ -17,5 +17,6 @@ data class CarItemDbModel (
     ) {
     companion object {
         private const val DEFAULT_DOUBLE = 0.0
+        private const val UNDEFINED_ID = 0
     }
 }

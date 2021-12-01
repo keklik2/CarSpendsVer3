@@ -6,7 +6,6 @@ interface ComponentRepository {
     fun addComponentItemUseCase(component: ComponentItem)
     fun deleteComponentItemUseCase(component: ComponentItem)
     fun editComponentItemUseCase(component: ComponentItem)
-    fun getComponentItemsListLD(): LiveData<List<ComponentItem>>
-    fun getComponentItemsList(): List<ComponentItem>
-    fun getComponentItem(id: Int): ComponentItem
+    fun getComponentItemsListUseCase(): LiveData<List<ComponentItem>>
+    fun getComponentItemUseCase(id: Int): ComponentItem
 }

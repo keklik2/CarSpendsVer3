@@ -9,9 +9,6 @@ interface CarDao {
     @Query("SELECT * FROM cars ORDER BY id DESC")
     fun getCarsListLD(): LiveData<List<CarItemDbModel>>
 
-    @Query("SELECT * FROM cars ORDER BY id DESC")
-    fun getCarsList(): List<CarItemDbModel>
-
     @Query("SELECT * FROM cars WHERE id == :requestedId LIMIT 1")
     fun getCarById(requestedId: Int): CarItemDbModel
 

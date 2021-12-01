@@ -13,7 +13,7 @@ import com.demo.carspends.data.mapper.DbConverters
 import com.demo.carspends.data.note.NoteDao
 import com.demo.carspends.data.note.NoteItemDbModel
 
-@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class, CarItemDbModel::class], version = 4, exportSchema = false)
+@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class, CarItemDbModel::class], version = 6, exportSchema = false)
 @TypeConverters(DbConverters::class)
 abstract class MainDataBase: RoomDatabase() {
     companion object {
@@ -31,6 +31,7 @@ abstract class MainDataBase: RoomDatabase() {
                         MainDataBase::class.java,
                         DB_NAME
                     )
+                        .allowMainThreadQueries()
                         .fallbackToDestructiveMigration()
                         .build()
                 db = instance

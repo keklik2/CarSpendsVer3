@@ -25,7 +25,7 @@ class CarRepositoryImpl(private val app: Application): CarRepository {
         carDao.insertCar(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
-    override fun getCarItemsListLD(): LiveData<List<CarItem>> {
+    override fun getCarItemsListUseCase(): LiveData<List<CarItem>> {
         return Transformations.map(carDao.getCarsListLD()) {
             it.map {
                 mapper.mapCarItemDbModelToEntity(it)
@@ -33,13 +33,7 @@ class CarRepositoryImpl(private val app: Application): CarRepository {
         }
     }
 
-    override fun getCarItemsList(): List<CarItem> {
-        return carDao.getCarsList().map{
-            mapper.mapCarItemDbModelToEntity(it)
-        }
-    }
-
-    override fun getCarItem(id: Int): CarItem {
+    override fun getCarItemUseCase(id: Int): CarItem {
         return mapper.mapCarItemDbModelToEntity(carDao.getCarById(id))
     }
 }

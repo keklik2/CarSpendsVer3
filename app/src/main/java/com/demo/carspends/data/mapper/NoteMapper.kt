@@ -17,15 +17,17 @@ class NoteMapper {
         noteItemDbModel.fuelType
     )
 
-    fun mapEntityToNoteDbModel(entity: NoteItem): NoteItemDbModel = NoteItemDbModel(
-        entity.id,
-        entity.title,
-        entity.totalPrice,
-        entity.price,
-        entity.liters,
-        entity.mileage,
-        entity.date,
-        entity.type,
-        entity.fuelType
-    )
+    fun mapEntityToNoteDbModel(entity: NoteItem): NoteItemDbModel {
+        return NoteItemDbModel(
+            entity.id,
+            entity.title,
+            entity.totalPrice,
+            entity.price,
+            entity.liters,
+            entity.mileage,
+            entity.date,
+            entity.type,
+            entity.fuelType
+        )
+    }
 }

@@ -1,10 +1,12 @@
 package com.demo.carspends.data.repositoryImpls
 
 import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.demo.carspends.data.MainDataBase
 import com.demo.carspends.data.mapper.NoteMapper
+import com.demo.carspends.data.note.NoteItemDbModel
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType
@@ -26,7 +28,7 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         noteDao.deleteNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
-    override fun getNoteItemsListLD(date: Long): LiveData<List<NoteItem>> {
+    override fun getNoteItemsListUseCase(date: Long): LiveData<List<NoteItem>> {
         return Transformations.map(noteDao.getNotesListLD(date)) {
             it.map {
                 mapper.mapNoteDbModelToEntity(it)
@@ -34,23 +36,15 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         }
     }
 
-    override fun getSelectedNoteItemsListLD(type: NoteType, date: Long): LiveData<List<NoteItem>> {
-        return Transformations.map(noteDao.getSelectedNotesListLD(type, date)) {
+    override fun getNoteItemsListUseCase(type: NoteType ,date: Long): LiveData<List<NoteItem>> {
+        return Transformations.map(noteDao.getNotesListLD(type, date)) {
             it.map {
                 mapper.mapNoteDbModelToEntity(it)
             }
         }
     }
 
-    override fun getNoteItemsList(): List<NoteItem> {
-        return noteDao.getNotesList().map{
-            mapper.mapNoteDbModelToEntity(it)
-        }
-    }
-
-    override fun getNoteItem(id: Int): NoteItem {
+    override fun getNoteItemUseCase(id: Int): NoteItem {
         return mapper.mapNoteDbModelToEntity(noteDao.getNoteById(id))
     }
-
-
 }

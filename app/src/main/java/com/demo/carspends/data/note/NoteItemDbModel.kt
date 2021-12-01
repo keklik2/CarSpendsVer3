@@ -7,8 +7,8 @@ import com.demo.carspends.domain.note.NoteType
 
 @Entity(tableName = "notes")
 data class NoteItemDbModel(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = UNDEFINED_ID,
     val title: String,
     val totalPrice: Double,
     val price: Double = UNDEFINED_DOUBLE,
@@ -21,6 +21,7 @@ data class NoteItemDbModel(
 
     companion object {
         const val UNDEFINED_STRING = "none"
+        const val UNDEFINED_ID = 0
         const val UNDEFINED_INT = -1
         const val UNDEFINED_DOUBLE = -1.0
         val UNDEFINED_FUEL_TYPE = Fuel.DIESEL
