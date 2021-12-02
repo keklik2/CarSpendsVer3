@@ -188,8 +188,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@+id/nfaef_til_mileage_value"
 
-            style="@style/entryUnitText"
-            tools:text="км"/>
+            android:text="@string/text_measure_mileage_unit"
+
+            style="@style/entryUnitText" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
