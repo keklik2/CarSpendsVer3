@@ -7,8 +7,8 @@ import android.os.Bundle
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment.Companion.newAddInstance
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment.Companion.newEditInstance
+import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditFragment
 import java.lang.Exception
 
 class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
@@ -24,8 +24,10 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
 
         if (savedInstanceState == null) {
             val fragment = when(launchMode) {
-                EXTRA_NOTE_ADD -> newAddInstance()
-                EXTRA_NOTE_EDIT -> newEditInstance(itemId)
+                EXTRA_NOTE_ADD -> NoteExtraAddOrEditFragment.newAddInstance()
+                EXTRA_NOTE_EDIT -> NoteExtraAddOrEditFragment.newEditInstance(itemId)
+                FILLING_NOTE_ADD -> NoteFillingAddOrEditFragment.newAddInstance()
+                FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(itemId)
                 else -> throw Exception("Unknown KEY_MODE for DetailElementsActivity")
             }
             supportFragmentManager.beginTransaction()
@@ -41,14 +43,17 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         }
 
         val keyType = intent.getStringExtra(KEY_MODE)
-        if (keyType != EXTRA_NOTE_EDIT && keyType != EXTRA_NOTE_ADD) {
+        if (keyType != EXTRA_NOTE_EDIT
+            && keyType != EXTRA_NOTE_ADD
+            && keyType != FILLING_NOTE_ADD
+            && keyType != FILLING_NOTE_EDIT) {
             throw Exception("Unknown type for DetailElementsActivity. Received: $keyType")
         }
 
         launchMode = keyType
-        if (keyType == EXTRA_NOTE_EDIT) {
+        if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT) {
             if (!intent.hasExtra(KEY_NOTE_ID)) {
-                throw Exception("EXTRA_NOTE_EDIT requires KEY_NOTE_ID param with intent for DetailElementsActivity")
+                throw Exception("..._NOTE_EDIT requires KEY_NOTE_ID param with intent for DetailElementsActivity")
             }
 
             val id = intent.getIntExtra(KEY_NOTE_ID, UNDEFINED_ID)
@@ -64,6 +69,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         private const val KEY_NOTE_ID = "key_note"
         private const val EXTRA_NOTE_EDIT = "extra_note_edit"
         private const val EXTRA_NOTE_ADD = "extra_note_add"
+        private const val FILLING_NOTE_EDIT = "filling_note_edit"
+        private const val FILLING_NOTE_ADD = "filling_note_add"
 
         fun newAddOrEditNoteExtraIntent(context: Context): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
@@ -78,9 +85,19 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             return intent
         }
 
-        fun newAddOrEditNoteRepairIntent(): Intent { return Intent() }
+        fun newAddOrEditNoteFillingIntent(context: Context): Intent { val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, FILLING_NOTE_ADD)
+            return intent
+        }
 
-        fun newAddOrEditNoteFillingIntent(): Intent { return Intent() }
+        fun newAddOrEditNoteFillingIntent(context: Context, id: Int): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, FILLING_NOTE_EDIT)
+            intent.putExtra(KEY_NOTE_ID, id)
+            return intent
+        }
+
+        fun newAddOrEditNoteRepairIntent(): Intent { return Intent() }
 
         fun newAddOrEditComponentIntent(): Intent { return Intent() }
     }

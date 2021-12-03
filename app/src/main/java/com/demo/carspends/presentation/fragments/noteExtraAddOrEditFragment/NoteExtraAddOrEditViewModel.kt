@@ -65,6 +65,31 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    fun editNoteItem(title: String?, price: String?) {
+        val rTitle = refactorTitle(title)
+        val rPrice = refactorPrice(price)
+
+        if(areFieldsValid(rTitle, rPrice)) {
+            viewModelScope.launch {
+                val nItem = _noteItem.value
+                if (nItem != null) {
+                    val nDate = _noteDate.value
+                    if (nDate != null) {
+                        editNoteItemUseCase(
+                            nItem.copy(
+                                title = rTitle,
+                                totalPrice = rPrice,
+                                date = nDate,
+                                type = noteType
+                            )
+                        )
+                        setCanCloseScreen()
+                    } else Exception("Received NULL NoteDate for AddNoteItemUseCase()")
+                } else Exception("Received NULL NoteItem for EditNoteItemUseCase()")
+            }
+        }
+    }
+
     private fun refactorTitle(title: String?): String {
         return title?.trim() ?: ""
     }
@@ -103,31 +128,6 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     fun resetPriceError() {
         _errorPriceInput.value = false
-    }
-
-    fun editNoteItem(title: String?, price: String?) {
-        val rTitle = refactorTitle(title)
-        val rPrice = refactorPrice(price)
-
-        if(areFieldsValid(rTitle, rPrice)) {
-            viewModelScope.launch {
-                val nItem = _noteItem.value
-                if (nItem != null) {
-                    val nDate = _noteDate.value
-                    if (nDate != null) {
-                        editNoteItemUseCase(
-                            nItem.copy(
-                                title = rTitle,
-                                totalPrice = rPrice,
-                                date = nDate,
-                                type = noteType
-                            )
-                        )
-                        setCanCloseScreen()
-                    } else Exception("Received NULL NoteDate for AddNoteItemUseCase()")
-                } else Exception("Received NULL NoteItem for EditNoteItemUseCase()")
-            }
-        }
     }
 
     fun setNoteDate(date: Long) {

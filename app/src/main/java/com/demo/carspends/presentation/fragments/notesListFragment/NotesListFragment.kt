@@ -131,7 +131,7 @@ class NotesListFragment: Fragment() {
 
     private fun goToEditNoteItemFragment(type: NoteType, id: Int) {
         when(type) {
-            NoteType.FUEL -> TODO()
+            NoteType.FUEL -> startFillingNoteEdit(id)
             NoteType.REPAIR -> TODO()
             NoteType.EXTRA -> startExtraNoteEdit(id)
         }
@@ -139,7 +139,7 @@ class NotesListFragment: Fragment() {
 
     private fun goToAddNoteItemFragment(type: NoteType) {
         when(type) {
-            NoteType.FUEL -> TODO()
+            NoteType.FUEL -> startFillingNoteAdd()
             NoteType.REPAIR -> TODO()
             NoteType.EXTRA -> startExtraNoteAdd()
         }
@@ -151,6 +151,14 @@ class NotesListFragment: Fragment() {
 
     private fun startExtraNoteEdit(id: Int) {
         startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
+    }
+
+    private fun startFillingNoteAdd() {
+        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity()))
+    }
+
+    private fun startFillingNoteEdit(id: Int) {
+        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), id))
     }
 
     override fun onCreateView(
