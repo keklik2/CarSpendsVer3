@@ -9,6 +9,7 @@ import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditFragment
 import java.lang.Exception
 
 class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
@@ -28,6 +29,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
                 EXTRA_NOTE_EDIT -> NoteExtraAddOrEditFragment.newEditInstance(itemId)
                 FILLING_NOTE_ADD -> NoteFillingAddOrEditFragment.newAddInstance()
                 FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(itemId)
+                REPAIR_NOTE_ADD -> NoteRepairAddOrEditFragment.newAddInstance()
+                REPAIR_NOTE_EDIT -> NoteRepairAddOrEditFragment.newEditInstance(itemId)
                 else -> throw Exception("Unknown KEY_MODE for DetailElementsActivity")
             }
             supportFragmentManager.beginTransaction()
@@ -46,12 +49,14 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         if (keyType != EXTRA_NOTE_EDIT
             && keyType != EXTRA_NOTE_ADD
             && keyType != FILLING_NOTE_ADD
-            && keyType != FILLING_NOTE_EDIT) {
+            && keyType != FILLING_NOTE_EDIT
+            && keyType != REPAIR_NOTE_ADD
+            && keyType != REPAIR_NOTE_EDIT) {
             throw Exception("Unknown type for DetailElementsActivity. Received: $keyType")
         }
 
         launchMode = keyType
-        if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT) {
+        if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT || keyType == REPAIR_NOTE_EDIT) {
             if (!intent.hasExtra(KEY_NOTE_ID)) {
                 throw Exception("..._NOTE_EDIT requires KEY_NOTE_ID param with intent for DetailElementsActivity")
             }
@@ -67,10 +72,13 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
     companion object {
         private const val KEY_MODE = "key_mode"
         private const val KEY_NOTE_ID = "key_note"
+
         private const val EXTRA_NOTE_EDIT = "extra_note_edit"
         private const val EXTRA_NOTE_ADD = "extra_note_add"
         private const val FILLING_NOTE_EDIT = "filling_note_edit"
         private const val FILLING_NOTE_ADD = "filling_note_add"
+        private const val REPAIR_NOTE_EDIT = "repair_note_edit"
+        private const val REPAIR_NOTE_ADD = "repair_note_add"
 
         fun newAddOrEditNoteExtraIntent(context: Context): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
@@ -85,7 +93,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             return intent
         }
 
-        fun newAddOrEditNoteFillingIntent(context: Context): Intent { val intent = Intent(context, DetailElementsActivity::class.java)
+        fun newAddOrEditNoteFillingIntent(context: Context): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, FILLING_NOTE_ADD)
             return intent
         }
@@ -97,7 +106,18 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             return intent
         }
 
-        fun newAddOrEditNoteRepairIntent(): Intent { return Intent() }
+        fun newAddOrEditNoteRepairIntent(context: Context): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, REPAIR_NOTE_ADD)
+            return intent
+        }
+
+        fun newAddOrEditNoteRepairIntent(context: Context, id: Int): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, REPAIR_NOTE_EDIT)
+            intent.putExtra(KEY_NOTE_ID, id)
+            return intent
+        }
 
         fun newAddOrEditComponentIntent(): Intent { return Intent() }
     }
