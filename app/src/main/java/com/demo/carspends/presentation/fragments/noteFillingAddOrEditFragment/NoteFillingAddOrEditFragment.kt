@@ -12,13 +12,10 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.R
-import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
@@ -222,15 +219,15 @@ class NoteFillingAddOrEditFragment: Fragment() {
 
     private fun getArgs() {
         val args = requireArguments()
-        if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for NoteExtraAddOrEditFragment")
+        if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for NoteFillingAddOrEditFragment")
 
         val type = args.getString(MODE_KEY)
-        if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteExtraAddOrEditFragment: $type")
+        if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteFillingAddOrEditFragment: $type")
 
         launchMode = type
         if (launchMode == EDIT_MODE && !args.containsKey(
                 ID_KEY
-            )) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
+            )) throw Exception("NoteItem id must be implemented for NoteFillingAddOrEditFragment")
         noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 

@@ -131,34 +131,42 @@ class NotesListFragment: Fragment() {
 
     private fun goToEditNoteItemFragment(type: NoteType, id: Int) {
         when(type) {
-            NoteType.FUEL -> startFillingNoteEdit(id)
-            NoteType.REPAIR -> TODO()
-            NoteType.EXTRA -> startExtraNoteEdit(id)
+            NoteType.FUEL -> startFillingNoteAddOrEdit(id)
+            NoteType.REPAIR -> startRepairNoteAddOrEdit(id)
+            NoteType.EXTRA -> startExtraNoteAddOrEdit(id)
         }
     }
 
     private fun goToAddNoteItemFragment(type: NoteType) {
         when(type) {
-            NoteType.FUEL -> startFillingNoteAdd()
-            NoteType.REPAIR -> TODO()
-            NoteType.EXTRA -> startExtraNoteAdd()
+            NoteType.FUEL -> startFillingNoteAddOrEdit()
+            NoteType.REPAIR -> startRepairNoteAddOrEdit()
+            NoteType.EXTRA -> startExtraNoteAddOrEdit()
         }
     }
 
-    private fun startExtraNoteAdd() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity()))
-    }
-
-    private fun startExtraNoteEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
-    }
-
-    private fun startFillingNoteAdd() {
+    private fun startFillingNoteAddOrEdit() {
         startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity()))
     }
 
-    private fun startFillingNoteEdit(id: Int) {
+    private fun startFillingNoteAddOrEdit(id: Int) {
         startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), id))
+    }
+
+    private fun startRepairNoteAddOrEdit() {
+        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity()))
+    }
+
+    private fun startRepairNoteAddOrEdit(id: Int) {
+        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), id))
+    }
+
+    private fun startExtraNoteAddOrEdit() {
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity()))
+    }
+
+    private fun startExtraNoteAddOrEdit(id: Int) {
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
     }
 
     override fun onCreateView(
