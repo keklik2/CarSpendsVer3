@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.carspends.R
 
-class NoteItemViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+class NoteItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     val ivTool = view.findViewById<ImageView>(R.id.ni_iv_tool)
     val tvTitle = view.findViewById<TextView>(R.id.ni_tv_title)
     val tvAmount = view.findViewById<TextView>(R.id.ni_tv_amount)

@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun getFormattedDoubleAsStr(sum: Double): String {
-    return "%.2f".format(sum)
+    return "%.2f".format(Locale.US, sum)
 }
 
 fun getFormattedDate(receivedDate: Long): String {

@@ -10,11 +10,11 @@ interface ComponentDao {
     fun getComponentsListLD(): LiveData<List<ComponentItemDbModel>>
 
     @Query("SELECT * FROM components WHERE id == :requestedId LIMIT 1")
-    fun getComponentById(requestedId: Int): ComponentItemDbModel
+    suspend fun getComponentById(requestedId: Int): ComponentItemDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertComponent(componentItemDbModel: ComponentItemDbModel)
+    suspend fun insertComponent(componentItemDbModel: ComponentItemDbModel)
 
     @Delete
-    fun deleteComponent(componentItemDbModel: ComponentItemDbModel)
+    suspend fun deleteComponent(componentItemDbModel: ComponentItemDbModel)
 }

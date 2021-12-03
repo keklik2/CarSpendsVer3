@@ -4,7 +4,7 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 
 class DeleteNoteItemUseCase(private val repository: NoteRepository) {
-    operator fun invoke(noteItem: NoteItem) {
+    suspend operator fun invoke(noteItem: NoteItem) {
         repository.deleteNoteItemUseCase(noteItem)
     }
 }

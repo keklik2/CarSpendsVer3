@@ -1,5 +1,9 @@
 package com.demo.carspends.domain.note
 
-enum class NoteType {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class NoteType : Parcelable {
     FUEL, REPAIR, EXTRA
 }

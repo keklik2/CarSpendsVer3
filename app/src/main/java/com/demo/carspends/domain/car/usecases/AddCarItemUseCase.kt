@@ -4,5 +4,5 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.CarRepository
 
 class AddCarItemUseCase(private val repository: CarRepository) {
-    operator fun invoke(carItem: CarItem) = repository.addCarItemUseCase(carItem)
+    suspend operator fun invoke(carItem: CarItem) = repository.addCarItemUseCase(carItem)
 }

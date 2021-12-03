@@ -20,12 +20,12 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
-    override fun deleteNoteItemUseCase(noteItem: NoteItem) {
+    override suspend fun deleteNoteItemUseCase(noteItem: NoteItem) {
         noteDao.deleteNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
-    override fun editNoteItemUseCase(noteItem: NoteItem) {
-        noteDao.deleteNote(mapper.mapEntityToNoteDbModel(noteItem))
+    override suspend fun editNoteItemUseCase(noteItem: NoteItem) {
+        noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
     override fun getNoteItemsListUseCase(date: Long): LiveData<List<NoteItem>> {
@@ -44,7 +44,7 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         }
     }
 
-    override fun getNoteItemUseCase(id: Int): NoteItem {
+    override suspend fun getNoteItemUseCase(id: Int): NoteItem {
         return mapper.mapNoteDbModelToEntity(noteDao.getNoteById(id))
     }
 }

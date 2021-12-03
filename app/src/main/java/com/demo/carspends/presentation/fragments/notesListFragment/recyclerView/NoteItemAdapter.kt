@@ -12,6 +12,7 @@ import com.demo.carspends.utils.getFormattedDoubleAsStr
 class NoteItemAdapter: ListAdapter<NoteItem, NoteItemViewHolder>(NoteItemDiffCallback()) {
 
     var onClickListener: ((NoteItem) -> Unit)? = null
+    var onLongClickListener: ((NoteItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteItemViewHolder {
         return NoteItemViewHolder(
@@ -33,8 +34,18 @@ class NoteItemAdapter: ListAdapter<NoteItem, NoteItemViewHolder>(NoteItemDiffCal
             ivTool.setImageResource(getImageID(currNote.type))
             tvTitle.text = currNote.title
             tvAmount.text = getFormattedDoubleAsStr(currNote.totalPrice)
-            if (currNote.type == NoteType.FUEL) tvExtraInfo.text = String.format("- %s", currNote.fuelType.strName)
+            if (currNote.type == NoteType.FUEL) tvExtraInfo.text =
+                String.format("- %s", currNote.fuelType.strName)
             tvDate.text = getFormattedDate(currNote.date)
+
+            view.setOnClickListener {
+                onClickListener?.invoke(currNote)
+            }
+
+            view.setOnLongClickListener {
+                onLongClickListener?.invoke(currNote)
+                true
+            }
         }
     }
 

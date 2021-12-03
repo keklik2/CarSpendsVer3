@@ -1,6 +1,10 @@
 package com.demo.carspends.domain.others
 
-enum class Fuel(val strName: String) {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class Fuel(val strName: String) : Parcelable {
     GAS("Газ"),
     ELECTRICITY("Электричество"),
     DIESEL("Дизель"),

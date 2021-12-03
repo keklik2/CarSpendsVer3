@@ -13,15 +13,15 @@ class CarRepositoryImpl(private val app: Application): CarRepository {
     private val carDao = MainDataBase.getInstance(app).carDao()
     private val mapper = CarMapper()
 
-    override fun addCarItemUseCase(carItem: CarItem) {
+    override suspend fun addCarItemUseCase(carItem: CarItem) {
         carDao.insertCar(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
-    override fun deleteCarItemUseCase(carItem: CarItem) {
+    override suspend fun deleteCarItemUseCase(carItem: CarItem) {
         carDao.deleteCar(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
-    override fun editCarItemUseCase(carItem: CarItem) {
+    override suspend fun editCarItemUseCase(carItem: CarItem) {
         carDao.insertCar(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
@@ -33,7 +33,7 @@ class CarRepositoryImpl(private val app: Application): CarRepository {
         }
     }
 
-    override fun getCarItemUseCase(id: Int): CarItem {
+    override suspend fun getCarItemUseCase(id: Int): CarItem {
         return mapper.mapCarItemDbModelToEntity(carDao.getCarById(id))
     }
 }

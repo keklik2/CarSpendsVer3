@@ -13,15 +13,15 @@ class ComponentRepositoryImpl(private val application: Application): ComponentRe
     private val componentDao = MainDataBase.getInstance(application).componentDao()
     private val mapper = ComponentMapper()
 
-    override fun addComponentItemUseCase(component: ComponentItem) {
+    override suspend fun addComponentItemUseCase(component: ComponentItem) {
         componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
     }
 
-    override fun deleteComponentItemUseCase(component: ComponentItem) {
+    override suspend fun deleteComponentItemUseCase(component: ComponentItem) {
         componentDao.deleteComponent(mapper.mapEntityToComponentItemDbModel(component))
     }
 
-    override fun editComponentItemUseCase(component: ComponentItem) {
+    override suspend fun editComponentItemUseCase(component: ComponentItem) {
         componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
     }
 
@@ -33,7 +33,7 @@ class ComponentRepositoryImpl(private val application: Application): ComponentRe
         }
     }
 
-    override fun getComponentItemUseCase(id: Int): ComponentItem {
+    override suspend fun getComponentItemUseCase(id: Int): ComponentItem {
         return mapper.mapComponentItemDbModelToEntity(componentDao.getComponentById(id))
     }
 }
