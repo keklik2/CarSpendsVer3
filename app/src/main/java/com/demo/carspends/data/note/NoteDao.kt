@@ -6,21 +6,18 @@ import com.demo.carspends.domain.note.NoteType
 
 @Dao
 interface NoteDao {
-    @Query("SELECT * FROM notes WHERE date >= :date ORDER BY date DESC")
+    @Query("SELECT * FROM notes_table WHERE date >= :date ORDER BY date DESC")
     fun getNotesListLD(date: Long): LiveData<List<NoteItemDbModel>>
 
-    @Query("SELECT * FROM notes WHERE date >= :date AND type == :type ORDER BY date DESC")
-    fun getSelectedNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
+    @Query("SELECT * FROM notes_table WHERE date >= :date AND type == :type ORDER BY date DESC")
+    fun getNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
 
-    @Query("SELECT * FROM notes ORDER BY date DESC")
-    fun getNotesList(): List<NoteItemDbModel>
-
-    @Query("SELECT * FROM notes WHERE id == :requestedId LIMIT 1")
-    fun getNoteById(requestedId: Int): NoteItemDbModel
+    @Query("SELECT * FROM notes_table WHERE id == :requestedId LIMIT 1")
+    suspend fun getNoteById(requestedId: Int): NoteItemDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertNote(noteItemDbModel: NoteItemDbModel)
+    suspend fun insertNote(noteItemDbModel: NoteItemDbModel)
 
     @Delete
-    fun deleteNote(noteItemDbModel: NoteItemDbModel)
+    suspend fun deleteNote(noteItemDbModel: NoteItemDbModel)
 }

@@ -10,6 +10,18 @@
     <string name="text_extra">Прочее</string>
     <string name="text_repair">Ремонт, запчасти</string>
     <string name="text_refill">Заправка</string>
+    <string name="text_main_info">Основная инфомрация</string>
+    <string name="text_statistics">Статистика</string>
+    <string name="text_avg_fuel">Средний расход</string>
+    <string name="text_moment_fuel">Моментальный расход</string>
+    <string name="text_mileage_price">Стоимость километра</string>
+
+    <string name="text_measure_mileage_unit">км</string>
+    <string name="text_measure_power_unit">л.с.</string>
+    <string name="text_measure_engine_capacity_unit">л</string>
+    <string name="text_measure_gas_volume_unit">л</string>
+
+    <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
     <string name="hint_amount">Сумма</string>
     <string name="hint_name_detail">Название детали</string>
@@ -20,6 +32,10 @@
     <string name="hint_fuel_volume">Количество</string>
     <string name="hint_fuel_amount">Сумма</string>
     <string name="hint_fuel_price">р/л</string>
+    <string name="hint_car_name">Название автомобиля</string>
+    <string name="hint_car_mileage">Текущий пробег</string>
+    <string name="hint_car_engine_capacity">Объём двигателя</string>
+    <string name="hint_car_power">Мощность</string>
 
     <!-- Menu Values -->
     <string name="menu_home">Главная</string>
@@ -34,6 +50,15 @@
     <string name="description_img_tools">Иконка "тип записи"</string>
     <string name="description_img_choose_date">Иконка выбора даты</string>
     <string name="description_img_currency">Иконка валюты</string>
+
+    <!-- String Arrays for using in Code -->
+    <string name="F92">АИ-92</string>
+    <string name="F95">АИ-95</string>
+    <string name="F98">АИ-98</string>
+    <string name="F100">АИ-100</string>
+    <string name="DT">ДТ</string>
+    <string name="GAS">Газ</string>
+    <string name="Electricity">Электричество</string>
 
     <!-- Test Elements -->
     <string-array name="note_type_values">

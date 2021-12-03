@@ -1,6 +1,7 @@
-package com.demo.carspends.data
+package com.demo.carspends.data.mapper
 
 import androidx.room.TypeConverter
+import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.domain.note.NoteType
 
 class DbConverters {
@@ -10,4 +11,10 @@ class DbConverters {
 
     @TypeConverter
     fun fromNoteType(value: NoteType) = value.name
+
+    @TypeConverter
+    fun toFuelType(value: String) = enumValueOf<Fuel>(value)
+
+    @TypeConverter
+    fun fromFuelType(value: Fuel) = value.name
 }

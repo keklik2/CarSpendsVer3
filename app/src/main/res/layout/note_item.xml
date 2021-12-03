@@ -25,10 +25,10 @@
 
     <!--Добавить стиль для "заголовков"-->
     <TextView
-        android:id="@+id/ci_tv_title"
+        android:id="@+id/ni_tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/ni_tv_date"
         app:layout_constraintStart_toEndOf="@+id/ni_iv_tool"
         app:layout_constraintTop_toTopOf="parent"
 
@@ -41,23 +41,23 @@
 
     <!--Добавить стиль для "цена"-->
     <TextView
-        android:id="@+id/ci_tv_resource"
+        android:id="@+id/ni_tv_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@+id/ni_iv_tool"
-        app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/ni_tv_title"
 
         style="@style/priceText"
         tools:text="2000.10P"/>
 
     <!--Добавить стиль для "доп. информация"-->
     <TextView
-        android:id="@+id/ci_tv_resource_statement"
+        android:id="@+id/ni_tv_extra_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
-        app:layout_constraintStart_toEndOf="@+id/ci_tv_resource"
-        app:layout_constraintTop_toTopOf="@+id/ci_tv_resource"
+        app:layout_constraintEnd_toStartOf="@+id/ni_tv_date"
+        app:layout_constraintStart_toEndOf="@+id/ni_tv_amount"
+        app:layout_constraintTop_toTopOf="@+id/ni_tv_amount"
 
         style="@style/extraInfoText"
         android:layout_marginStart="10dp"
@@ -69,7 +69,7 @@
 
     <!--Добавить стиль для "дата"-->
     <TextView
-        android:id="@+id/ci_tv_date"
+        android:id="@+id/ni_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
