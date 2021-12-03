@@ -73,7 +73,7 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
-                    editNoteItemUseCase(
+                    addNoteItemUseCase(
                         NoteItem(
                             title = noteTitle,
                             totalPrice = rTotalPrice,
