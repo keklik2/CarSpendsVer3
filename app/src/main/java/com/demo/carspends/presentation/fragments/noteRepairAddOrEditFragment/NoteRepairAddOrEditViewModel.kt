@@ -75,7 +75,7 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                     // Add fun for changing curr mileage in cars' list
                     // If mileage in note > mileage in cars' list = replace it in list
                     setCanCloseScreen()
-                } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+                } else Exception(ERR_NULL_ITEM_ADD)
             }
         }
     }
@@ -101,8 +101,8 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                             )
                         )
                         setCanCloseScreen()
-                    } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-                } else Exception("Received NULL NoteItem for EditNoteItemUseCase()")
+                    } else Exception(ERR_NULL_ITEM_EDIT)
+                } else Exception(ERR_NULL_ITEM_EDIT)
             }
         }
     }
@@ -169,5 +169,10 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     private fun setCanCloseScreen() {
         _canCloseScreen.value = Unit
+    }
+
+    companion object {
+        private const val ERR_NULL_ITEM_EDIT = "Received NULL NoteItem for EditNoteItemUseCase()"
+        private const val ERR_NULL_ITEM_ADD = "Received NULL NoteItem for AddNoteItemUseCase()"
     }
 }

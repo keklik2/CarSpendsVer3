@@ -1,6 +1,5 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +32,8 @@ class NotesListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkForCarExisting()
+
         setLiveDateObservers()
         setupListeners()
     }
@@ -43,6 +44,7 @@ class NotesListFragment: Fragment() {
         setupRecyclerOnSwipeListener()
         setupAddNoteClickListener()
         setupAddNoteListeners()
+        setupCarInfoListener()
     }
 
     private fun setLiveDateObservers() {
@@ -50,6 +52,34 @@ class NotesListFragment: Fragment() {
             mainAdapter.submitList(it)
             binding.nlfRvNotes.adapter = mainAdapter
         }
+    }
+
+    private fun checkForCarExisting() {
+        viewModel.carsList.observe(viewLifecycleOwner) {
+            if(it.isEmpty()) startCarAddOrEdit()
+            else {
+                val carItem = it[0]
+                with(binding) {
+                    nlfTvCarTitle.text = carItem.title
+                    nlfTvAvgFuel.text = carItem.avgFuel.toString()
+                    nlfTvAvgCost.text = carItem.milPrice.toString()
+                }
+            }
+        }
+    }
+
+    private fun setupCarInfoListener() {
+        binding.nlfCarInfoLayout.setOnClickListener {
+            startCarAddOrEdit(getCarId())
+        }
+    }
+
+    private fun getCarId(): Int {
+        var id = 0
+        viewModel.carsList.observe(viewLifecycleOwner) {
+              id = it[0].id
+        }
+        return id
     }
 
     private fun setupAddNoteListeners() {
@@ -169,6 +199,14 @@ class NotesListFragment: Fragment() {
         startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
     }
 
+    private fun startCarAddOrEdit() {
+        startActivity(DetailElementsActivity.newAddOrEditCarIntent(requireActivity()))
+    }
+
+    private fun startCarAddOrEdit(id: Int) {
+        startActivity(DetailElementsActivity.newAddOrEditCarIntent(requireActivity(), id))
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -181,5 +219,9 @@ class NotesListFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val EDIT_CAR_ID = 0
     }
 }

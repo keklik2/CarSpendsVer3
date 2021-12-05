@@ -9,7 +9,7 @@ data class CarItemDbModel (
         val id: Int = UNDEFINED_ID,
         val title: String,
         val mileage: Int,
-        val engineVolume: Int,
+        val engineVolume: Double,
         val power: Int,
         val avgFuel: Double = DEFAULT_DOUBLE,
         val momentFuel: Double = DEFAULT_DOUBLE,
