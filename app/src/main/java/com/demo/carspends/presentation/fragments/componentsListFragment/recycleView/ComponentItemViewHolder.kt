@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.carspends.R
 
-class ComponentItemViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
+class ComponentItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
     val pbLeftMileage = view.findViewById<ProgressBar>(R.id.ci_pb_left_mileage)
     val tvLeftMileage = view.findViewById<TextView>(R.id.ci_tv_left_mileage)
     val tvTitle = view.findViewById<TextView>(R.id.ci_tv_title)

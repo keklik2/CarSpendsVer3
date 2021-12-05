@@ -1,12 +1,14 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment.recycleView
 
+import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ListAdapter
 import com.demo.carspends.R
 import com.demo.carspends.domain.component.ComponentItem
-import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedPercentsAsStr
 
@@ -14,7 +16,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
 
     /** Изменить currMileage: получать текущий пробег автомобиля из приложения */
     private val currMileage = 183000
-    var onClickListener: ((NoteItem) -> Unit)? = null
+    var onClickListener: ((ComponentItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComponentItemViewHolder {
         return ComponentItemViewHolder(
@@ -34,24 +36,31 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
 
         with(holder) {
             val leftResourcePercent = getLeftResourcePercent(currComponent)
-            val progressColorID = getResourceColor(leftResourcePercent)
+            val progressColor = getColor(view, getResourceColorId(leftResourcePercent))
 
             // Setting progressbar value & color
             pbLeftMileage.progress = leftResourcePercent
-            pbLeftMileage.progressTintList = ColorStateList.valueOf(progressColorID)
 
             tvLeftMileage.text = getFormattedPercentsAsStr(leftResourcePercent)
             tvTitle.text = currComponent.title
 
             // Setting resource statement value & color
             tvResourceStatement.text = getLeftResourceValue(currComponent).toString()
-            tvResourceStatement.setTextColor(progressColorID)
+            tvResourceStatement.setTextColor(progressColor)
 
             tvDate.text = getFormattedDate(currComponent.date)
+
+            view.setOnClickListener {
+                onClickListener?.invoke(currComponent)
+            }
         }
     }
 
-    private fun getResourceColor(resource: Int): Int {
+    private fun getColor(view: View, id: Int): ColorStateList {
+        return ColorStateList.valueOf(ContextCompat.getColor(view.context, id))
+    }
+
+    private fun getResourceColorId(resource: Int): Int {
         return when(resource) {
             in 70..100 -> R.color.green
             in 35..70 -> R.color.yellow
@@ -60,10 +69,10 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
     }
 
     private fun getLeftResourceValue(component: ComponentItem): Int {
-        return component.resourceMileage - (component.startMileage - currMileage)
+        return component.resourceMileage - (currMileage - component.startMileage)
     }
 
     private fun getLeftResourcePercent(component: ComponentItem): Int {
-        return ((getLeftResourceValue(component).toDouble() * 100) % component.resourceMileage).toInt()
+        return ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
     }
 }
