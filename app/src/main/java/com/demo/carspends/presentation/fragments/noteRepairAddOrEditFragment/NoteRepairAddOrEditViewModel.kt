@@ -155,7 +155,7 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         _errorMileageInput.value = false
     }
 
-    fun resetVolumeError() {
+    fun resetTitleError() {
         _errorTitleInput.value = false
     }
 

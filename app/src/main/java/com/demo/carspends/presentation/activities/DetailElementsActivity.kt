@@ -7,6 +7,7 @@ import android.os.Bundle
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditFragment
@@ -31,6 +32,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
                 FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(itemId)
                 REPAIR_NOTE_ADD -> NoteRepairAddOrEditFragment.newAddInstance()
                 REPAIR_NOTE_EDIT -> NoteRepairAddOrEditFragment.newEditInstance(itemId)
+                COMPONENT_ADD -> ComponentAddOrEditFragment.newAddInstance()
+                COMPONENT_EDIT -> ComponentAddOrEditFragment.newEditInstance(itemId)
                 else -> throw Exception("Unknown KEY_MODE for DetailElementsActivity")
             }
             supportFragmentManager.beginTransaction()
@@ -51,12 +54,14 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             && keyType != FILLING_NOTE_ADD
             && keyType != FILLING_NOTE_EDIT
             && keyType != REPAIR_NOTE_ADD
-            && keyType != REPAIR_NOTE_EDIT) {
+            && keyType != REPAIR_NOTE_EDIT
+            && keyType != COMPONENT_ADD
+            && keyType != COMPONENT_EDIT) {
             throw Exception("Unknown type for DetailElementsActivity. Received: $keyType")
         }
 
         launchMode = keyType
-        if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT || keyType == REPAIR_NOTE_EDIT) {
+        if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT || keyType == REPAIR_NOTE_EDIT || keyType == COMPONENT_EDIT) {
             if (!intent.hasExtra(KEY_NOTE_ID)) {
                 throw Exception("..._NOTE_EDIT requires KEY_NOTE_ID param with intent for DetailElementsActivity")
             }
@@ -79,6 +84,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         private const val FILLING_NOTE_ADD = "filling_note_add"
         private const val REPAIR_NOTE_EDIT = "repair_note_edit"
         private const val REPAIR_NOTE_ADD = "repair_note_add"
+        private const val COMPONENT_EDIT = "component_edit"
+        private const val COMPONENT_ADD = "component_add"
 
         fun newAddOrEditNoteExtraIntent(context: Context): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
@@ -119,7 +126,18 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             return intent
         }
 
-        fun newAddOrEditComponentIntent(): Intent { return Intent() }
+        fun newAddOrEditComponentIntent(context: Context): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, COMPONENT_ADD)
+            return intent
+        }
+
+        fun newAddOrEditComponentIntent(context: Context, id: Int): Intent {
+            val intent = Intent(context, DetailElementsActivity::class.java)
+            intent.putExtra(KEY_MODE, COMPONENT_EDIT)
+            intent.putExtra(KEY_NOTE_ID, id)
+            return intent
+        }
     }
 
     override fun onFinish() {
