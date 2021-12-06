@@ -12,6 +12,7 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -29,18 +30,20 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val editNoteItemUseCase = EditNoteItemUseCase(repository)
     private val getNoteItemUseCase = GetNoteItemUseCase(repository)
 
-    /**
-    // Rewrite when Car's list will be used in app
-    private val getCarItem = GetCarItemUseCase(CarRepositoryImpl(app))
-    // Rewrite when Car's list will be used in app
-    private val _noteMileage = MutableLiveData<Int>()
-    val noteMileage get() = _noteMileage */
-
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
 
     private val _errorMileageInput = MutableLiveData<Boolean>()
     val errorMileageInput get() = _errorMileageInput
+
+    private val _calcPrice = MutableLiveData<Double>()
+    val calcPrice get() = _calcPrice
+
+    private val _calcAmount = MutableLiveData<Double>()
+    val calcAmount get() = _calcAmount
+
+    private val _calcVolume = MutableLiveData<Double>()
+    val calcVolume get() = _calcVolume
 
     private val _errorPriceInput = MutableLiveData<Boolean>()
     val errorPriceInput get() = _errorPriceInput
@@ -50,6 +53,12 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     private val _errorVolumeInput = MutableLiveData<Boolean>()
     val errorVolumeInput get() = _errorVolumeInput
+
+    private val _notesListByMileage = GetNoteItemsListByMileageUseCase(repository).invoke()
+    val notesListByMileage get() = _notesListByMileage
+
+    private val _lastFuelType = MutableLiveData<Fuel>()
+    val lastFuelType get() = _lastFuelType
 
     private val _noteItem = MutableLiveData<NoteItem>()
     val noteItem get() = _noteItem
@@ -62,8 +71,6 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     init {
         _noteDate.value = Date().time
-        // Add mileage loading from cars' list
-        // _noteMileage.value =
     }
 
     fun addNoteItem(fuelTypeId: Int, volume: String?, totalPrice: String?, price: String?, mileage: String?) {
@@ -202,6 +209,46 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     fun setNoteDate(date: Long) {
         _noteDate.value = date
+    }
+
+    fun setLastRefillFuelType(id: Int) {
+        viewModelScope.launch {
+            _lastFuelType.value = getNoteItemUseCase(id).fuelType
+        }
+    }
+
+    fun calculateVolume(amount: String?, price: String?) {
+        val rAmount = refactorDouble(amount)
+        val rPrice = refactorDouble(price)
+
+        if(rAmount >= 0 && rPrice >= 0) {
+            val res = rAmount / rPrice
+            if (res in 0.0..100000.0) _calcVolume.value = rAmount / rPrice
+            else _calcVolume.value = 0.0
+        } else _calcVolume.value = 0.0
+
+    }
+
+    fun calculateAmount(volume: String?, price: String?) {
+        val rVolume = refactorDouble(volume)
+        val rPrice = refactorDouble(price)
+
+        if(rVolume >= 0 && rPrice >= 0) {
+            val res = rVolume * rPrice
+            if (res in 0.0..100000.0) _calcAmount.value = rVolume * rPrice
+            else _calcAmount.value = 0.0
+        } else _calcAmount.value = 0.0
+    }
+
+    fun calculatePrice(amount: String?, volume: String?) {
+        val rAmount = refactorDouble(amount)
+        val rVolume = refactorDouble(volume)
+
+        if(rAmount >= 0 && rVolume >= 0) {
+            val res = rAmount / rVolume
+            if (res in 0.0..100000.0) _calcPrice.value = res
+            else _calcPrice.value = 0.0
+        } else _calcPrice.value = 0.0
     }
 
     private fun setCanCloseScreen() {
