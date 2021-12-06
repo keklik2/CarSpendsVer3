@@ -1,6 +1,5 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment.recycleView
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,10 @@ import com.demo.carspends.utils.getFormattedPercentsAsStr
 class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(ComponentItemDiffCallback()) {
 
     /** Изменить currMileage: получать текущий пробег автомобиля из приложения */
-    private val currMileage = 183000
+    var currMileage = 0
+    set(value) {
+        if(value > 0) field = value
+    }
     var onClickListener: ((ComponentItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComponentItemViewHolder {
@@ -62,7 +64,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
 
     private fun getResourceColorId(resource: Int): Int {
         return when(resource) {
-            in 70..100 -> R.color.green
+            in 70..1000000 -> R.color.green
             in 35..70 -> R.color.yellow
             else -> R.color.vine
         }

@@ -44,6 +44,14 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         }
     }
 
+    override fun getNoteItemsListByMileageUseCase(): LiveData<List<NoteItem>> {
+        return Transformations.map(noteDao.getNotesListByMileage()) {
+            it.map {
+                mapper.mapNoteDbModelToEntity(it)
+            }
+        }
+    }
+
     override suspend fun getNoteItemUseCase(id: Int): NoteItem {
         return mapper.mapNoteDbModelToEntity(noteDao.getNoteById(id))
     }

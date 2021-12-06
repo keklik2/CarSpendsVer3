@@ -155,6 +155,9 @@ class ComponentAddOrEditFragment: Fragment() {
     }
 
     private fun addNoteMode() {
+        viewModel.carsList.observe(viewLifecycleOwner) {
+            binding.caefTietMileageValue.setText(it[0].mileage.toString())
+        }
         binding.caefButtonApply.setOnClickListener {
             viewModel.addComponentItem(
                 binding.caefTietName.text.toString(),

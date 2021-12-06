@@ -183,6 +183,10 @@ class NoteFillingAddOrEditFragment: Fragment() {
     }
 
     private fun addNoteMode() {
+        viewModel.carsList.observe(viewLifecycleOwner) {
+            binding.nfaefTietMileageValue.setText(it[0].mileage.toString())
+        }
+
         binding.nfaefButtonApply.setOnClickListener {
             viewModel.addNoteItem(
                 binding.nfaefSpinnerFuelType.selectedItemPosition,

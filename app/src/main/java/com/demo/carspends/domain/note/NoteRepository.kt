@@ -9,6 +9,7 @@ interface NoteRepository {
     suspend fun editNoteItemUseCase(noteItem: NoteItem)
     fun getNoteItemsListUseCase(type: NoteType, date: Long): LiveData<List<NoteItem>>
     fun getNoteItemsListUseCase(date: Long): LiveData<List<NoteItem>>
+    fun getNoteItemsListByMileageUseCase(): LiveData<List<NoteItem>>
     suspend fun getNoteItemUseCase(id: Int): NoteItem
 
     companion object {

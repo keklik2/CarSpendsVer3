@@ -152,6 +152,10 @@ class NoteRepairAddOrEditFragment: Fragment() {
     }
 
     private fun addNoteMode() {
+        viewModel.carsList.observe(viewLifecycleOwner) {
+            binding.nraefTietMileageValue.setText(it[0].mileage.toString())
+        }
+
         binding.nraefButtonApply.setOnClickListener {
             viewModel.addNoteItem(
                 binding.nraefTietName.text.toString(),

@@ -18,7 +18,11 @@ class ComponentsListFragment: Fragment() {
     private val binding get() = _binding!!
 
     private val mainAdapter by lazy {
-        ComponentItemAdapter()
+        ComponentItemAdapter().apply {
+            viewModel.carsList.observe(viewLifecycleOwner) {
+                currMileage = it[0].mileage
+            }
+        }
     }
 
     private val viewModel by lazy {

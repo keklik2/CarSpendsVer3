@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
@@ -17,12 +19,13 @@ import java.util.*
 class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     private val repository = NoteRepositoryImpl(app)
+    private val carRepository = CarRepositoryImpl(app)
 
     private val noteType = NoteType.EXTRA
 
     private val addNoteItemUseCase = AddNoteItemUseCase(repository)
     private val editNoteItemUseCase = EditNoteItemUseCase(repository)
-    private val getNoteItem = GetNoteItemUseCase(repository)
+    private val getNoteItemUseCase = GetNoteItemUseCase(repository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -116,7 +119,7 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     fun setItem(id: Int) {
         viewModelScope.launch {
-            val item = getNoteItem(id)
+            val item = getNoteItemUseCase(id)
             _noteItem.value = item
             _noteDate.value = item.date
         }
