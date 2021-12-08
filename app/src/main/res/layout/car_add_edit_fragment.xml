@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,360 +7,375 @@
 
     <TextView
         android:id="@+id/caref_tv_title"
+        style="@style/entryTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/text_main_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
 
-        style="@style/entryTitleText"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/caref_til_car_name"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/caref_button_apply"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_tv_title"
-        android:layout_margin="10dp">
+        app:layout_constraintTop_toBottomOf="@+id/caref_tv_title">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/caref_tiet_car_name"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_car_name"
+            android:layout_height="0dp">
 
-            style="@style/inputText"
-            tools:text="Chevrolet Lacetti"/>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_mileage_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_til_car_name"
-
-        android:layout_margin="10dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/caref_til_mileage_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_unit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caref_tiet_mileage_value"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/caref_til_car_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_car_mileage"
-                android:inputType="number"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                style="@style/inputText"
-                tools:text="132.333"/>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/caref_tiet_car_name"
+                    style="@style/inputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
 
-        </com.google.android.material.textfield.TextInputLayout>
+                    android:hint="@string/hint_car_name"
+                    tools:text="Chevrolet Lacetti" />
 
-        <TextView
-            android:id="@+id/caref_tv_mileage_unit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/caref_til_mileage_value"
-            android:text="@string/text_measure_mileage_unit"
+            </com.google.android.material.textfield.TextInputLayout>
 
-            style="@style/entryUnitText"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_engine_capacity_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_mileage_layout"
-
-        android:layout_margin="10dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/caref_til_engine_capacity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_engine_capacity"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caref_tiet_engine_capacity"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_mileage_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_car_engine_capacity"
-                android:inputType="numberDecimal"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-                style="@style/inputText"
-                tools:text="1.6"/>
+                app:layout_constraintTop_toBottomOf="@+id/caref_til_car_name">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/caref_til_mileage_value"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_unit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/caref_tv_engine_capacity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/caref_til_engine_capacity"
-            android:text="@string/text_measure_engine_capacity_unit"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/caref_tiet_mileage_value"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_car_mileage"
 
-            style="@style/entryUnitText" />
+                        android:inputType="number"
+                        tools:text="132.333" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_power_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_engine_capacity_layout"
+                <TextView
+                    android:id="@+id/caref_tv_mileage_unit"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_mileage_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_til_mileage_value"
 
-        android:layout_margin="10dp">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/caref_til_power"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_power"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caref_tiet_power"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_engine_capacity_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_car_power"
-                android:inputType="number"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-                style="@style/inputText"
-                tools:text="121"/>
+                app:layout_constraintTop_toBottomOf="@+id/caref_mileage_layout">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/caref_til_engine_capacity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_engine_capacity"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/caref_tv_power"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/caref_til_power"
-            android:text="@string/text_measure_power_unit"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/caref_tiet_engine_capacity"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_car_engine_capacity"
 
-            style="@style/entryUnitText" />
+                        android:inputType="numberDecimal"
+                        tools:text="1.6" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-        android:id="@+id/caref_tv_statistics"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/text_statistics"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_power_layout"
+                <TextView
+                    android:id="@+id/caref_tv_engine_capacity"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_engine_capacity_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_til_engine_capacity"
 
-        style="@style/entryTitleText"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_avg_fuel_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/caref_tv_statistics"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        android:layout_margin="10dp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_power_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-        <ImageView
-            android:id="@+id/caref_iv_avg_fuel"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/caref_engine_capacity_layout">
 
-            android:paddingVertical="10dp"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/caref_til_power"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_power"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24"/>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/caref_tiet_power"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_car_power"
 
-        <TextView
-            android:id="@+id/caref_tv_avg_fuel_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+                        android:inputType="number"
+                        tools:text="121" />
 
-            app:layout_constraintStart_toEndOf="@+id/caref_iv_avg_fuel"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_avg_fuel"
+                </com.google.android.material.textfield.TextInputLayout>
 
-            android:layout_marginStart="5dp"
+                <TextView
+                    android:id="@+id/caref_tv_power"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_power_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_til_power"
 
-            style="@style/extraInfoText"
-            android:text="@string/text_avg_fuel"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/caref_tv_avg_fuel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            android:padding="5dp"
+            <TextView
+                android:id="@+id/caref_tv_statistics"
+                style="@style/entryTitleText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/text_statistics"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-            android:background="@color/light_light_vine"
+                app:layout_constraintTop_toBottomOf="@+id/caref_power_layout" />
 
-            app:layout_constraintStart_toEndOf="@+id/caref_tv_avg_fuel_title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_avg_fuel_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-            tools:text="11.3л/км"
-            style="@style/entryUnitText"/>
+                app:layout_constraintTop_toBottomOf="@+id/caref_tv_statistics">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/caref_iv_avg_fuel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:paddingVertical="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_moment_fuel_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/caref_avg_fuel_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp">
+                    app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
-        <ImageView
-            android:id="@+id/caref_iv_moment_fuel"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+                <TextView
+                    android:id="@+id/caref_tv_avg_fuel_title"
+                    style="@style/extraInfoText"
+                    android:layout_width="0dp"
 
-            android:paddingVertical="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/text_avg_fuel"
+                    app:layout_constraintBottom_toBottomOf="parent"
 
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24"/>
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_avg_fuel"
 
-        <TextView
-            android:id="@+id/caref_tv_moment_fuel_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/caref_iv_avg_fuel"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            app:layout_constraintStart_toEndOf="@+id/caref_iv_moment_fuel"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_moment_fuel"
+                <TextView
+                    android:id="@+id/caref_tv_avg_fuel"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
 
-            android:layout_marginStart="5dp"
+                    android:layout_height="wrap_content"
 
-            style="@style/extraInfoText"
-            android:text="@string/text_moment_fuel"/>
+                    android:background="@color/light_light_vine"
 
-        <TextView
-            android:id="@+id/caref_tv_moment_fuel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_tv_avg_fuel_title"
 
-            android:padding="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="11.3л/км" />
 
-            android:background="@color/light_light_vine"
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            app:layout_constraintStart_toEndOf="@+id/caref_tv_moment_fuel_title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_moment_fuel_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
 
-            tools:text="10.7л/км"
-            style="@style/entryUnitText"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/caref_avg_fuel_layout">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/caref_iv_moment_fuel"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:paddingVertical="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caref_mileage_price_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/caref_moment_fuel_layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
 
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp">
+                    app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
-        <ImageView
-            android:id="@+id/caref_iv_mileage_price"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+                <TextView
+                    android:id="@+id/caref_tv_moment_fuel_title"
+                    style="@style/extraInfoText"
+                    android:layout_width="0dp"
 
-            android:paddingVertical="10dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/text_moment_fuel"
+                    app:layout_constraintBottom_toBottomOf="parent"
 
-            app:srcCompat="@drawable/ic_baseline_currency_ruble_24"/>
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_moment_fuel"
 
-        <TextView
-            android:id="@+id/caref_tv_mileage_price_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@+id/caref_iv_moment_fuel"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            app:layout_constraintStart_toEndOf="@+id/caref_iv_mileage_price"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_price"
+                <TextView
+                    android:id="@+id/caref_tv_moment_fuel"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
 
-            android:layout_marginStart="5dp"
+                    android:layout_height="wrap_content"
 
-            style="@style/extraInfoText"
-            android:text="@string/text_mileage_price"/>
+                    android:background="@color/light_light_vine"
 
-        <TextView
-            android:id="@+id/caref_tv_mileage_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_tv_moment_fuel_title"
 
-            android:padding="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="10.7л/км" />
 
-            android:background="@color/light_light_vine"
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            app:layout_constraintStart_toEndOf="@+id/caref_tv_mileage_price_title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caref_mileage_price_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
 
-            tools:text="8р/км"
-            style="@style/entryUnitText"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/caref_moment_fuel_layout">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:id="@+id/caref_iv_mileage_price"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:paddingVertical="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
+
+                <TextView
+                    android:id="@+id/caref_tv_mileage_price_title"
+                    style="@style/extraInfoText"
+                    android:layout_width="0dp"
+
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/text_mileage_price"
+                    app:layout_constraintBottom_toBottomOf="parent"
+
+                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_price"
+
+                    app:layout_constraintStart_toEndOf="@+id/caref_iv_mileage_price"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/caref_tv_mileage_price"
+                    style="@style/entryUnitText"
+                    android:layout_width="wrap_content"
+
+                    android:layout_height="wrap_content"
+
+                    android:background="@color/light_light_vine"
+
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/caref_tv_mileage_price_title"
+
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="8р/км" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
     <Button
         android:id="@+id/caref_button_apply"
+        style="@style/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
 
-        style="@style/acceptButton"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
