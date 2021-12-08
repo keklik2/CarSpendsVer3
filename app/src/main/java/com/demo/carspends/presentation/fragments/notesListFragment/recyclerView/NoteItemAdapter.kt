@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
+import com.demo.carspends.utils.getFormattedCurrency
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 
@@ -33,7 +34,7 @@ class NoteItemAdapter: ListAdapter<NoteItem, NoteItemViewHolder>(NoteItemDiffCal
         with(holder) {
             ivTool.setImageResource(getImageID(currNote.type))
             tvTitle.text = currNote.title
-            tvAmount.text = getFormattedDoubleAsStr(currNote.totalPrice)
+            tvAmount.text = getFormattedCurrency(currNote.totalPrice)
             if (currNote.type == NoteType.FUEL) tvExtraInfo.text =
                 String.format("- %s", currNote.fuelType.strName)
             tvDate.text = getFormattedDate(currNote.date)

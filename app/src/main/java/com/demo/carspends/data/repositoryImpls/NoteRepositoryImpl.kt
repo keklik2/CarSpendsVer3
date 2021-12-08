@@ -44,6 +44,12 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         }
     }
 
+    override suspend fun getNoteItemsListByMileageUseCase(): List<NoteItem> {
+        return noteDao.getNotesListByMileage().map {
+            mapper.mapNoteDbModelToEntity(it)
+        }
+    }
+
     override suspend fun getNoteItemUseCase(id: Int): NoteItem {
         return mapper.mapNoteDbModelToEntity(noteDao.getNoteById(id))
     }

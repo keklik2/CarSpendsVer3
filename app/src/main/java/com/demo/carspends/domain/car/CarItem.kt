@@ -3,6 +3,7 @@ package com.demo.carspends.domain.car
 data class CarItem (
         val id: Int = UNDEFINED_ID,
         val title: String,
+        val startMileage: Int,
         val mileage: Int,
         val engineVolume: Double,
         val power: Int,

@@ -13,6 +13,10 @@ fun getFormattedDate(receivedDate: Long): String {
     return form.format(date)
 }
 
+fun getFormattedCurrency(value: Double): String {
+    return "%.2f₽".format(Locale.US, value)
+}
+
 fun getFormattedPercentsAsStr(value: Int): String {
     return "$value%"
 }

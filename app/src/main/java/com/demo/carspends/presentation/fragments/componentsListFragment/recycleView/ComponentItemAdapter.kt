@@ -1,6 +1,5 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment.recycleView
 
-import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,10 @@ import com.demo.carspends.utils.getFormattedPercentsAsStr
 class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(ComponentItemDiffCallback()) {
 
     /** Изменить currMileage: получать текущий пробег автомобиля из приложения */
-    private val currMileage = 183000
+    var currMileage = 0
+    set(value) {
+        if(value > 0) field = value
+    }
     var onClickListener: ((ComponentItem) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ComponentItemViewHolder {
@@ -35,6 +37,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
         val currComponent = getItem(position)
 
         with(holder) {
+            val leftResourceValue = getLeftResourceValue(currComponent)
             val leftResourcePercent = getLeftResourcePercent(currComponent)
             val progressColor = getColor(view, getResourceColorId(leftResourcePercent))
 
@@ -45,7 +48,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
             tvTitle.text = currComponent.title
 
             // Setting resource statement value & color
-            tvResourceStatement.text = getLeftResourceValue(currComponent).toString()
+            tvResourceStatement.text = leftResourceValue.toString()
             tvResourceStatement.setTextColor(progressColor)
 
             tvDate.text = getFormattedDate(currComponent.date)
@@ -62,17 +65,24 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
 
     private fun getResourceColorId(resource: Int): Int {
         return when(resource) {
-            in 70..100 -> R.color.green
+            in 70..1000000 -> R.color.green
             in 35..70 -> R.color.yellow
             else -> R.color.vine
         }
     }
 
     private fun getLeftResourceValue(component: ComponentItem): Int {
-        return component.resourceMileage - (currMileage - component.startMileage)
+        val res = component.resourceMileage - (currMileage - component.startMileage)
+        return if(res >= 0) res
+        else 0
     }
 
     private fun getLeftResourcePercent(component: ComponentItem): Int {
-        return ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
+        val res = ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
+        return when {
+            res in 0..100 -> res
+            res > 100 -> 100
+            else -> 0
+        }
     }
 }

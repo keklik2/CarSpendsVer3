@@ -8,6 +8,7 @@ data class CarItemDbModel (
         @PrimaryKey(autoGenerate = true)
         val id: Int = UNDEFINED_ID,
         val title: String,
+        val startMileage: Int,
         val mileage: Int,
         val engineVolume: Double,
         val power: Int,

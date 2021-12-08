@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 
 class CarAddOrEditFragment: Fragment() {
@@ -163,10 +164,13 @@ class CarAddOrEditFragment: Fragment() {
         viewModel.setItem(carId)
         viewModel.carrItem.observe(viewLifecycleOwner) {
             with(binding) {
-                binding.carefTietCarName.setText(it.title)
-                binding.carefTietMileageValue.setText(it.mileage.toString())
-                binding.carefTietEngineCapacity.setText(it.engineVolume.toString())
-                binding.carefTietPower.setText(it.power.toString())
+                carefTietCarName.setText(it.title)
+                carefTietMileageValue.setText(it.mileage.toString())
+                carefTietEngineCapacity.setText(it.engineVolume.toString())
+                carefTietPower.setText(it.power.toString())
+                carefTvAvgFuel.text = getFormattedDoubleAsStr(it.avgFuel)
+                carefTvMomentFuel.text = getFormattedDoubleAsStr(it.momentFuel)
+                carefTvMileagePrice.text = getFormattedDoubleAsStr(it.milPrice)
             }
         }
 

@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.ComponentRepositoryImpl
+import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.EditComponentItemUseCase
@@ -18,14 +20,10 @@ class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     private val addComponentUseCase = AddComponentItemUseCase(repository)
     private val editComponentUseCase = EditComponentItemUseCase(repository)
-    private val getComponentItem = GetComponentItemByIdUseCase(repository)
+    private val getComponentItemUseCase = GetComponentItemByIdUseCase(repository)
 
-    /**
-    // Rewrite when Car's list will be used in app
-    private val getCarItem = GetCarItemUseCase(CarRepositoryImpl(app))
-    // Rewrite when Car's list will be used in app
-    private val _noteMileage = MutableLiveData<Int>()
-    val noteMileage get() = _noteMileage */
+    private val _carsList= GetCarItemsListLDUseCase(CarRepositoryImpl(app)).invoke()
+    val carsList get() = _carsList
 
     private val _componentDate = MutableLiveData<Long>()
     val componentDate get() = _componentDate
@@ -132,7 +130,7 @@ class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     fun setItem(id: Int) {
         viewModelScope.launch {
-            val item = getComponentItem(id)
+            val item = getComponentItemUseCase(id)
             _componentItem.value = item
             _componentDate.value = item.date
         }

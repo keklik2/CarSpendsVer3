@@ -21,23 +21,23 @@
         <ProgressBar
             android:id="@+id/ci_pb_left_mileage"
             style="?android:attr/progressBarStyleLarge"
-            android:indeterminateOnly="false"
-            android:progressDrawable="@drawable/circle_progress_bar"
-
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerInParent="true"
 
+            android:layout_centerInParent="true"
+            android:indeterminateOnly="false"
+
+            android:progressDrawable="@drawable/circle_progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Добавить стиль текста для "внутренний прогресс" -->
         <TextView
             android:id="@+id/ci_tv_left_mileage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
             style="@style/progressBarText"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             tools:text="100%" />
 
