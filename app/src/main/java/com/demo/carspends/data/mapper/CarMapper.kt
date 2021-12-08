@@ -8,6 +8,7 @@ class CarMapper {
     fun mapCarItemDbModelToEntity(carItem: CarItemDbModel) = CarItem(
         carItem.id,
         carItem.title,
+        carItem.startMileage,
         carItem.mileage,
         carItem.engineVolume,
         carItem.power,
@@ -19,6 +20,7 @@ class CarMapper {
     fun mapEntityToCarItemDbModel(entity: CarItem) = CarItemDbModel(
         entity.id,
         entity.title,
+        entity.startMileage,
         entity.mileage,
         entity.engineVolume,
         entity.power,

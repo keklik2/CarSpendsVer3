@@ -36,6 +36,14 @@ class ComponentsListFragment: Fragment() {
         setupListeners()
     }
 
+    private fun getCarId(): Int {
+        var id = 0
+        viewModel.carsList.observe(viewLifecycleOwner) {
+            id = it[0].id
+        }
+        return id
+    }
+
     private fun setLiveDateObservers() {
         viewModel.componentsList.observe(viewLifecycleOwner) {
             mainAdapter.submitList(it)
@@ -81,12 +89,12 @@ class ComponentsListFragment: Fragment() {
         itemTouchHelper.attachToRecyclerView(binding.clfRvComponents)
     }
 
-    private fun goToAddOrEditComponentItemFragment(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), id))
+    private fun goToAddOrEditComponentItemFragment() {
+        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), getCarId()))
     }
 
-    private fun goToAddOrEditComponentItemFragment() {
-        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity()))
+    private fun goToAddOrEditComponentItemFragment(id: Int) {
+        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), getCarId(), id))
     }
 
     override fun onCreateView(

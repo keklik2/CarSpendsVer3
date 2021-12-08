@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.domain.car.CarItem
+import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
+import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -25,13 +28,8 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val addNoteItemUseCase = AddNoteItemUseCase(repository)
     private val editNoteItemUseCase = EditNoteItemUseCase(repository)
     private val getNoteItemUseCase = GetNoteItemUseCase(repository)
-
-    /**
-    // Rewrite when Car's list will be used in app
-    private val getCarItem = GetCarItemUseCase(CarRepositoryImpl(app))
-    // Rewrite when Car's list will be used in app
-    private val _noteMileage = MutableLiveData<Int>()
-    val noteMileage get() = _noteMileage */
+    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
+    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -48,16 +46,14 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val _noteItem = MutableLiveData<NoteItem>()
     val noteItem get() = _noteItem
 
-    private val _carsList = GetCarItemsListLDUseCase(carRepository).invoke()
-    val carsList get() = _carsList
+    private val _currCarItem = MutableLiveData<CarItem>()
+    val currCarItem get() = _currCarItem
 
     private val _canCloseScreen = MutableLiveData<Unit>()
     val canCloseScreen get() = _canCloseScreen
 
     init {
         _noteDate.value = Date().time
-        // Add mileage loading from cars' list
-        // _noteMileage.value =
     }
 
     fun addNoteItem(title: String?, totalPrice: String?, mileage: String?) {
@@ -78,8 +74,7 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                             type = noteType
                         )
                     )
-                    // Add fun for changing curr mileage in cars' list
-                    // If mileage in note > mileage in cars' list = replace it in list
+                    updateMileage(rMileage)
                     setCanCloseScreen()
                 } else Exception(ERR_NULL_ITEM_ADD)
             }
@@ -106,6 +101,7 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                                 type = noteType
                             )
                         )
+                        updateMileage(rMileage)
                         setCanCloseScreen()
                     } else Exception(ERR_NULL_ITEM_EDIT)
                 } else Exception(ERR_NULL_ITEM_EDIT)
@@ -147,6 +143,26 @@ class NoteRepairAddOrEditViewModel(app: Application): AndroidViewModel(app) {
             return false
         }
         return true
+    }
+
+    private fun updateMileage(newMileage: Int) {
+        val cItem = _currCarItem.value
+        if (cItem != null) {
+            val oldMileage = cItem.mileage
+            if (newMileage > oldMileage) {
+                viewModelScope.launch {
+                    editCarItemUseCase(
+                        cItem.copy(mileage = newMileage)
+                    )
+                }
+            }
+        }
+    }
+
+    fun setCarItem(id: Int) {
+        viewModelScope.launch {
+            _currCarItem.value = getCarItemUseCase(id)
+        }
     }
 
     fun setItem(id: Int) {

@@ -13,7 +13,7 @@ interface NoteDao {
     fun getNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
 
     @Query("SELECT * FROM notes_table ORDER BY mileage DESC")
-    fun getNotesListByMileage(): LiveData<List<NoteItemDbModel>>
+    suspend fun getNotesListByMileage(): List<NoteItemDbModel>
 
     @Query("SELECT * FROM notes_table WHERE id == :requestedId LIMIT 1")
     suspend fun getNoteById(requestedId: Int): NoteItemDbModel

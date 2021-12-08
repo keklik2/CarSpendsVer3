@@ -5,20 +5,24 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
+import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
+import com.demo.carspends.domain.note.NoteType
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val repository = CarRepositoryImpl(app)
+    private val noteRepository = NoteRepositoryImpl(app)
 
     private val addCarItemUseCase = AddCarItemUseCase(repository)
     private val editCarItemUseCase = EditCarItemUseCase(repository)
     private val getCarItemUseCase = GetCarItemUseCase(repository)
+    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(noteRepository)
 
     private val _errorPowerInput = MutableLiveData<Boolean>()
     val errorPowerInput get() = _errorPowerInput
@@ -35,9 +39,6 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val _carItem = MutableLiveData<CarItem>()
     val carrItem get() = _carItem
 
-    private val _carsList = GetCarItemsListLDUseCase(repository).invoke()
-    val carsList get() = _carsList
-
     private val _canCloseScreen = MutableLiveData<Unit>()
     val canCloseScreen get() = _canCloseScreen
 
@@ -52,6 +53,7 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                 addCarItemUseCase(
                     CarItem(
                         title = rName,
+                        startMileage = rMileage,
                         mileage = rMileage,
                         engineVolume = rEngineCapacity,
                         power = rPower
@@ -72,9 +74,23 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
             val cItem = _carItem.value
             if (cItem != null) {
                 viewModelScope.launch {
+
+                    val notes = getNoteItemsListByMileageUseCase()
+                    var newStartMileage: Int
+                    if (notes.isNotEmpty()) {
+                        newStartMileage = rMileage
+                        for (i in notes) {
+                            if (i.type != NoteType.EXTRA) {
+                                newStartMileage = cItem.startMileage
+                                break
+                            }
+                        }
+                    } else newStartMileage = rMileage
+
                     editCarItemUseCase(
                         cItem.copy(
                             title = rName,
+                            startMileage = newStartMileage,
                             mileage = rMileage,
                             engineVolume = rEngineCapacity,
                             power = rPower

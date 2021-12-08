@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.demo.carspends.R
+import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditFragment
@@ -18,6 +19,7 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
 
     private lateinit var launchMode: String
     private var itemId = UNDEFINED_ID
+    private var carId = CarItem.UNDEFINED_ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,12 +31,12 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             val fragment = when(launchMode) {
                 EXTRA_NOTE_ADD -> NoteExtraAddOrEditFragment.newAddInstance()
                 EXTRA_NOTE_EDIT -> NoteExtraAddOrEditFragment.newEditInstance(itemId)
-                FILLING_NOTE_ADD -> NoteFillingAddOrEditFragment.newAddInstance()
-                FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(itemId)
-                REPAIR_NOTE_ADD -> NoteRepairAddOrEditFragment.newAddInstance()
-                REPAIR_NOTE_EDIT -> NoteRepairAddOrEditFragment.newEditInstance(itemId)
-                COMPONENT_ADD -> ComponentAddOrEditFragment.newAddInstance()
-                COMPONENT_EDIT -> ComponentAddOrEditFragment.newEditInstance(itemId)
+                FILLING_NOTE_ADD -> NoteFillingAddOrEditFragment.newAddInstance(carId)
+                FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(carId, itemId)
+                REPAIR_NOTE_ADD -> NoteRepairAddOrEditFragment.newAddInstance(carId)
+                REPAIR_NOTE_EDIT -> NoteRepairAddOrEditFragment.newEditInstance(carId, itemId)
+                COMPONENT_ADD -> ComponentAddOrEditFragment.newAddInstance(carId)
+                COMPONENT_EDIT -> ComponentAddOrEditFragment.newEditInstance(carId, itemId)
                 CAR_ADD -> CarAddOrEditFragment.newAddInstance()
                 CAR_EDIT -> CarAddOrEditFragment.newEditInstance(itemId)
                 else -> throw Exception("Unknown KEY_MODE for DetailElementsActivity: $launchMode")
@@ -77,11 +79,21 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             }
             itemId = id
         }
+
+        if (keyType != EXTRA_NOTE_EDIT && keyType != EXTRA_NOTE_ADD && keyType != CAR_EDIT && keyType != CAR_ADD) {
+            if (!intent.hasExtra(KEY_CAR_ID)) throw Exception("..._NOTE_EDIT requires KEY_CAR_ID param with intent for DetailElementsActivity")
+            val cId = intent.getIntExtra(KEY_CAR_ID, CarItem.UNDEFINED_ID)
+            if (cId == CarItem.UNDEFINED_ID) {
+                throw Exception("CarItem with id $cId cannot exist")
+            }
+            carId = cId
+        }
     }
 
     companion object {
         private const val KEY_MODE = "key_mode"
         private const val KEY_NOTE_ID = "key_note"
+        private const val KEY_CAR_ID = "key_car"
 
         private const val EXTRA_NOTE_EDIT = "extra_note_edit"
         private const val EXTRA_NOTE_ADD = "extra_note_add"
@@ -107,41 +119,47 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             return intent
         }
 
-        fun newAddOrEditNoteFillingIntent(context: Context): Intent {
+        fun newAddOrEditNoteFillingIntent(context: Context, carId: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, FILLING_NOTE_ADD)
+            intent.putExtra(KEY_CAR_ID, carId)
             return intent
         }
 
-        fun newAddOrEditNoteFillingIntent(context: Context, id: Int): Intent {
+        fun newAddOrEditNoteFillingIntent(context: Context, carId: Int, id: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, FILLING_NOTE_EDIT)
+            intent.putExtra(KEY_CAR_ID, carId)
             intent.putExtra(KEY_NOTE_ID, id)
             return intent
         }
 
-        fun newAddOrEditNoteRepairIntent(context: Context): Intent {
+        fun newAddOrEditNoteRepairIntent(context: Context, carId: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, REPAIR_NOTE_ADD)
+            intent.putExtra(KEY_CAR_ID, carId)
             return intent
         }
 
-        fun newAddOrEditNoteRepairIntent(context: Context, id: Int): Intent {
+        fun newAddOrEditNoteRepairIntent(context: Context, carId: Int, id: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, REPAIR_NOTE_EDIT)
+            intent.putExtra(KEY_CAR_ID, carId)
             intent.putExtra(KEY_NOTE_ID, id)
             return intent
         }
 
-        fun newAddOrEditComponentIntent(context: Context): Intent {
+        fun newAddOrEditComponentIntent(context: Context, carId: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, COMPONENT_ADD)
+            intent.putExtra(KEY_CAR_ID, carId)
             return intent
         }
 
-        fun newAddOrEditComponentIntent(context: Context, id: Int): Intent {
+        fun newAddOrEditComponentIntent(context: Context, carId: Int, id: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, COMPONENT_EDIT)
+            intent.putExtra(KEY_CAR_ID, carId)
             intent.putExtra(KEY_NOTE_ID, id)
             return intent
         }

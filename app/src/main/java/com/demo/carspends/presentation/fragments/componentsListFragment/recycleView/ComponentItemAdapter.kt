@@ -37,6 +37,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
         val currComponent = getItem(position)
 
         with(holder) {
+            val leftResourceValue = getLeftResourceValue(currComponent)
             val leftResourcePercent = getLeftResourcePercent(currComponent)
             val progressColor = getColor(view, getResourceColorId(leftResourcePercent))
 
@@ -47,7 +48,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
             tvTitle.text = currComponent.title
 
             // Setting resource statement value & color
-            tvResourceStatement.text = getLeftResourceValue(currComponent).toString()
+            tvResourceStatement.text = leftResourceValue.toString()
             tvResourceStatement.setTextColor(progressColor)
 
             tvDate.text = getFormattedDate(currComponent.date)
@@ -71,10 +72,17 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
     }
 
     private fun getLeftResourceValue(component: ComponentItem): Int {
-        return component.resourceMileage - (currMileage - component.startMileage)
+        val res = component.resourceMileage - (currMileage - component.startMileage)
+        return if(res >= 0) res
+        else 0
     }
 
     private fun getLeftResourcePercent(component: ComponentItem): Int {
-        return ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
+        val res = ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
+        return when {
+            res in 0..100 -> res
+            res > 100 -> 100
+            else -> 0
+        }
     }
 }

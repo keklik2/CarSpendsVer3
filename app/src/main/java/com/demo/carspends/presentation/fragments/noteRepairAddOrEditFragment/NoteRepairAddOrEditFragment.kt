@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
+import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
@@ -30,6 +31,7 @@ class NoteRepairAddOrEditFragment: Fragment() {
 
     private lateinit var launchMode: String
     private var noteId = NoteItem.UNDEFINED_ID
+    private var carId = CarItem.UNDEFINED_ID
     private val cal = GregorianCalendar()
 
     override fun onAttach(context: Context) {
@@ -47,9 +49,14 @@ class NoteRepairAddOrEditFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupCurrCarNote()
         setupObservers()
         setupListeners()
         chooseMode()
+    }
+
+    private fun setupCurrCarNote() {
+        viewModel.setCarItem(carId)
     }
 
     private fun setupListeners() {
@@ -152,8 +159,8 @@ class NoteRepairAddOrEditFragment: Fragment() {
     }
 
     private fun addNoteMode() {
-        viewModel.carsList.observe(viewLifecycleOwner) {
-            binding.nraefTietMileageValue.setText(it[0].mileage.toString())
+        viewModel.currCarItem.observe(viewLifecycleOwner) {
+            binding.nraefTietMileageValue.setText(it.mileage.toString())
         }
 
         binding.nraefButtonApply.setOnClickListener {
@@ -169,9 +176,9 @@ class NoteRepairAddOrEditFragment: Fragment() {
         viewModel.setItem(noteId)
         viewModel.noteItem.observe(viewLifecycleOwner) {
             with(binding) {
-                binding.nraefTietName.setText(it.title)
-                binding.nraefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
-                binding.nraefTietMileageValue.setText(it.mileage.toString())
+                nraefTietName.setText(it.title)
+                nraefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
+                nraefTietMileageValue.setText(it.mileage.toString())
             }
         }
 
@@ -192,9 +199,9 @@ class NoteRepairAddOrEditFragment: Fragment() {
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteRepairAddOrEditFragment: $type")
 
         launchMode = type
-        if (launchMode == EDIT_MODE && !args.containsKey(
-                ID_KEY
-            )) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
+        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteRepairAddOrEditFragment")
+        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
         noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
@@ -219,22 +226,25 @@ class NoteRepairAddOrEditFragment: Fragment() {
 
         private const val MODE_KEY = "mode_note"
         private const val ID_KEY = "id_note"
+        private const val CAR_ID_KEY = "id_car"
 
         private const val EDIT_MODE = "edit_mode"
         private const val ADD_MODE = "add_mode"
 
-        fun newAddInstance(): NoteRepairAddOrEditFragment {
+        fun newAddInstance(carId: Int): NoteRepairAddOrEditFragment {
             return NoteRepairAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, ADD_MODE)
+                    putInt(CAR_ID_KEY, carId)
                 }
             }
         }
 
-        fun newEditInstance(id: Int): NoteRepairAddOrEditFragment {
+        fun newEditInstance(carId: Int, id: Int): NoteRepairAddOrEditFragment {
             return NoteRepairAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, EDIT_MODE)
+                    putInt(CAR_ID_KEY, carId)
                     putInt(ID_KEY, id)
                 }
             }

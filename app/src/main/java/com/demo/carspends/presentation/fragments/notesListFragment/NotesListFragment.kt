@@ -15,6 +15,8 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
+import com.demo.carspends.utils.getFormattedDoubleAsStr
+import com.demo.carspends.utils.getFormattedPercentsAsStr
 
 class NotesListFragment: Fragment() {
 
@@ -61,9 +63,10 @@ class NotesListFragment: Fragment() {
                 val carItem = it[0]
                 with(binding) {
                     nlfTvCarTitle.text = carItem.title
-                    nlfTvAvgFuel.text = carItem.avgFuel.toString()
-                    nlfTvAvgCost.text = carItem.milPrice.toString()
+                    nlfTvAvgFuel.text = getFormattedDoubleAsStr(carItem.momentFuel)
+                    nlfTvAvgCost.text = getFormattedDoubleAsStr(carItem.milPrice)
                 }
+                viewModel.setCarItem(carItem.id)
             }
         }
     }
@@ -176,19 +179,19 @@ class NotesListFragment: Fragment() {
     }
 
     private fun startFillingNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity()))
+        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), getCarId()))
     }
 
     private fun startFillingNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), id))
+        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), getCarId(), id))
     }
 
     private fun startRepairNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity()))
+        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), getCarId()))
     }
 
     private fun startRepairNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), id))
+        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), getCarId(), id))
     }
 
     private fun startExtraNoteAddOrEdit() {

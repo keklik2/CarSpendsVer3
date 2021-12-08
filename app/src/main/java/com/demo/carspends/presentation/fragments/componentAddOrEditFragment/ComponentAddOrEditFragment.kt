@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
+import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
@@ -34,6 +35,7 @@ class ComponentAddOrEditFragment: Fragment() {
     private lateinit var launchMode: String
     private var componentId = ComponentItem.UNDEFINED_ID
     private val cal = GregorianCalendar()
+    private var carId = CarItem.UNDEFINED_ID
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -188,15 +190,15 @@ class ComponentAddOrEditFragment: Fragment() {
 
     private fun getArgs() {
         val args = requireArguments()
-        if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for NoteRepairAddOrEditFragment")
+        if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for ComponentAddOrEditFragment")
 
         val type = args.getString(MODE_KEY)
-        if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteRepairAddOrEditFragment: $type")
+        if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for ComponentAddOrEditFragment: $type")
 
         launchMode = type
-        if (launchMode == EDIT_MODE && !args.containsKey(
-                ID_KEY
-            )) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
+        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for ComponentAddOrEditFragment")
+        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("ComponentItem id must be implemented for ComponentAddOrEditFragment")
         componentId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
@@ -221,22 +223,25 @@ class ComponentAddOrEditFragment: Fragment() {
 
         private const val MODE_KEY = "mode_component"
         private const val ID_KEY = "id_component"
+        private const val CAR_ID_KEY = "id_car"
 
         private const val EDIT_MODE = "edit_mode"
         private const val ADD_MODE = "add_mode"
 
-        fun newAddInstance(): ComponentAddOrEditFragment {
+        fun newAddInstance(carId: Int): ComponentAddOrEditFragment {
             return ComponentAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, ADD_MODE)
+                    putInt(CAR_ID_KEY, carId)
                 }
             }
         }
 
-        fun newEditInstance(id: Int): ComponentAddOrEditFragment {
+        fun newEditInstance(carId: Int, id: Int): ComponentAddOrEditFragment {
             return ComponentAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, EDIT_MODE)
+                    putInt(CAR_ID_KEY, carId)
                     putInt(ID_KEY, id)
                 }
             }
