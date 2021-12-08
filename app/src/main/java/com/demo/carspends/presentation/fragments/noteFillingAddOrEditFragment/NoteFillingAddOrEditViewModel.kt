@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -20,7 +19,7 @@ import com.demo.carspends.domain.others.Fuel
 import kotlinx.coroutines.launch
 import java.util.*
 
-class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
+class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = NoteRepositoryImpl(app)
     private val carRepository = CarRepositoryImpl(app)
 
@@ -76,55 +75,25 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         _noteDate.value = Date().time
     }
 
-    fun addNoteItem(fuelTypeId: Int, volume: String?, totalPrice: String?, price: String?, mileage: String?) {
+    fun addNoteItem(
+        fuelTypeId: Int,
+        volume: String?,
+        totalPrice: String?,
+        price: String?,
+        mileage: String?
+    ) {
         val rFuelType = refactorFuel(fuelTypeId)
         val rVolume = refactorDouble(volume)
         val rTotalPrice = refactorDouble(totalPrice)
         val rPrice = refactorDouble(price)
         val rMileage = refactorInt(mileage)
 
-        if(areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
+        if (areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
-                    val newNote = NoteItem(
-                        title = noteTitle,
-                        totalPrice = rTotalPrice,
-                        price = rPrice,
-                        liters = rVolume,
-                        mileage = rMileage,
-                        fuelType = rFuelType,
-                        date = nDate,
-                        type = noteType
-                    )
-
-                    calculateAvgFuel(newNote)
-
                     addNoteItemUseCase(
-                        newNote
-                    )
-
-                    updateMileage(rMileage)
-                    setCanCloseScreen()
-                } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-            }
-        }
-    }
-
-    fun editNoteItem(fuelTypeId: Int, volume: String?, totalPrice: String?, price: String?, mileage: String?) {
-        val rFuelType = refactorFuel(fuelTypeId)
-        val rVolume = refactorDouble(volume)
-        val rTotalPrice = refactorDouble(totalPrice)
-        val rPrice = refactorDouble(price)
-        val rMileage = refactorInt(mileage)
-
-        if(areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
-            viewModelScope.launch {
-                val nItem = _noteItem.value
-                if (nItem != null) {
-                    val nDate = _noteDate.value
-                    if (nDate != null) {
-                        val newNote = nItem.copy(
+                        NoteItem(
                             title = noteTitle,
                             totalPrice = rTotalPrice,
                             price = rPrice,
@@ -134,10 +103,49 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                             date = nDate,
                             type = noteType
                         )
+                    )
+                    calculateAvgFuel()
+                    calculateAvgPrice()
+                    updateMileage(rMileage)
+                    setCanCloseScreen()
+                } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+            }
+        }
+    }
+
+    fun editNoteItem(
+        fuelTypeId: Int,
+        volume: String?,
+        totalPrice: String?,
+        price: String?,
+        mileage: String?
+    ) {
+        val rFuelType = refactorFuel(fuelTypeId)
+        val rVolume = refactorDouble(volume)
+        val rTotalPrice = refactorDouble(totalPrice)
+        val rPrice = refactorDouble(price)
+        val rMileage = refactorInt(mileage)
+
+        if (areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
+            viewModelScope.launch {
+                val nItem = _noteItem.value
+                if (nItem != null) {
+                    val nDate = _noteDate.value
+                    if (nDate != null) {
                         editNoteItemUseCase(
-                            newNote
+                            nItem.copy(
+                                title = noteTitle,
+                                totalPrice = rTotalPrice,
+                                price = rPrice,
+                                liters = rVolume,
+                                mileage = rMileage,
+                                fuelType = rFuelType,
+                                date = nDate,
+                                type = noteType
+                            )
                         )
-                        calculateAvgFuel(newNote)
+                        calculateAvgFuel()
+                        calculateAvgPrice()
                         updateMileage(rMileage)
                         setCanCloseScreen()
                     } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
@@ -146,88 +154,97 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    private suspend fun calculateAvgFuel(note: NoteItem) {
+    private suspend fun calculateAvgFuel() {
         val notes = getNoteItemsListByMileageUseCase()
-            if (notes.isNotEmpty()) {
-                var prevFuelNote = note
-                for (i in notes) {
-                    // Notes to be used in calculations must lay under the new/editing note (i.mileage < note.mileage)
-                    // Notes to be used in calculations must be different from the new/editing note (i.id != note.id)
-                    // Only Fuel notes can be used in calculations (i.type == NoteType.FUEL)
-                    if (i.id != note.id && i.type == NoteType.FUEL && i.mileage < note.mileage) {
-                        prevFuelNote = i
-                        break
-                    }
-                }
-                if (prevFuelNote != note) {
-                    val cCarItem = _currCarItem.value
-                    if (cCarItem != null) {
-                        val avgMomentFuel = calculatedAvgFuelOfTwoNotes(note, prevFuelNote)
-                        val addAvgFuel = if (cCarItem.avgFuel == 0.0) {
-                            avgMomentFuel
-                        } else {
-                            if (notes[0].id != note.id) {
-                                calculateAvgOfTwo(cCarItem.avgFuel, avgMomentFuel)
-                            } else {
-                                calculateAvgOfAll()
-                            }
-                        }
-                        editCarItemUseCase(
-                            cCarItem.copy(
-                                momentFuel = avgMomentFuel,
-                                avgFuel = addAvgFuel
-                            )
-                        )
-                    }
-                }
+        if (notes.size > 1) {
+            val listOfFuel = mutableListOf<NoteItem>()
+            for (i in notes) {
+                if (i.type == NoteType.FUEL) listOfFuel.add(i)
             }
-        setCarItem(carId)
-    }
-
-    private suspend fun updateMileage(newMileage: Int) {
-        val cItem = _currCarItem.value
-        if (cItem != null) {
-            val oldMileage = cItem.mileage
-            if (newMileage > oldMileage) {
-                editCarItemUseCase(
-                    cItem.copy(mileage = newMileage)
-                )
-                setCarItem(carId)
+            if (listOfFuel.size > 1) {
+                val note1 = listOfFuel[0]
+                val note2 = listOfFuel[1]
+                if (note2 != note1) {
+                    val cCarItem = getCarItemUseCase(carId)
+                    editCarItemUseCase(
+                        cCarItem.copy(
+                            momentFuel = calculatedAvgFuelOfTwoNotes(note1, note2),
+                            avgFuel = calculateAvgFuelOfAll(listOfFuel)
+                        )
+                    )
+                    updateCarItem()
+                }
             }
         }
     }
 
-    private suspend fun calculateAvgOfAll(): Double {
+    private suspend fun calculateAvgPrice() {
         val notes = getNoteItemsListByMileageUseCase()
+        if (notes.isNotEmpty()) {
+            val cItem = getCarItemUseCase(carId)
+            editCarItemUseCase(
+                cItem.copy(
+                    milPrice = calculateAvgPriceOfAll(cItem.startMileage, notes)
+                )
+            )
+            updateCarItem()
+        }
+    }
+
+    private fun calculateAvgPriceOfAll(startMil: Int, notes: List<NoteItem>): Double {
         val list = mutableListOf<NoteItem>()
         for (i in notes) {
-            if (i.type == NoteType.FUEL) list.add(i)
+            if (i.type != NoteType.EXTRA) list.add(i)
         }
 
         if (list.size > 1) {
-            var allMileage = list[0].mileage - list[list.size - 1].mileage
-            var allFuel = 0.0
-            for (i in 0 until list.size - 1) {
-                allFuel += list[i].liters
+            val lastNote = list[list.size - 1]
+            val allMileage =
+                if (startMil < lastNote.mileage) list[0].mileage - startMil
+                else list[0].mileage - lastNote.mileage
+            var allPrice = 0.0
+            for (i in 0 until list.size) {
+                allPrice += list[i].totalPrice
             }
 
-            val res = ( allFuel / allMileage.toDouble() ) * 100
-            Log.d("HELLOW", "All Mileage: $allMileage")
-            Log.d("HELLOW", "All Fuel: $allFuel")
-            Log.d("HELLOW", "Res: $res")
+            val res = allPrice / allMileage.toDouble()
             return if (res > 0) res
             else 0.0
         }
         return 0.0
     }
 
-    private fun calculateAvgOfTwo(p1: Double, p2: Double): Double = (p1 + p2) / 2
+    private fun calculateAvgFuelOfAll(listOfFuel: List<NoteItem>): Double {
+        if (listOfFuel.size > 1) {
+            var allMileage = listOfFuel[0].mileage - listOfFuel[listOfFuel.size - 1].mileage
+            var allFuel = 0.0
+            for (i in 0 until listOfFuel.size - 1) {
+                allFuel += listOfFuel[i].liters
+            }
+
+            val res = (allFuel / allMileage.toDouble()) * 100
+            return if (res > 0) res
+            else 0.0
+        }
+        return 0.0
+    }
 
     private fun calculatedAvgFuelOfTwoNotes(n1: NoteItem, n2: NoteItem): Double {
         val distance = maxOf(n1.mileage, n2.mileage) - minOf(n1.mileage, n2.mileage)
         val res = (n1.liters / distance) * 100
         return if (res < 0) 0.0
         else res
+    }
+
+    private suspend fun updateMileage(newMileage: Int) {
+        val cItem = getCarItemUseCase(carId)
+        val oldMileage = cItem.mileage
+        if (newMileage > oldMileage) {
+            editCarItemUseCase(
+                cItem.copy(mileage = newMileage)
+            )
+            updateCarItem()
+        }
     }
 
     private fun refactorFuel(id: Int): Fuel {
@@ -250,7 +267,12 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    private fun areFieldsValid(volume: Double, totalPrice: Double, price: Double, mileage: Int): Boolean {
+    private fun areFieldsValid(
+        volume: Double,
+        totalPrice: Double,
+        price: Double,
+        mileage: Int
+    ): Boolean {
         if (volume <= 0.0) {
             _errorVolumeInput.value = true
             return false
@@ -275,6 +297,10 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         viewModelScope.launch {
             _currCarItem.value = getCarItemUseCase(carId)
         }
+    }
+
+    private suspend fun updateCarItem() {
+        _currCarItem.value = getCarItemUseCase(carId)
     }
 
     fun getFuelId(fuel: Fuel): Int {
@@ -330,7 +356,7 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rAmount = refactorDouble(amount)
         val rPrice = refactorDouble(price)
 
-        if(rAmount >= 0 && rPrice >= 0) {
+        if (rAmount >= 0 && rPrice >= 0) {
             val res = rAmount / rPrice
             if (res in 0.0..100000.0) _calcVolume.value = rAmount / rPrice
             else _calcVolume.value = 0.0
@@ -342,7 +368,7 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rVolume = refactorDouble(volume)
         val rPrice = refactorDouble(price)
 
-        if(rVolume >= 0 && rPrice >= 0) {
+        if (rVolume >= 0 && rPrice >= 0) {
             val res = rVolume * rPrice
             if (res in 0.0..100000.0) _calcAmount.value = rVolume * rPrice
             else _calcAmount.value = 0.0
@@ -353,7 +379,7 @@ class NoteFillingAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rAmount = refactorDouble(amount)
         val rVolume = refactorDouble(volume)
 
-        if(rAmount >= 0 && rVolume >= 0) {
+        if (rAmount >= 0 && rVolume >= 0) {
             val res = rAmount / rVolume
             if (res in 0.0..100000.0) _calcPrice.value = res
             else _calcPrice.value = 0.0
