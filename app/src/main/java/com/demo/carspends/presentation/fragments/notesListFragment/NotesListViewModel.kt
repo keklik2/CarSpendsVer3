@@ -15,7 +15,7 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.*
 import kotlinx.coroutines.launch
 
-class NotesListViewModel(app: Application): AndroidViewModel(app) {
+class NotesListViewModel(app: Application) : AndroidViewModel(app) {
 
     private var carId = CarItem.UNDEFINED_ID
 
@@ -41,11 +41,11 @@ class NotesListViewModel(app: Application): AndroidViewModel(app) {
             val noteType = note.type
             deleteNoteItemUseCase(note)
 
-            if(noteType != NoteType.EXTRA) {
-                rollbackCarMileage(note.type)
+            if (noteType != NoteType.EXTRA) {
+                rollbackCarMileage()
                 calculateAvgPrice()
 
-                if(noteType == NoteType.FUEL) {
+                if (noteType == NoteType.FUEL) {
                     calculateAvgFuel()
                 }
             }
@@ -140,28 +140,21 @@ class NotesListViewModel(app: Application): AndroidViewModel(app) {
         else res
     }
 
-    private fun rollbackCarMileage(noteType: NoteType) {
-        if (noteType != NoteType.EXTRA) {
-            val cItem = _currCarItem.value
-            viewModelScope.launch {
-                val notesList = getNoteItemsListByMileageUseCase()
-                notesList?.let {
-                    cItem?.let {
-                        var newMileage = cItem.startMileage
-                        if (notesList.isNotEmpty()) {
-                            for (i in notesList) {
-                                if (i.mileage > newMileage) newMileage = i.mileage
-                            }
-                        }
-                        viewModelScope.launch {
-                            editCarItemUseCase(cItem.copy(
-                                mileage = newMileage
-                            ))
-                        }
-                    }
-                }
+    private suspend fun rollbackCarMileage() {
+        val cItem = getCarItemUseCase(carId)
+        val notesList = getNoteItemsListByMileageUseCase()
+        var newMileage = cItem.startMileage
+        if (notesList.isNotEmpty()) {
+            for (i in notesList) {
+                if (i.type != NoteType.EXTRA && i.mileage > newMileage) newMileage = i.mileage
             }
         }
+        editCarItemUseCase(
+            cItem.copy(
+                mileage = newMileage
+            )
+        )
+        updateCarItem()
     }
 
     fun setCarItem(id: Int) {
