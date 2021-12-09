@@ -10,13 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.activities.DetailElementsActivity
+import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import com.demo.carspends.utils.getFormattedPercentsAsStr
 
 class NotesListFragment: Fragment() {
 
@@ -140,9 +141,20 @@ class NotesListFragment: Fragment() {
                 return false
             }
 
+
+
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
-                viewModel.deleteNote(currItem)
+
+                val question = String.format(getString(R.string.text_delete_note_confirmation), currItem.title)
+                val testDialog = ApplyActionDialog(requireActivity(), question)
+                testDialog.onApplyClickListener = {
+                    viewModel.deleteNote(currItem)
+                }
+                testDialog.onDenyClickListener = {
+                    setLiveDateObservers()
+                }
+                testDialog.show()
             }
 
         }
@@ -222,9 +234,5 @@ class NotesListFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val EDIT_CAR_ID = 0
     }
 }

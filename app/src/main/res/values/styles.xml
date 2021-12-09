@@ -12,6 +12,18 @@
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
+    <style name="acceptButtonDialog">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/vine</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+    </style>
+
+    <style name="denyButtonDialog">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/light_gray</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+    </style>
+
     <!-- Text Input Edit Layouts -->
     <style name="inputText">
         <item name="android:textSize">6pt</item>
@@ -82,6 +94,12 @@
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="inputTextDialog">
+        <item name="android:textColor">@color/light_black</item>
+        <item name="android:textSize">7pt</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
     <!-- Bottom Menu Styles -->

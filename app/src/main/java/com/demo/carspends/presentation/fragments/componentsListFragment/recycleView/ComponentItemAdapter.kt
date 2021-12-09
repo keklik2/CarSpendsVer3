@@ -13,7 +13,6 @@ import com.demo.carspends.utils.getFormattedPercentsAsStr
 
 class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(ComponentItemDiffCallback()) {
 
-    /** Изменить currMileage: получать текущий пробег автомобиля из приложения */
     var currMileage = 0
     set(value) {
         if(value > 0) field = value
