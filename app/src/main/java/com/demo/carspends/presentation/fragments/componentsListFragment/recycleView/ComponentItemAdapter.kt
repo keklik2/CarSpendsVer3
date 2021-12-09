@@ -13,7 +13,6 @@ import com.demo.carspends.utils.getFormattedPercentsAsStr
 
 class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(ComponentItemDiffCallback()) {
 
-    /** Изменить currMileage: получать текущий пробег автомобиля из приложения */
     var currMileage = 0
     set(value) {
         if(value > 0) field = value
@@ -37,8 +36,8 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
         val currComponent = getItem(position)
 
         with(holder) {
-            val leftResourceValue = getLeftResourceValue(currComponent)
-            val leftResourcePercent = getLeftResourcePercent(currComponent)
+            val leftResourceValue = getLeftResourceValue(currComponent.resourceMileage, currComponent)
+            val leftResourcePercent = getLeftResourcePercent(currComponent.resourceMileage, currComponent)
             val progressColor = getColor(view, getResourceColorId(leftResourcePercent))
 
             // Setting progressbar value & color
@@ -71,14 +70,17 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
         }
     }
 
-    private fun getLeftResourceValue(component: ComponentItem): Int {
+    private fun getLeftResourceValue(startProgress: Int, component: ComponentItem): Int {
         val res = component.resourceMileage - (currMileage - component.startMileage)
-        return if(res >= 0) res
-        else 0
+        return when {
+            res > startProgress -> startProgress
+            res > 0 -> res
+            else -> 0
+        }
     }
 
-    private fun getLeftResourcePercent(component: ComponentItem): Int {
-        val res = ((getLeftResourceValue(component).toDouble() * 100) / component.resourceMileage).toInt()
+    private fun getLeftResourcePercent(startProgress: Int, component: ComponentItem): Int {
+        val res = ((getLeftResourceValue(startProgress, component).toDouble() * 100) / component.resourceMileage).toInt()
         return when {
             res in 0..100 -> res
             res > 100 -> 100

@@ -6,6 +6,7 @@
     <!-- Layouts Visible Resources (textVies mainly) -->
     <string name="text_resource">Ресурс:</string>
     <string name="button_apply">Принять</string>
+    <string name="button_deny">Отмена</string>
     <string name="text_detail_resource">Ресурс детали</string>
     <string name="text_extra">Прочее</string>
     <string name="text_repair">Ремонт, запчасти</string>
@@ -15,6 +16,8 @@
     <string name="text_avg_fuel">Средний расход</string>
     <string name="text_moment_fuel">Моментальный расход</string>
     <string name="text_mileage_price">Стоимость километра</string>
+    <string name="text_delete_note_confirmation">Точно хотите удалить запись «%s»</string>
+    <string name="text_delete_component_confirmation">Точно хотите удалить ресурс «%s»</string>
 
     <string name="text_measure_mileage_unit">км</string>
     <string name="text_measure_power_unit">л.с.</string>

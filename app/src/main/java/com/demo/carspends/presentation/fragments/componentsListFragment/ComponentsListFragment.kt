@@ -1,21 +1,27 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
+import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
 
 class ComponentsListFragment: Fragment() {
 
     private var _binding: ComponentsListFragmentBinding? = null
     private val binding get() = _binding!!
+
+    private var test = false
 
     private val mainAdapter by lazy {
         ComponentItemAdapter().apply {
@@ -69,6 +75,7 @@ class ComponentsListFragment: Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupRecyclerOnSwipeListener() {
         val callback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -79,12 +86,29 @@ class ComponentsListFragment: Fragment() {
                 return false
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
-                viewModel.deleteComponent(currItem)
+            override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
+                return if (test) {
+                    test = false
+                    0
+                } else super.convertToAbsoluteDirection(flags, layoutDirection)
             }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
+
+                val question = String.format(getString(R.string.text_delete_component_confirmation), currItem.title)
+                val testDialog = ApplyActionDialog(requireActivity(), question)
+                testDialog.onApplyClickListener = {
+                    viewModel.deleteComponent(currItem)
+                }
+                testDialog.onDenyClickListener = {
+                    setLiveDateObservers()
+                }
+                testDialog.show()
+            }
         }
+
+
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(binding.clfRvComponents)
     }

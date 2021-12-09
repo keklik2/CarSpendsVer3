@@ -105,12 +105,29 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                             )
                         )
                         calculateAvgPrice()
-                        updateMileage(rMileage)
+                        rollbackCarMileage()
                         setCanCloseScreen()
                     } else Exception(ERR_NULL_ITEM_EDIT)
                 } else Exception(ERR_NULL_ITEM_EDIT)
             }
         }
+    }
+
+    private suspend fun rollbackCarMileage() {
+        val cItem = getCarItemUseCase(carId)
+        val notesList = getNoteItemsListByMileageUseCase()
+        var newMileage = cItem.startMileage
+        if (notesList.isNotEmpty()) {
+            for (i in notesList) {
+                if (i.type != NoteType.EXTRA && i.mileage > newMileage) newMileage = i.mileage
+            }
+        }
+        editCarItemUseCase(
+            cItem.copy(
+                mileage = newMileage
+            )
+        )
+        updateCarItem()
     }
 
     private suspend fun calculateAvgPrice() {
