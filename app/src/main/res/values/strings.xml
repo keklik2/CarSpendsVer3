@@ -23,6 +23,9 @@
     <string name="text_measure_power_unit">л.с.</string>
     <string name="text_measure_engine_capacity_unit">л</string>
     <string name="text_measure_gas_volume_unit">л</string>
+    <string name="text_measure_gas_charge">л/100км</string>
+    <string name="text_measure_price_charge">₽/км</string>
+    <string name="text_measure_currency">₽</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>

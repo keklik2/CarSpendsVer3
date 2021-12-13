@@ -11,13 +11,14 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 
-class CarAddOrEditFragment: Fragment() {
+class CarAddOrEditFragment : Fragment() {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
@@ -54,9 +55,11 @@ class CarAddOrEditFragment: Fragment() {
 
     private fun setupBackPresser() {
         if (launchMode == ADD_MODE) {
-            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+            requireActivity().onBackPressedDispatcher.addCallback(object :
+                OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG)
+                        .show()
                 }
             })
         }
@@ -70,7 +73,7 @@ class CarAddOrEditFragment: Fragment() {
     }
 
     private fun setupNameTextChangeListener() {
-        binding.carefTietCarName.addTextChangedListener(object: TextWatcher {
+        binding.carefTietCarName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -85,7 +88,7 @@ class CarAddOrEditFragment: Fragment() {
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.carefTietMileageValue.addTextChangedListener(object: TextWatcher {
+        binding.carefTietMileageValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -100,7 +103,7 @@ class CarAddOrEditFragment: Fragment() {
     }
 
     private fun setupEngineCapacityTextChangeListener() {
-        binding.carefTietEngineCapacity.addTextChangedListener(object: TextWatcher {
+        binding.carefTietEngineCapacity.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -115,7 +118,7 @@ class CarAddOrEditFragment: Fragment() {
     }
 
     private fun setupPowerTextChangeListener() {
-        binding.carefTietPower.addTextChangedListener(object: TextWatcher {
+        binding.carefTietPower.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -131,7 +134,7 @@ class CarAddOrEditFragment: Fragment() {
 
     private fun setupObservers() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
-            if(it) binding.carefTilCarName.error = ERR_TITLE
+            if (it) binding.carefTilCarName.error = ERR_TITLE
             else binding.carefTilCarName.error = null
         }
 
@@ -156,7 +159,7 @@ class CarAddOrEditFragment: Fragment() {
     }
 
     private fun chooseMode() {
-        when(launchMode) {
+        when (launchMode) {
             ADD_MODE -> addNoteMode()
             else -> editNoteMode()
         }
@@ -181,9 +184,12 @@ class CarAddOrEditFragment: Fragment() {
                 carefTietMileageValue.setText(it.mileage.toString())
                 carefTietEngineCapacity.setText(it.engineVolume.toString())
                 carefTietPower.setText(it.power.toString())
-                carefTvAvgFuel.text = getFormattedDoubleAsStr(it.avgFuel)
-                carefTvMomentFuel.text = getFormattedDoubleAsStr(it.momentFuel)
-                carefTvMileagePrice.text = getFormattedDoubleAsStr(it.milPrice)
+                "${getFormattedDoubleAsStr(it.avgFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                    .also { carefTvAvgFuel.text = it }
+                "${getFormattedDoubleAsStr(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                    .also { carefTvMomentFuel.text = it }
+                "${getFormattedDoubleAsStr(it.milPrice)}${getString(R.string.text_measure_currency)}"
+                    .also { carefTvMileagePrice.text = it }
             }
         }
 
@@ -207,7 +213,8 @@ class CarAddOrEditFragment: Fragment() {
         launchMode = type
         if (launchMode == EDIT_MODE && !args.containsKey(
                 ID_KEY
-            )) throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
+            )
+        ) throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
         carId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
 
