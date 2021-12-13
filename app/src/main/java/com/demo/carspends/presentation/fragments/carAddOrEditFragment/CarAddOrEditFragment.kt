@@ -7,6 +7,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
@@ -47,6 +49,17 @@ class CarAddOrEditFragment: Fragment() {
         setupObservers()
         setupListeners()
         chooseMode()
+        setupBackPresser()
+    }
+
+    private fun setupBackPresser() {
+        if (launchMode == ADD_MODE) {
+            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG).show()
+                }
+            })
+        }
     }
 
     private fun setupListeners() {
