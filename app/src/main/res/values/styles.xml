@@ -44,7 +44,7 @@
 
     <!-- statistics statements in edit car fragment -->
     <style name="entryUnitText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textStyle">bold</item>
@@ -55,7 +55,7 @@
 
     <!-- statistics statements in main menu fragment -->
     <style name="entryUnitMainMenuText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="textAllCaps">true</item>
         <item name="android:layout_margin">10dp</item>

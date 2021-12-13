@@ -31,7 +31,6 @@ abstract class MainDataBase: RoomDatabase() {
                         MainDataBase::class.java,
                         DB_NAME
                     )
-                        .fallbackToDestructiveMigration()
                         .build()
                 db = instance
                 return instance
