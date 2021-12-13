@@ -47,6 +47,9 @@
         app:layout_constraintStart_toEndOf="@+id/ni_iv_tool"
         app:layout_constraintTop_toBottomOf="@+id/ni_tv_title"
 
+        android:ellipsize="end"
+        android:maxLines="1"
+
         style="@style/priceText"
         tools:text="2000.10P"/>
 

@@ -78,9 +78,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_fuel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
                 app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
@@ -88,6 +89,8 @@
                 android:id="@+id/nlf_tv_avg_fuel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                style="@style/entryUnitMainMenuText"
 
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/nlf_iv_avg_fuel"
@@ -117,15 +120,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_cost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
 
             <TextView
                 android:id="@+id/nlf_tv_avg_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+
+                style="@style/entryUnitMainMenuText"
 
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/nlf_iv_avg_cost"

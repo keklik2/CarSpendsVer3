@@ -32,7 +32,7 @@
         <item name="backgroundTint">@color/white</item>
     </style>
 
-    <!-- Text Styles -->
+    <!-- ALL / Text Styles -->
     <style name="entryTitleText">
         <item name="android:textSize">8pt</item>
         <item name="android:textColor">@color/dark_vine</item>
@@ -42,8 +42,9 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <!-- statistics statements in edit car fragment -->
     <style name="entryUnitText">
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textStyle">bold</item>
@@ -52,53 +53,69 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <!-- statistics statements in main menu fragment -->
+    <style name="entryUnitMainMenuText">
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <!-- title of car in main menu fragment -->
     <style name="carTitleText">
-        <item name="android:textSize">10pt</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
+    <!-- item title for Note Item in Recycler View -->
     <style name="itemTitleText">
-        <item name="android:textSize">8pt</item>
+        <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/light_vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
+    <!-- price for Note Item in Recycler View -->
     <style name="priceText">
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/dark_green</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
+    <!-- extra info (fuel type) for Note Item in Recycler View -->
     <style name="extraInfoText">
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
 
+    <!-- date for Note & Component Item in Recycler View -->
+    <style name="dateText">
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <!-- resource statement for component item in recycler view -->
     <style name="resourceStatementText">
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/green</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
 
-    <style name="dateText">
-        <item name="android:textSize">6pt</item>
-        <item name="fontFamily">@font/gotham_pro_narrow</item>
-        <item name="android:textAlignment">center</item>
-    </style>
-
+    <!-- text inside progress bar for Component Item in Recycler View -->
     <style name="progressBarText">
-        <item name="android:textSize">3pt</item>
+        <item name="android:textSize">12sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">center</item>
         <item name="android:textStyle">bold</item>
     </style>
 
     <style name="inputTextDialog">
-        <item name="android:textColor">@color/light_black</item>
         <item name="android:textSize">7pt</item>
+        <item name="android:textColor">@color/light_black</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
