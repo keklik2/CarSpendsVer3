@@ -78,9 +78,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_fuel"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
                 app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
@@ -88,6 +89,8 @@
                 android:id="@+id/nlf_tv_avg_fuel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
+                style="@style/entryUnitMainMenuText"
 
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/nlf_iv_avg_fuel"
@@ -117,15 +120,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_cost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
 
             <TextView
                 android:id="@+id/nlf_tv_avg_cost"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+
+                style="@style/entryUnitMainMenuText"
 
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/nlf_iv_avg_cost"
@@ -203,12 +209,24 @@
 
         tools:listitem="@layout/note_item" />
 
+    <TextView
+        android:id="@+id/nlf_tv_empty_notes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toBottomOf="@+id/nlf_horizontal_div_line_2"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:visibility="invisible"
+        style="@style/entryUnitMainMenuText"
+        android:text="@string/text_empty_note_or_component"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/nlf_fb_add_note"
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -220,7 +238,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_extra"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_note"
@@ -233,7 +251,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_repair"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_extra"
@@ -246,7 +264,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_filling"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_repair"

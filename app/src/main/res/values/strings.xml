@@ -16,13 +16,17 @@
     <string name="text_avg_fuel">Средний расход</string>
     <string name="text_moment_fuel">Моментальный расход</string>
     <string name="text_mileage_price">Стоимость километра</string>
-    <string name="text_delete_note_confirmation">Точно хотите удалить запись «%s»</string>
-    <string name="text_delete_component_confirmation">Точно хотите удалить ресурс «%s»</string>
+    <string name="text_empty_note_or_component">Здесь появятся записи, когда Вы их добавите (:</string>
+    <string name="text_delete_note_confirmation">Точно хотите удалить запись «%s»?</string>
+    <string name="text_delete_component_confirmation">Точно хотите удалить ресурс «%s»?</string>
 
     <string name="text_measure_mileage_unit">км</string>
     <string name="text_measure_power_unit">л.с.</string>
     <string name="text_measure_engine_capacity_unit">л</string>
     <string name="text_measure_gas_volume_unit">л</string>
+    <string name="text_measure_gas_charge">л/100км</string>
+    <string name="text_measure_price_charge">₽/км</string>
+    <string name="text_measure_currency">₽</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>

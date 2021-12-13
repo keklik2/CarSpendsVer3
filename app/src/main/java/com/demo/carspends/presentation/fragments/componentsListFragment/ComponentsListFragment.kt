@@ -3,7 +3,6 @@ package com.demo.carspends.presentation.fragments.componentsListFragment
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -38,7 +37,7 @@ class ComponentsListFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setLiveDateObservers()
+        setComponentsObserver()
         setupListeners()
     }
 
@@ -50,10 +49,14 @@ class ComponentsListFragment: Fragment() {
         return id
     }
 
-    private fun setLiveDateObservers() {
+    private fun setComponentsObserver() {
         viewModel.componentsList.observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it)
-            binding.clfRvComponents.adapter = mainAdapter
+            if (it.isEmpty()) binding.clfTvEmptyNotes.visibility = View.VISIBLE
+            else {
+                binding.clfTvEmptyNotes.visibility = View.INVISIBLE
+                mainAdapter.submitList(it)
+                binding.clfRvComponents.adapter = mainAdapter
+            }
         }
     }
 
@@ -102,7 +105,7 @@ class ComponentsListFragment: Fragment() {
                     viewModel.deleteComponent(currItem)
                 }
                 testDialog.onDenyClickListener = {
-                    setLiveDateObservers()
+                    setComponentsObserver()
                 }
                 testDialog.show()
             }

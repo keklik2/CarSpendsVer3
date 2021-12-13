@@ -37,7 +37,7 @@ class NotesListFragment: Fragment() {
 
         checkForCarExisting()
 
-        setLiveDateObservers()
+        setNotesObservers()
         setupListeners()
     }
 
@@ -50,10 +50,14 @@ class NotesListFragment: Fragment() {
         setupCarInfoListener()
     }
 
-    private fun setLiveDateObservers() {
+    private fun setNotesObservers() {
         viewModel.notesList.observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it)
-            binding.nlfRvNotes.adapter = mainAdapter
+            if (it.isEmpty()) binding.nlfTvEmptyNotes.visibility = View.VISIBLE
+            else {
+                binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
+                mainAdapter.submitList(it)
+                binding.nlfRvNotes.adapter = mainAdapter
+            }
         }
     }
 
@@ -64,8 +68,10 @@ class NotesListFragment: Fragment() {
                 val carItem = it[0]
                 with(binding) {
                     nlfTvCarTitle.text = carItem.title
-                    nlfTvAvgFuel.text = getFormattedDoubleAsStr(carItem.momentFuel)
-                    nlfTvAvgCost.text = getFormattedDoubleAsStr(carItem.milPrice)
+                    "${getFormattedDoubleAsStr(carItem.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                        .also { it1 -> nlfTvAvgFuel.text = it1 }
+                    "${getFormattedDoubleAsStr(carItem.milPrice)}${getString(R.string.text_measure_currency)}"
+                        .also { it1 -> nlfTvAvgCost.text = it1 }
                 }
                 viewModel.setCarItem(carItem.id)
             }
@@ -152,7 +158,7 @@ class NotesListFragment: Fragment() {
                     viewModel.deleteNote(currItem)
                 }
                 testDialog.onDenyClickListener = {
-                    setLiveDateObservers()
+                    setNotesObservers()
                 }
                 testDialog.show()
             }

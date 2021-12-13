@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="10dp"
-    android:paddingStart="4dp"
-    android:paddingEnd="10dp"
+
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:paddingStart="4dp"
+    android:paddingEnd="10dp">
 
     <RelativeLayout
         android:id="@+id/ci_layout_left_mileage"
-        android:layout_width="0dp"
+        android:layout_width="60dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintDimensionRatio="1:1"
-        >
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
             android:id="@+id/ci_pb_left_mileage"
@@ -25,8 +23,8 @@
             android:layout_height="match_parent"
 
             android:layout_centerInParent="true"
-            android:indeterminateOnly="false"
 
+            android:indeterminateOnly="false"
             android:progressDrawable="@drawable/circle_progress_bar"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,57 +42,71 @@
     </RelativeLayout>
 
     <!--Добавить стиль для "заголовков"-->
-    <TextView
-        android:id="@+id/ci_tv_title"
-        style="@style/itemTitleText"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ci_main_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-
-        android:ellipsize="end"
-        android:maxLines="1"
-        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
-        app:layout_constraintStart_toEndOf="@+id/ci_layout_left_mileage"
-
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Свечи" />
-
-    <TextView
-        android:id="@+id/ci_tv_resource"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        style="@style/extraInfoText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/ci_layout_left_mileage"
-        app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
-        android:text="@string/text_resource" />
+        app:layout_constraintEnd_toStartOf="@id/ci_tv_date">
 
-    <TextView
-        android:id="@+id/ci_tv_resource_statement"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/ci_tv_date"
-        app:layout_constraintStart_toEndOf="@+id/ci_tv_resource"
-        app:layout_constraintTop_toTopOf="@+id/ci_tv_resource"
+        <TextView
+            android:id="@+id/ci_tv_title"
+            style="@style/itemTitleText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
-        style="@style/resourceStatementText"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:ellipsize="end"
-        android:maxLines="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ci_tv_resource"
+            tools:text="Свечи" />
 
-        tools:text="73.000км" />
+        <TextView
+            android:id="@+id/ci_tv_resource"
+            style="@style/extraInfoText"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:text="@string/text_resource"
+            app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ci_tv_resource_statement"/>
+
+        <TextView
+            android:id="@+id/ci_tv_resource_statement"
+            style="@style/resourceStatementText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="10dp"
+            android:maxLines="1"
+
+            app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/ci_tv_resource"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            tools:text="73.000км" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--Добавить стиль для "дата"-->
     <TextView
         android:id="@+id/ci_tv_date"
+        style="@style/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/ci_main_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
 
-        style="@style/dateText"
+        android:layout_marginStart="10dp"
 
         tools:text="11.18.21" />
 </androidx.constraintlayout.widget.ConstraintLayout>

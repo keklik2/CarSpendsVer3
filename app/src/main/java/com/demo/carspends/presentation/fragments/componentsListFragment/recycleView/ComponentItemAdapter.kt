@@ -47,7 +47,8 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
             tvTitle.text = currComponent.title
 
             // Setting resource statement value & color
-            tvResourceStatement.text = leftResourceValue.toString()
+            val milState = view.context.getString(R.string.text_measure_mileage_unit)
+            "$leftResourceValue$milState".also { tvResourceStatement.text = it }
             tvResourceStatement.setTextColor(progressColor)
 
             tvDate.text = getFormattedDate(currComponent.date)
