@@ -71,28 +71,28 @@
 
     <!-- item title for Note Item in Recycler View -->
     <style name="itemTitleText">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">21sp</item>
         <item name="android:textColor">@color/light_vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
     <!-- price for Note Item in Recycler View -->
     <style name="priceText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="android:textColor">@color/dark_green</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
     <!-- extra info (fuel type) for Note Item in Recycler View -->
     <style name="extraInfoText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">viewStart</item>
     </style>
 
     <!-- date for Note & Component Item in Recycler View -->
     <style name="dateText">
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">15sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="android:textAlignment">center</item>
     </style>

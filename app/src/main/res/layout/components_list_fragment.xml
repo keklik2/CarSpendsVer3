@@ -23,7 +23,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note"
 
         app:layout_constraintBottom_toBottomOf="parent"

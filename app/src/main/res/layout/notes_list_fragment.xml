@@ -214,7 +214,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note"
 
         app:layout_constraintBottom_toBottomOf="parent"
@@ -226,7 +226,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_extra"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_note"
@@ -239,7 +239,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_repair"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_extra"
@@ -252,7 +252,7 @@
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="16dp"
         android:contentDescription="@string/description_add_new_note_filling"
 
         app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_repair"
