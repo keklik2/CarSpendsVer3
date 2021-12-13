@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,7 @@ class NotesListFragment: Fragment() {
 
         checkForCarExisting()
 
-        setLiveDateObservers()
+        setNotesObservers()
         setupListeners()
     }
 
@@ -51,10 +50,14 @@ class NotesListFragment: Fragment() {
         setupCarInfoListener()
     }
 
-    private fun setLiveDateObservers() {
+    private fun setNotesObservers() {
         viewModel.notesList.observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it)
-            binding.nlfRvNotes.adapter = mainAdapter
+            if (it.isEmpty()) binding.nlfTvEmptyNotes.visibility = View.VISIBLE
+            else {
+                binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
+                mainAdapter.submitList(it)
+                binding.nlfRvNotes.adapter = mainAdapter
+            }
         }
     }
 
@@ -155,7 +158,7 @@ class NotesListFragment: Fragment() {
                     viewModel.deleteNote(currItem)
                 }
                 testDialog.onDenyClickListener = {
-                    setLiveDateObservers()
+                    setNotesObservers()
                 }
                 testDialog.show()
             }
