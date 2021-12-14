@@ -5,7 +5,8 @@ __description:__ Android application to keep car expenses notes
 - Add / delete / edit components for detail resource;
 - Sorting notes by date or/and type of note;
 - Creating statistics: avg fuel consumption, moment fuel consumption & avg price of car ownership;
-- etc (developing)
+- etc (developing)  
+__figma:__ [figma project](https://www.figma.com/proto/jrKO2S816EglwG4XI2uBin/Accounting-for-car-expenses?node-id=205%3A12&starting-point-node-id=205%3A12&scaling=scale-down)
 
 ## (EN) Update Notes
 ### Alpha v.2.0 (14.12.21) - current
