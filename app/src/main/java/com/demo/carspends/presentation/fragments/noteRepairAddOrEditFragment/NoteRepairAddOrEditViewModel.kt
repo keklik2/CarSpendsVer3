@@ -160,7 +160,7 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             val res = allPrice / allMileage.toDouble()
-            return if (res > 0) res
+            return if (res > 0 && res != Double.POSITIVE_INFINITY && res != Double.NEGATIVE_INFINITY) res
             else 0.0
         }
         return 0.0

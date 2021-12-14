@@ -9,8 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.DatePicker
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
@@ -30,7 +28,6 @@ class NoteExtraAddOrEditFragment: Fragment() {
 
     private lateinit var launchMode: String
     private var noteId = UNDEFINED_ID
-    private val cal = GregorianCalendar()
 
     private val viewModel by lazy {
         ViewModelProvider(this)[NoteExtraAddOrEditViewModel::class.java]
@@ -78,6 +75,7 @@ class NoteExtraAddOrEditFragment: Fragment() {
 
     private fun setupListeners() {
         val dateSetListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+            val cal = GregorianCalendar.getInstance()
             cal.set(Calendar.YEAR, year)
             cal.set(Calendar.MONTH, monthOfYear)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -86,10 +84,15 @@ class NoteExtraAddOrEditFragment: Fragment() {
         }
 
         binding.neaefDateLayout.setOnClickListener {
+            val cCal = GregorianCalendar.getInstance().apply {
+                viewModel.noteDate.value?.let {
+                    timeInMillis = it
+                }
+            }
             DatePickerDialog(requireContext(), dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.YEAR),
+                cCal.get(Calendar.MONTH),
+                cCal.get(Calendar.DAY_OF_MONTH)).show()
         }
 
         setupTitleTextChangeListener()

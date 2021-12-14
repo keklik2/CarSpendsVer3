@@ -1,9 +1,11 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,8 +20,12 @@ import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
+import java.util.*
 
 class NotesListFragment: Fragment() {
+
+    private var date: Long? = null
+    private var type: NoteType? = null
 
     private var _binding: NotesListFragmentBinding? = null
     private val binding get() = _binding!!
@@ -37,11 +43,19 @@ class NotesListFragment: Fragment() {
 
         checkForCarExisting()
 
-        setNotesObservers()
         setupListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        refreshSpinners()
+        setNotesObserver()
+    }
+
     private fun setupListeners() {
+        setTypeSpinnerListener()
+        setDateSpinnerListener()
         setupAdapterOnClickListener()
         setupAdapterOnLongClickListener()
         setupRecyclerOnSwipeListener()
@@ -50,14 +64,98 @@ class NotesListFragment: Fragment() {
         setupCarInfoListener()
     }
 
-    private fun setNotesObservers() {
+    private fun setDateSpinnerListener() {
+        binding.nlfSpinnerDate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                refreshDateSpinner(pos)
+                setNotesObserver()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+        }
+    }
+
+    private fun setTypeSpinnerListener() {
+        binding.nlfSpinnerNoteType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                refreshTypeSpinner(pos)
+                setNotesObserver()
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+            }
+
+        }
+    }
+
+    private fun refreshDateSpinner(pos: Int) {
+        date = when(pos) {
+            0 -> null
+            1 -> getYearDate()
+            2 -> getMonthDate()
+            else -> getWeekDate()
+        }
+    }
+
+    private fun refreshTypeSpinner(pos: Int) {
+        type = when(pos) {
+            0 -> null
+            1 -> NoteType.FUEL
+            2 -> NoteType.REPAIR
+            else -> NoteType.EXTRA
+        }
+    }
+
+    private fun refreshSpinners() {
+        with(binding) {
+            refreshDateSpinner(nlfSpinnerDate.selectedItemPosition)
+            refreshTypeSpinner(nlfSpinnerNoteType.selectedItemPosition)
+        }
+    }
+
+    private fun setNewNotesList() {
+        if (date != null) {
+            if (type != null) viewModel.setTypedNotes(type!!, date!!)
+            else viewModel.setAllNotes(date!!)
+        } else {
+            if (type != null) viewModel.setTypedNotes(type!!)
+            else viewModel.setAllNotes()
+        }
+    }
+
+    private fun getYearDate(): Long {
+        val date = GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.YEAR, MINUS_ONE)
+        }.time.time
+        Log.d("DATE_TEST", getFormattedDate(date))
+        return date
+    }
+
+    private fun getMonthDate(): Long {
+        val date = GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.MONTH, MINUS_ONE)
+        }.time.time
+        Log.d("DATE_TEST", getFormattedDate(date))
+        return date
+    }
+
+    private fun getWeekDate(): Long {
+        val date = GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.DATE, MINUS_WEEK)
+        }.time.time
+        Log.d("DATE_TEST", getFormattedDate(date))
+        return date
+    }
+
+    private fun setNotesObserver() {
+        setNewNotesList()
         viewModel.notesList.observe(viewLifecycleOwner) {
             if (it.isEmpty()) binding.nlfTvEmptyNotes.visibility = View.VISIBLE
-            else {
-                binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
-                mainAdapter.submitList(it)
-                binding.nlfRvNotes.adapter = mainAdapter
-            }
+            else binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
+            mainAdapter.submitList(it)
+            binding.nlfRvNotes.adapter = mainAdapter
         }
     }
 
@@ -147,8 +245,6 @@ class NotesListFragment: Fragment() {
                 return false
             }
 
-
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
 
@@ -158,7 +254,7 @@ class NotesListFragment: Fragment() {
                     viewModel.deleteNote(currItem)
                 }
                 testDialog.onDenyClickListener = {
-                    setNotesObservers()
+                    setNotesObserver()
                 }
                 testDialog.show()
             }
@@ -240,5 +336,10 @@ class NotesListFragment: Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val MINUS_WEEK = -7
+        private const val MINUS_ONE = -1
     }
 }

@@ -2,6 +2,7 @@ package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
@@ -22,6 +23,7 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = NoteRepositoryImpl(app)
     private val carRepository = CarRepositoryImpl(app)
 
+    private val getNoteItemsListUseCase = GetNoteItemsListUseCase(repository)
     private val deleteNoteItemUseCase = DeleteNoteItemUseCase(repository)
     private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
     private val getCarItemUseCase = GetCarItemUseCase(carRepository)
@@ -32,8 +34,7 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
 
     private val _currCarItem = MutableLiveData<CarItem>()
 
-    private val dateTest = 0L
-    private val _notesList = GetNoteItemsListUseCase(repository).invoke(dateTest)
+    private var _notesList: LiveData<List<NoteItem>> = getNoteItemsListUseCase(ALL_TIME)
     val notesList get() = _notesList
 
     fun deleteNote(note: NoteItem) {
@@ -168,7 +169,16 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
         _currCarItem.value = getCarItemUseCase(carId)
     }
 
+    fun setAllNotes(date: Long = ALL_TIME) {
+        _notesList = getNoteItemsListUseCase(date)
+    }
+
+    fun setTypedNotes(type: NoteType, date: Long = ALL_TIME) {
+        _notesList = getNoteItemsListUseCase(type, date)
+    }
+
     companion object {
+        private const val ALL_TIME = 0L
         private const val START_MIL = 0
         private const val START_AVG = 0.0
     }
