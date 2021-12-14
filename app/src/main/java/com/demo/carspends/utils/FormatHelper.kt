@@ -9,7 +9,7 @@ fun getFormattedDoubleAsStr(sum: Double): String {
 
 fun getFormattedDate(receivedDate: Long): String {
     val date = Date(receivedDate)
-    val form = SimpleDateFormat("MM.dd.yyyy", Locale.getDefault())
+    val form = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
     return form.format(date)
 }
 

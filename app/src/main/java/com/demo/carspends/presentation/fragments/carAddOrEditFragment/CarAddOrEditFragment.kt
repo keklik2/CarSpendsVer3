@@ -180,7 +180,6 @@ class CarAddOrEditFragment : Fragment() {
 
         viewModel.setItem(carId)
         viewModel.carrItem.observe(viewLifecycleOwner) {
-            Toast.makeText(requireActivity(), "$it", Toast.LENGTH_LONG).show()
             with(binding) {
                 carefTietCarName.setText(it.title)
                 carefTietMileageValue.setText(it.mileage.toString())
@@ -190,8 +189,16 @@ class CarAddOrEditFragment : Fragment() {
                     .also { carefTvAvgFuel.text = it }
                 "${getFormattedDoubleAsStr(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
                     .also { carefTvMomentFuel.text = it }
-                "${getFormattedDoubleAsStr(it.milPrice)}${getString(R.string.text_measure_currency)}"
+                "${getFormattedDoubleAsStr(it.allFuel)} ${getString(R.string.text_measure_gas_volume_unit)}"
+                    .also { carefTvAllFuel.text = it }
+                "${getFormattedDoubleAsStr(it.fuelPrice)} ${getString(R.string.text_measure_currency)}"
+                    .also { carefTvAllFuelPrice.text = it }
+                "${getFormattedDoubleAsStr(it.milPrice)} ${getString(R.string.text_measure_currency)}"
                     .also { carefTvMileagePrice.text = it }
+                "${getFormattedDoubleAsStr(it.allPrice)} ${getString(R.string.text_measure_currency)}"
+                    .also { carefTvAllPrice.text = it }
+                "${getFormattedDoubleAsStr(it.allMileage)} ${getString(R.string.text_measure_mileage_unit)}"
+                    .also { carefTvAllMileage.text = it }
             }
         }
 
