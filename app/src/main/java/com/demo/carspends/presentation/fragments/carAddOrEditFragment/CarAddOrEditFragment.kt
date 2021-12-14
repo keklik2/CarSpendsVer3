@@ -177,8 +177,10 @@ class CarAddOrEditFragment : Fragment() {
     }
 
     private fun editNoteMode() {
+
         viewModel.setItem(carId)
         viewModel.carrItem.observe(viewLifecycleOwner) {
+            Toast.makeText(requireActivity(), "$it", Toast.LENGTH_LONG).show()
             with(binding) {
                 carefTietCarName.setText(it.title)
                 carefTietMileageValue.setText(it.mileage.toString())
