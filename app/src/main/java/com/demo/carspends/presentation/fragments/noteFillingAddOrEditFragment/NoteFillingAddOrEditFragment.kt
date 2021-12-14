@@ -37,7 +37,6 @@ class NoteFillingAddOrEditFragment: Fragment() {
     private lateinit var launchMode: String
     private var noteId = NoteItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
-    private val cal = GregorianCalendar()
 
     private var lastChanged = CHANGED_NULL
     private var preLastChanged = CHANGED_NULL
@@ -80,6 +79,7 @@ class NoteFillingAddOrEditFragment: Fragment() {
     private fun setupDatePickerDialogListener() {
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                val cal = GregorianCalendar.getInstance()
                 cal.set(Calendar.YEAR, year)
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
@@ -88,10 +88,15 @@ class NoteFillingAddOrEditFragment: Fragment() {
             }
 
         binding.nfaefDateLayout.setOnClickListener {
+            val cCal = GregorianCalendar.getInstance().apply {
+                viewModel.noteDate.value?.let {
+                    timeInMillis = it
+                }
+            }
             DatePickerDialog(requireContext(), dateSetListener,
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.YEAR),
+                cCal.get(Calendar.MONTH),
+                cCal.get(Calendar.DAY_OF_MONTH)).show()
         }
     }
 
