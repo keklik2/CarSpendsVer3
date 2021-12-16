@@ -47,16 +47,34 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
 
             if (noteType != NoteType.EXTRA) {
                 rollbackCarMileage()
-                calculateAvgPrice()
                 calculateAllMileage()
 
                 if (noteType == NoteType.FUEL) {
                     calculateAvgFuel()
+                    calculateAllFuel(note)
+                    calculateAllFuelPrice(note)
                 }
             }
 
             rollbackAllPrice(note)
+            calculateAvgPrice()
         }
+    }
+
+    private suspend fun calculateAllFuelPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+
+        editCarItemUseCase(carItem.copy(
+            fuelPrice = carItem.fuelPrice - note.totalPrice
+        ))
+    }
+
+    private suspend fun calculateAllFuel(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+
+        editCarItemUseCase(carItem.copy(
+            allFuel = carItem.allFuel - note.liters
+        ))
     }
 
     private suspend fun calculateAllMileage() {
@@ -119,41 +137,15 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun calculateAvgPrice() {
-        val notes = getNoteItemsListByMileageUseCase()
-        val cItem = getCarItemUseCase(carId)
-        val avgPrice =
-            if (notes.isNotEmpty()) calculateAvgPriceOfAll(cItem.startMileage, notes)
-            else START_AVG
-
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            else 0.0
         editCarItemUseCase(
-            cItem.copy(
-                milPrice = avgPrice
+            carItem.copy(
+                milPrice = newMilPrice
             )
         )
-        updateCarItem()
-    }
-
-    private fun calculateAvgPriceOfAll(startMil: Int, notes: List<NoteItem>): Double {
-        val list = mutableListOf<NoteItem>()
-        for (i in notes) {
-            if (i.type != NoteType.EXTRA) list.add(i)
-        }
-
-        if (list.size > 1) {
-            val lastNote = list[list.size - 1]
-            val allMileage =
-                if (startMil < lastNote.mileage) list[0].mileage - startMil
-                else list[0].mileage - lastNote.mileage
-            var allPrice = 0.0
-            for (i in 0 until list.size) {
-                allPrice += list[i].totalPrice
-            }
-
-            val res = allPrice / allMileage.toDouble()
-            return if (res > 0) res
-            else 0.0
-        }
-        return 0.0
     }
 
     private fun calculateAvgFuelOfAll(listOfFuel: List<NoteItem>): Double {

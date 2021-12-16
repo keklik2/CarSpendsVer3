@@ -183,39 +183,15 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun calculateAvgPrice() {
-        val notes = getNoteItemsListByMileageUseCase()
-        if (notes.isNotEmpty()) {
-            val cItem = getCarItemUseCase(carId)
-            editCarItemUseCase(
-                cItem.copy(
-                    milPrice = calculateAvgPriceOfAll(cItem.startMileage, notes)
-                )
-            )
-            updateCarItem()
-        }
-    }
-
-    private fun calculateAvgPriceOfAll(startMil: Int, notes: List<NoteItem>): Double {
-        val list = mutableListOf<NoteItem>()
-        for (i in notes) {
-            if (i.type != NoteType.EXTRA) list.add(i)
-        }
-
-        if (list.size > 1) {
-            val lastNote = list[list.size - 1]
-            val allMileage =
-                if (startMil < lastNote.mileage) list[0].mileage - startMil
-                else list[0].mileage - lastNote.mileage
-            var allPrice = 0.0
-            for (i in 0 until list.size) {
-                allPrice += list[i].totalPrice
-            }
-
-            val res = allPrice / allMileage.toDouble()
-            return if (res > 0 && res != Double.POSITIVE_INFINITY && res != Double.NEGATIVE_INFINITY) res
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
             else 0.0
-        }
-        return 0.0
+        editCarItemUseCase(
+            carItem.copy(
+                milPrice = newMilPrice
+            )
+        )
     }
 
     private suspend fun updateMileage(newMileage: Int) {

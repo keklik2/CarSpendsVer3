@@ -73,7 +73,9 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                         type = noteType
                     )
                     addNoteItemUseCase(newNote)
+
                     addLastPrice(newNote)
+                    calculateAvgPrice()
                     setCanCloseScreen()
                 } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
             }
@@ -98,12 +100,26 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                                 type = noteType
                             )
                         )
+
                         addAllPrice()
+                        calculateAvgPrice()
                         setCanCloseScreen()
                     } else throw Exception("Received NULL NoteDate for AddNoteItemUseCase()")
                 } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
             }
         }
+    }
+
+    private suspend fun calculateAvgPrice() {
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            else 0.0
+        editCarItemUseCase(
+            carItem.copy(
+                milPrice = newMilPrice
+            )
+        )
     }
 
     private suspend fun addLastPrice(note: NoteItem) {

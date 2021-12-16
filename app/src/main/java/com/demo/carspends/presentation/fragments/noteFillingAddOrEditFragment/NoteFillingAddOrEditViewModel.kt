@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -113,6 +112,8 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                     addLastPrice(newNote)
                     calculateAvgFuel()
                     calculateAvgPrice()
+                    addAllFuel(newNote)
+                    addAllFuelPrice(newNote)
                     setCanCloseScreen()
                 } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
             }
@@ -156,11 +157,78 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                         addAllPrice()
                         calculateAvgFuel()
                         calculateAvgPrice()
+                        calculateAllFuelPrice()
+                        calculateAllFuel()
                         setCanCloseScreen()
                     } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
                 } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
             }
         }
+    }
+
+    private suspend fun getFuelNotes(): List<NoteItem> {
+        val notes = getNoteItemsListByMileageUseCase()
+        val notesFuel = mutableListOf<NoteItem>()
+        if(notes.isNotEmpty()) {
+            for (i in notes) {
+                if (i.type == NoteType.FUEL) notesFuel.add(i)
+            }
+        }
+        return notesFuel
+    }
+
+    private suspend fun calculateAllFuelPrice() {
+        val notes = getFuelNotes()
+        var totalFuelPrice = 0.0
+        if (notes.isNotEmpty()) {
+            for (i in notes) {
+                totalFuelPrice += i.totalPrice
+            }
+        }
+
+        editCarItemUseCase(getCarItemUseCase(carId).copy(
+            fuelPrice = totalFuelPrice
+        ))
+    }
+
+    private suspend fun addAllFuelPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(carItem.copy(
+            fuelPrice = carItem.fuelPrice + note.totalPrice
+        ))
+    }
+
+    private suspend fun calculateAllFuel() {
+        val notes = getFuelNotes()
+        var totalFuel = 0.0
+        if (notes.isNotEmpty()) {
+            for (i in notes) {
+                totalFuel += i.liters
+            }
+        }
+
+        editCarItemUseCase(getCarItemUseCase(carId).copy(
+            allFuel = totalFuel
+        ))
+    }
+
+    private suspend fun addAllFuel(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(carItem.copy(
+            allFuel = carItem.allFuel + note.liters
+        ))
+    }
+
+    private suspend fun calculateAvgPrice() {
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            else 0.0
+        editCarItemUseCase(
+            carItem.copy(
+                milPrice = newMilPrice
+            )
+        )
     }
 
     private suspend fun calculateAllMileage() {
@@ -246,42 +314,6 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         }
-    }
-
-    private suspend fun calculateAvgPrice() {
-        val notes = getNoteItemsListByMileageUseCase()
-        if (notes.isNotEmpty()) {
-            val cItem = getCarItemUseCase(carId)
-            editCarItemUseCase(
-                cItem.copy(
-                    milPrice = calculateAvgPriceOfAll(cItem.startMileage, notes)
-                )
-            )
-            updateCarItem()
-        }
-    }
-
-    private fun calculateAvgPriceOfAll(startMil: Int, notes: List<NoteItem>): Double {
-        val list = mutableListOf<NoteItem>()
-        for (i in notes) {
-            if (i.type != NoteType.EXTRA) list.add(i)
-        }
-
-        if (list.size > 1) {
-            val lastNote = list[list.size - 1]
-            val allMileage =
-                if (startMil < lastNote.mileage) list[0].mileage - startMil
-                else list[0].mileage - lastNote.mileage
-            var allPrice = 0.0
-            for (i in 0 until list.size) {
-                allPrice += list[i].totalPrice
-            }
-
-            val res = allPrice / allMileage.toDouble()
-            return if (res > 0) res
-            else 0.0
-        }
-        return 0.0
     }
 
     private fun calculateAvgFuelOfAll(listOfFuel: List<NoteItem>): Double {
