@@ -186,6 +186,8 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
 
+        if (totalFuelPrice < 0) totalFuelPrice = 0.0
+
         editCarItemUseCase(getCarItemUseCase(carId).copy(
             fuelPrice = totalFuelPrice
         ))
@@ -207,6 +209,8 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
 
+        if (totalFuel < 0) totalFuel = 0.0
+
         editCarItemUseCase(getCarItemUseCase(carId).copy(
             allFuel = totalFuel
         ))
@@ -222,8 +226,13 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun calculateAvgPrice() {
         val carItem = getCarItemUseCase(carId)
         val newMilPrice =
-            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) {
+                val res = carItem.allPrice / carItem.allMileage
+                if (res < 0) 0.0
+                else res
+            }
             else 0.0
+
         editCarItemUseCase(
             carItem.copy(
                 milPrice = newMilPrice
@@ -237,12 +246,12 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
 
         val resMil = if (notes.isNotEmpty()) {
             val maxMil = max(carItem.mileage, notes[0].mileage)
+            val lastNote = getLastNotExtraNote()
             val minMil =
-                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                if (lastNote != null) min(
                     carItem.startMileage,
-                    notes[notes.size - 1].mileage
-                )
-                else carItem.startMileage
+                    lastNote.mileage
+                ) else carItem.startMileage
             abs(maxMil - minMil)
         } else 0
 
@@ -251,6 +260,14 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 allMileage = resMil
             )
         )
+    }
+
+    private suspend fun getLastNotExtraNote(): NoteItem? {
+        val notes = getNoteItemsListByMileageUseCase()
+        for (i in notes.reversed()) {
+            if (i.type != NoteType.EXTRA) return i
+        }
+        return null
     }
 
     private suspend fun addLastPrice(note: NoteItem) {
@@ -267,6 +284,8 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
         for (i in getNoteItemsListByMileageUseCase()) {
             allPrice += i.totalPrice
         }
+
+        if (allPrice < 0) allPrice = 0.0
 
         editCarItemUseCase(
             getCarItemUseCase(carId).copy(

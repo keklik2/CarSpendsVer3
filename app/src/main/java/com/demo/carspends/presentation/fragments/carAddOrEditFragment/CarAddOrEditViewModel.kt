@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.carAddOrEditFragment
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
+import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
@@ -21,6 +23,8 @@ import kotlin.math.min
 class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val repository = CarRepositoryImpl(app)
     private val noteRepository = NoteRepositoryImpl(app)
+
+    private var carId = CarItem.UNDEFINED_ID
 
     private val addCarItemUseCase = AddCarItemUseCase(repository)
     private val editCarItemUseCase = EditCarItemUseCase(repository)
@@ -98,24 +102,27 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                         power = rPower
                     )
                     editCarItemUseCase(newCar)
-                    calculateAllMileage(newCar)
+
+                    calculateAllMileage()
+                    calculateAvgPrice()
                     setCanCloseScreen()
                 }
             } else throw Exception(ERR_NULL_ITEM_EDIT)
         }
     }
 
-    private suspend fun calculateAllMileage(car: CarItem) {
+    private suspend fun calculateAllMileage() {
         val notes = getNoteItemsListByMileageUseCase()
+        val car = getCarItemUseCase(carId)
 
         val resMil = if (notes.isNotEmpty()) {
             val maxMil = max(car.mileage, notes[0].mileage)
+            val lastNote = getLastNotExtraNote()
             val minMil =
-                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                if (lastNote != null) min(
                     car.startMileage,
-                    notes[notes.size - 1].mileage
-                )
-                else car.startMileage
+                    lastNote.mileage
+                ) else car.startMileage
             abs(maxMil - minMil)
         } else 0
 
@@ -124,6 +131,33 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                 allMileage = resMil
             )
         )
+        updateItem()
+    }
+
+    private suspend fun calculateAvgPrice() {
+        val car = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (car.allPrice > 0 && car.allMileage > 0) {
+                val res = car.allPrice / car.allMileage
+                if (res < 0) 0.0
+                else res
+            }
+            else 0.0
+
+        editCarItemUseCase(
+            car.copy(
+                milPrice = newMilPrice
+            )
+        )
+        updateItem()
+    }
+
+    private suspend fun getLastNotExtraNote(): NoteItem? {
+        val notes = getNoteItemsListByMileageUseCase()
+        for (i in notes.reversed()) {
+            if (i.type != NoteType.EXTRA) return i
+        }
+        return null
     }
 
     private fun areFieldsValid(name: String, mileage: Int, engineCapacity: Double, power: Int): Boolean {
@@ -167,10 +201,14 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     }
 
     fun setItem(id: Int) {
+        carId = id
         viewModelScope.launch {
-            val item = getCarItemUseCase(id)
-            _carItem.value = item
+            _carItem.value = getCarItemUseCase(carId)
         }
+    }
+
+    private suspend fun updateItem() {
+        _carItem.value = getCarItemUseCase(carId)
     }
 
     fun resetPowerError() {
