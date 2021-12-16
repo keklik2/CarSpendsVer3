@@ -15,9 +15,7 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditFragment
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
 

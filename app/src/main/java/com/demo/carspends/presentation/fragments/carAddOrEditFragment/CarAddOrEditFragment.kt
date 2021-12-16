@@ -15,7 +15,7 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.utils.getFormattedDoubleAsStr
+import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import java.lang.Exception
 
 class CarAddOrEditFragment : Fragment() {
@@ -177,6 +177,7 @@ class CarAddOrEditFragment : Fragment() {
     }
 
     private fun editNoteMode() {
+
         viewModel.setItem(carId)
         viewModel.carrItem.observe(viewLifecycleOwner) {
             with(binding) {
@@ -184,12 +185,20 @@ class CarAddOrEditFragment : Fragment() {
                 carefTietMileageValue.setText(it.mileage.toString())
                 carefTietEngineCapacity.setText(it.engineVolume.toString())
                 carefTietPower.setText(it.power.toString())
-                "${getFormattedDoubleAsStr(it.avgFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                "${getFormattedDoubleAsStrForDisplay(it.avgFuel)} ${getString(R.string.text_measure_gas_charge)}"
                     .also { carefTvAvgFuel.text = it }
-                "${getFormattedDoubleAsStr(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                "${getFormattedDoubleAsStrForDisplay(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
                     .also { carefTvMomentFuel.text = it }
-                "${getFormattedDoubleAsStr(it.milPrice)}${getString(R.string.text_measure_currency)}"
+                "${getFormattedDoubleAsStrForDisplay(it.allFuel)} ${getString(R.string.text_measure_gas_volume_unit)}"
+                    .also { carefTvAllFuel.text = it }
+                "${getFormattedDoubleAsStrForDisplay(it.fuelPrice)} ${getString(R.string.text_measure_currency)}"
+                    .also { carefTvAllFuelPrice.text = it }
+                "${getFormattedDoubleAsStrForDisplay(it.milPrice)} ${getString(R.string.text_measure_currency)}"
                     .also { carefTvMileagePrice.text = it }
+                "${getFormattedDoubleAsStrForDisplay(it.allPrice)} ${getString(R.string.text_measure_currency)}"
+                    .also { carefTvAllPrice.text = it }
+                "${it.allMileage} ${getString(R.string.text_measure_mileage_unit)}"
+                    .also { carefTvAllMileage.text = it }
             }
         }
 

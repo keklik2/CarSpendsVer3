@@ -14,6 +14,9 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val repository = CarRepositoryImpl(app)
@@ -87,19 +90,40 @@ class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                         }
                     } else newStartMileage = rMileage
 
-                    editCarItemUseCase(
-                        cItem.copy(
-                            title = rName,
-                            startMileage = newStartMileage,
-                            mileage = rMileage,
-                            engineVolume = rEngineCapacity,
-                            power = rPower
-                        )
+                    val newCar = cItem.copy(
+                        title = rName,
+                        startMileage = newStartMileage,
+                        mileage = rMileage,
+                        engineVolume = rEngineCapacity,
+                        power = rPower
                     )
+                    editCarItemUseCase(newCar)
+                    calculateAllMileage(newCar)
                     setCanCloseScreen()
                 }
             } else throw Exception(ERR_NULL_ITEM_EDIT)
         }
+    }
+
+    private suspend fun calculateAllMileage(car: CarItem) {
+        val notes = getNoteItemsListByMileageUseCase()
+
+        val resMil = if (notes.isNotEmpty()) {
+            val maxMil = max(car.mileage, notes[0].mileage)
+            val minMil =
+                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                    car.startMileage,
+                    notes[notes.size - 1].mileage
+                )
+                else car.startMileage
+            abs(maxMil - minMil)
+        } else 0
+
+        editCarItemUseCase(
+            car.copy(
+                allMileage = resMil
+            )
+        )
     }
 
     private fun areFieldsValid(name: String, mileage: Int, engineCapacity: Double, power: Int): Boolean {

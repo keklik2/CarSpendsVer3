@@ -18,6 +18,9 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = NoteRepositoryImpl(app)
@@ -67,19 +70,21 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
-                    addNoteItemUseCase(
-                        NoteItem(
-                            title = rTitle,
-                            totalPrice = rTotalPrice,
-                            mileage = rMileage,
-                            date = nDate,
-                            type = noteType
-                        )
+                    val newNote = NoteItem(
+                        title = rTitle,
+                        totalPrice = rTotalPrice,
+                        mileage = rMileage,
+                        date = nDate,
+                        type = noteType
                     )
-                    calculateAvgPrice()
+                    addNoteItemUseCase(newNote)
+
                     updateMileage(rMileage)
+                    calculateAllMileage()
+                    addLastPrice(newNote)
+                    calculateAvgPrice()
                     setCanCloseScreen()
-                } else Exception(ERR_NULL_ITEM_ADD)
+                } else throw Exception(ERR_NULL_ITEM_ADD)
             }
         }
     }
@@ -104,13 +109,60 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                                 type = noteType
                             )
                         )
-                        calculateAvgPrice()
+
                         rollbackCarMileage()
+                        calculateAllMileage()
+                        addAllPrice()
+                        calculateAvgPrice()
                         setCanCloseScreen()
-                    } else Exception(ERR_NULL_ITEM_EDIT)
-                } else Exception(ERR_NULL_ITEM_EDIT)
+                    } else throw Exception(ERR_NULL_ITEM_EDIT)
+                } else throw Exception(ERR_NULL_ITEM_EDIT)
             }
         }
+    }
+
+    private suspend fun calculateAllMileage() {
+        val carItem = getCarItemUseCase(carId)
+        val notes = getNoteItemsListByMileageUseCase()
+
+        val resMil = if (notes.isNotEmpty()) {
+            val maxMil = max(carItem.mileage, notes[0].mileage)
+            val minMil =
+                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                    carItem.startMileage,
+                    notes[notes.size - 1].mileage
+                )
+                else carItem.startMileage
+            abs(maxMil - minMil)
+        } else 0
+
+        editCarItemUseCase(
+            carItem.copy(
+                allMileage = resMil
+            )
+        )
+    }
+
+    private suspend fun addLastPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(
+            carItem.copy(
+                allPrice = carItem.allPrice + note.totalPrice
+            )
+        )
+    }
+
+    private suspend fun addAllPrice() {
+        var allPrice = 0.0
+        for (i in getNoteItemsListByMileageUseCase()) {
+            allPrice += i.totalPrice
+        }
+
+        editCarItemUseCase(
+            getCarItemUseCase(carId).copy(
+                allPrice = allPrice
+            )
+        )
     }
 
     private suspend fun rollbackCarMileage() {
@@ -131,39 +183,15 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private suspend fun calculateAvgPrice() {
-        val notes = getNoteItemsListByMileageUseCase()
-        if (notes.isNotEmpty()) {
-            val cItem = getCarItemUseCase(carId)
-            editCarItemUseCase(
-                cItem.copy(
-                    milPrice = calculateAvgPriceOfAll(cItem.startMileage, notes)
-                )
-            )
-            updateCarItem()
-        }
-    }
-
-    private fun calculateAvgPriceOfAll(startMil: Int, notes: List<NoteItem>): Double {
-        val list = mutableListOf<NoteItem>()
-        for (i in notes) {
-            if (i.type != NoteType.EXTRA) list.add(i)
-        }
-
-        if (list.size > 1) {
-            val lastNote = list[list.size - 1]
-            val allMileage =
-                if (startMil < lastNote.mileage) list[0].mileage - startMil
-                else list[0].mileage - lastNote.mileage
-            var allPrice = 0.0
-            for (i in 0 until list.size) {
-                allPrice += list[i].totalPrice
-            }
-
-            val res = allPrice / allMileage.toDouble()
-            return if (res > 0 && res != Double.POSITIVE_INFINITY && res != Double.NEGATIVE_INFINITY) res
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
             else 0.0
-        }
-        return 0.0
+        editCarItemUseCase(
+            carItem.copy(
+                milPrice = newMilPrice
+            )
+        )
     }
 
     private suspend fun updateMileage(newMileage: Int) {

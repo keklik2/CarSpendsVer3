@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
+import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
@@ -28,6 +29,7 @@ class NoteExtraAddOrEditFragment: Fragment() {
 
     private lateinit var launchMode: String
     private var noteId = UNDEFINED_ID
+    private var carId = CarItem.UNDEFINED_ID
 
     private val viewModel by lazy {
         ViewModelProvider(this)[NoteExtraAddOrEditViewModel::class.java]
@@ -48,9 +50,14 @@ class NoteExtraAddOrEditFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupCurrCarNote()
         setupObservers()
         setupListeners()
         chooseMode()
+    }
+
+    private fun setupCurrCarNote() {
+        viewModel.setCarId(carId)
     }
 
     private fun setupObservers() {
@@ -170,6 +177,8 @@ class NoteExtraAddOrEditFragment: Fragment() {
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteExtraAddOrEditFragment: $type")
 
         launchMode = type
+        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteExtraAddOrEditFragment")
+        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
         noteId = args.getInt(ID_KEY, UNDEFINED_ID)
     }
@@ -193,23 +202,26 @@ class NoteExtraAddOrEditFragment: Fragment() {
         private const val ERR_PRICE = "Inappropriate amount"
 
         private const val MODE_KEY = "mode_note"
+        private const val CAR_ID_KEY = "id_car"
         private const val ID_KEY = "id_note"
 
         private const val EDIT_MODE = "edit_mode"
         private const val ADD_MODE = "add_mode"
 
-        fun newAddInstance(): NoteExtraAddOrEditFragment {
+        fun newAddInstance(carId: Int): NoteExtraAddOrEditFragment {
             return NoteExtraAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, ADD_MODE)
+                    putInt(CAR_ID_KEY, carId)
                 }
             }
         }
 
-        fun newEditInstance(id: Int): NoteExtraAddOrEditFragment {
+        fun newEditInstance(carId: Int, id: Int): NoteExtraAddOrEditFragment {
             return NoteExtraAddOrEditFragment().apply {
                 arguments = Bundle().apply {
                     putString(MODE_KEY, EDIT_MODE)
+                    putInt(CAR_ID_KEY, carId)
                     putInt(ID_KEY, id)
                 }
             }

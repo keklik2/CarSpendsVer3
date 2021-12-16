@@ -6,17 +6,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.domain.car.CarItem
+import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
+import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
+
+    private var carId = CarItem.UNDEFINED_ID
 
     private val repository = NoteRepositoryImpl(app)
     private val carRepository = CarRepositoryImpl(app)
@@ -26,6 +35,9 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private val addNoteItemUseCase = AddNoteItemUseCase(repository)
     private val editNoteItemUseCase = EditNoteItemUseCase(repository)
     private val getNoteItemUseCase = GetNoteItemUseCase(repository)
+    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
+    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
+    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -54,16 +66,18 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
-                    addNoteItemUseCase(
-                        NoteItem(
-                            title = rTitle,
-                            totalPrice = rPrice,
-                            date = nDate,
-                            type = noteType
-                        )
+                    val newNote = NoteItem(
+                        title = rTitle,
+                        totalPrice = rPrice,
+                        date = nDate,
+                        type = noteType
                     )
+                    addNoteItemUseCase(newNote)
+
+                    addLastPrice(newNote)
+                    calculateAvgPrice()
                     setCanCloseScreen()
-                } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+                } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
             }
         }
     }
@@ -86,11 +100,48 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                                 type = noteType
                             )
                         )
+
+                        addAllPrice()
+                        calculateAvgPrice()
                         setCanCloseScreen()
-                    } else Exception("Received NULL NoteDate for AddNoteItemUseCase()")
-                } else Exception("Received NULL NoteItem for EditNoteItemUseCase()")
+                    } else throw Exception("Received NULL NoteDate for AddNoteItemUseCase()")
+                } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
             }
         }
+    }
+
+    private suspend fun calculateAvgPrice() {
+        val carItem = getCarItemUseCase(carId)
+        val newMilPrice =
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            else 0.0
+        editCarItemUseCase(
+            carItem.copy(
+                milPrice = newMilPrice
+            )
+        )
+    }
+
+    private suspend fun addLastPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(
+            carItem.copy(
+                allPrice = carItem.allPrice + note.totalPrice
+            )
+        )
+    }
+
+    private suspend fun addAllPrice() {
+        var allPrice = 0.0
+        for (i in getNoteItemsListByMileageUseCase()) {
+            allPrice += i.totalPrice
+        }
+
+        editCarItemUseCase(
+            getCarItemUseCase(carId).copy(
+                allPrice = allPrice
+            )
+        )
     }
 
     private fun refactorTitle(title: String?): String {
@@ -139,5 +190,9 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
 
     private fun setCanCloseScreen() {
         _canCloseScreen.value = Unit
+    }
+
+    fun setCarId(id: Int) {
+        carId = id
     }
 }

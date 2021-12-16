@@ -15,7 +15,6 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate

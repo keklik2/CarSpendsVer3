@@ -19,7 +19,7 @@ import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDoubleAsStr
+import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import java.util.*
 
 class NotesListFragment: Fragment() {
@@ -152,10 +152,13 @@ class NotesListFragment: Fragment() {
     private fun setNotesObserver() {
         setNewNotesList()
         viewModel.notesList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.nlfTvEmptyNotes.visibility = View.VISIBLE
-            else binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
-            mainAdapter.submitList(it)
-            binding.nlfRvNotes.adapter = mainAdapter
+            with(binding) {
+                if (it.isEmpty()) nlfTvEmptyNotes.visibility = View.VISIBLE
+                else nlfTvEmptyNotes.visibility = View.INVISIBLE
+
+                mainAdapter.submitList(it)
+                nlfRvNotes.adapter = mainAdapter
+            }
         }
     }
 
@@ -166,9 +169,9 @@ class NotesListFragment: Fragment() {
                 val carItem = it[0]
                 with(binding) {
                     nlfTvCarTitle.text = carItem.title
-                    "${getFormattedDoubleAsStr(carItem.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
+                    "${getFormattedDoubleAsStrForDisplay(carItem.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
                         .also { it1 -> nlfTvAvgFuel.text = it1 }
-                    "${getFormattedDoubleAsStr(carItem.milPrice)}${getString(R.string.text_measure_currency)}"
+                    "${getFormattedDoubleAsStrForDisplay(carItem.milPrice)}${getString(R.string.text_measure_currency)}"
                         .also { it1 -> nlfTvAvgCost.text = it1 }
                 }
                 viewModel.setCarItem(carItem.id)
@@ -309,11 +312,11 @@ class NotesListFragment: Fragment() {
     }
 
     private fun startExtraNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity()))
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId()))
     }
 
     private fun startExtraNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId(), id))
     }
 
     private fun startCarAddOrEdit() {

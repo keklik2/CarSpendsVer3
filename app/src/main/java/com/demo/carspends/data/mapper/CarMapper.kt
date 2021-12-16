@@ -14,7 +14,11 @@ class CarMapper {
         carItem.power,
         carItem.avgFuel,
         carItem.momentFuel,
-        carItem.milPrice
+        carItem.allFuel,
+        carItem.fuelPrice,
+        carItem.milPrice,
+        carItem.allPrice,
+        carItem.allMileage
     )
 
     fun mapEntityToCarItemDbModel(entity: CarItem) = CarItemDbModel(
@@ -26,6 +30,10 @@ class CarMapper {
         entity.power,
         entity.avgFuel,
         entity.momentFuel,
-        entity.milPrice
+        entity.allFuel,
+        entity.fuelPrice,
+        entity.milPrice,
+        entity.allPrice,
+        entity.allMileage
     )
 }
