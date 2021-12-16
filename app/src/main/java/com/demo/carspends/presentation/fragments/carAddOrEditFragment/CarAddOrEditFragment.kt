@@ -197,7 +197,7 @@ class CarAddOrEditFragment : Fragment() {
                     .also { carefTvMileagePrice.text = it }
                 "${getFormattedDoubleAsStr(it.allPrice)} ${getString(R.string.text_measure_currency)}"
                     .also { carefTvAllPrice.text = it }
-                "${getFormattedDoubleAsStr(it.allMileage)} ${getString(R.string.text_measure_mileage_unit)}"
+                "${it.allMileage} ${getString(R.string.text_measure_mileage_unit)}"
                     .also { carefTvAllMileage.text = it }
             }
         }

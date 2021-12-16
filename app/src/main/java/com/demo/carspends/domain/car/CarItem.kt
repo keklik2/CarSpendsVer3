@@ -13,10 +13,11 @@ data class CarItem (
         val fuelPrice: Double = DEFAULT_DOUBLE,
         val milPrice: Double = DEFAULT_DOUBLE,
         val allPrice: Double = DEFAULT_DOUBLE,
-        val allMileage: Double = DEFAULT_DOUBLE
+        val allMileage: Int = DEFAULT_INT
     ) {
     companion object {
         const val UNDEFINED_ID = 0
         private const val DEFAULT_DOUBLE = 0.0
+        private const val DEFAULT_INT = 0
     }
 }

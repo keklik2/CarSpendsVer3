@@ -29,8 +29,8 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
 
         if (savedInstanceState == null) {
             val fragment = when(launchMode) {
-                EXTRA_NOTE_ADD -> NoteExtraAddOrEditFragment.newAddInstance()
-                EXTRA_NOTE_EDIT -> NoteExtraAddOrEditFragment.newEditInstance(itemId)
+                EXTRA_NOTE_ADD -> NoteExtraAddOrEditFragment.newAddInstance(carId)
+                EXTRA_NOTE_EDIT -> NoteExtraAddOrEditFragment.newEditInstance(carId, itemId)
                 FILLING_NOTE_ADD -> NoteFillingAddOrEditFragment.newAddInstance(carId)
                 FILLING_NOTE_EDIT -> NoteFillingAddOrEditFragment.newEditInstance(carId, itemId)
                 REPAIR_NOTE_ADD -> NoteRepairAddOrEditFragment.newAddInstance(carId)
@@ -80,7 +80,7 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             itemId = id
         }
 
-        if (keyType != EXTRA_NOTE_EDIT && keyType != EXTRA_NOTE_ADD && keyType != CAR_EDIT && keyType != CAR_ADD) {
+        if (keyType != CAR_EDIT && keyType != CAR_ADD) {
             if (!intent.hasExtra(KEY_CAR_ID)) throw Exception("..._NOTE_EDIT requires KEY_CAR_ID param with intent for DetailElementsActivity")
             val cId = intent.getIntExtra(KEY_CAR_ID, CarItem.UNDEFINED_ID)
             if (cId == CarItem.UNDEFINED_ID) {
@@ -106,15 +106,17 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         private const val CAR_EDIT = "car_edit"
         private const val CAR_ADD = "car_add"
 
-        fun newAddOrEditNoteExtraIntent(context: Context): Intent {
+        fun newAddOrEditNoteExtraIntent(context: Context, carId: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, EXTRA_NOTE_ADD)
+            intent.putExtra(KEY_CAR_ID, carId)
             return intent
         }
 
-        fun newAddOrEditNoteExtraIntent(context: Context, id: Int): Intent {
+        fun newAddOrEditNoteExtraIntent(context: Context, carId: Int, id: Int): Intent {
             val intent = Intent(context, DetailElementsActivity::class.java)
             intent.putExtra(KEY_MODE, EXTRA_NOTE_EDIT)
+            intent.putExtra(KEY_CAR_ID, carId)
             intent.putExtra(KEY_NOTE_ID, id)
             return intent
         }

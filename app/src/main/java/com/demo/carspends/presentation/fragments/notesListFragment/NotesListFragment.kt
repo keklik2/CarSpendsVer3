@@ -152,10 +152,13 @@ class NotesListFragment: Fragment() {
     private fun setNotesObserver() {
         setNewNotesList()
         viewModel.notesList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.nlfTvEmptyNotes.visibility = View.VISIBLE
-            else binding.nlfTvEmptyNotes.visibility = View.INVISIBLE
-            mainAdapter.submitList(it)
-            binding.nlfRvNotes.adapter = mainAdapter
+            with(binding) {
+                if (it.isEmpty()) nlfTvEmptyNotes.visibility = View.VISIBLE
+                else nlfTvEmptyNotes.visibility = View.INVISIBLE
+
+                mainAdapter.submitList(it)
+                nlfRvNotes.adapter = mainAdapter
+            }
         }
     }
 
@@ -309,11 +312,11 @@ class NotesListFragment: Fragment() {
     }
 
     private fun startExtraNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity()))
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId()))
     }
 
     private fun startExtraNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), id))
+        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId(), id))
     }
 
     private fun startCarAddOrEdit() {

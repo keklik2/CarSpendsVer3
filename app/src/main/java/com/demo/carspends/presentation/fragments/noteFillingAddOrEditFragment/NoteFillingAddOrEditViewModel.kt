@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,6 +19,9 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = NoteRepositoryImpl(app)
@@ -92,23 +96,25 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
-                    addNoteItemUseCase(
-                        NoteItem(
-                            title = noteTitle,
-                            totalPrice = rTotalPrice,
-                            price = rPrice,
-                            liters = rVolume,
-                            mileage = rMileage,
-                            fuelType = rFuelType,
-                            date = nDate,
-                            type = noteType
-                        )
+                    val newNote = NoteItem(
+                        title = noteTitle,
+                        totalPrice = rTotalPrice,
+                        price = rPrice,
+                        liters = rVolume,
+                        mileage = rMileage,
+                        fuelType = rFuelType,
+                        date = nDate,
+                        type = noteType
                     )
+                    addNoteItemUseCase(newNote)
+
+                    updateMileage(rMileage)
+                    calculateAllMileage()
+                    addLastPrice(newNote)
                     calculateAvgFuel()
                     calculateAvgPrice()
-                    updateMileage(rMileage)
                     setCanCloseScreen()
-                } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+                } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
             }
         }
     }
@@ -144,14 +150,61 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                                 type = noteType
                             )
                         )
+
+                        rollbackCarMileage()
+                        calculateAllMileage()
+                        addAllPrice()
                         calculateAvgFuel()
                         calculateAvgPrice()
-                        rollbackCarMileage()
                         setCanCloseScreen()
-                    } else Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-                } else Exception("Received NULL NoteItem for EditNoteItemUseCase()")
+                    } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+                } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
             }
         }
+    }
+
+    private suspend fun calculateAllMileage() {
+        val carItem = getCarItemUseCase(carId)
+        val notes = getNoteItemsListByMileageUseCase()
+
+        val resMil = if (notes.isNotEmpty()) {
+            val maxMil = max(carItem.mileage, notes[0].mileage)
+            val minMil =
+                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                    carItem.startMileage,
+                    notes[notes.size - 1].mileage
+                )
+                else carItem.startMileage
+            abs(maxMil - minMil)
+        } else 0
+
+        editCarItemUseCase(
+            carItem.copy(
+                allMileage = resMil
+            )
+        )
+    }
+
+    private suspend fun addLastPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(
+            carItem.copy(
+                allPrice = carItem.allPrice + note.totalPrice
+            )
+        )
+    }
+
+    private suspend fun addAllPrice() {
+        var allPrice = 0.0
+        for (i in getNoteItemsListByMileageUseCase()) {
+            allPrice += i.totalPrice
+        }
+
+        editCarItemUseCase(
+            getCarItemUseCase(carId).copy(
+                allPrice = allPrice
+            )
+        )
     }
 
     private suspend fun rollbackCarMileage() {

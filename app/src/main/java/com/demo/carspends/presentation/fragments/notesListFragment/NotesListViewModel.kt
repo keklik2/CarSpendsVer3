@@ -15,6 +15,9 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.*
 import kotlinx.coroutines.launch
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class NotesListViewModel(app: Application) : AndroidViewModel(app) {
 
@@ -45,12 +48,46 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
             if (noteType != NoteType.EXTRA) {
                 rollbackCarMileage()
                 calculateAvgPrice()
+                calculateAllMileage()
 
                 if (noteType == NoteType.FUEL) {
                     calculateAvgFuel()
                 }
             }
+
+            rollbackAllPrice(note)
         }
+    }
+
+    private suspend fun calculateAllMileage() {
+        val carItem = getCarItemUseCase(carId)
+        val notes = getNoteItemsListByMileageUseCase()
+
+        val resMil = if (notes.isNotEmpty()) {
+            val maxMil = max(carItem.mileage, notes[0].mileage)
+            val minMil =
+                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                    carItem.startMileage,
+                    notes[notes.size - 1].mileage
+                )
+                else carItem.startMileage
+            abs(maxMil - minMil)
+        } else 0
+
+        editCarItemUseCase(
+            carItem.copy(
+                allMileage = resMil
+            )
+        )
+    }
+
+    private suspend fun rollbackAllPrice(note: NoteItem) {
+        val carItem = getCarItemUseCase(carId)
+        editCarItemUseCase(
+            carItem.copy(
+                allPrice = carItem.allPrice - note.totalPrice
+            )
+        )
     }
 
     private suspend fun calculateAvgFuel() {
