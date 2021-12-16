@@ -110,7 +110,7 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                             )
                         )
 
-                        rollbackCarMileage()
+                        rollbackCarMileage(nItem)
                         calculateAllMileage()
                         addAllPrice()
                         calculateAvgPrice()
@@ -127,12 +127,12 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
 
         val resMil = if (notes.isNotEmpty()) {
             val maxMil = max(carItem.mileage, notes[0].mileage)
+            val lastNote = getLastNotExtraNote()
             val minMil =
-                if (notes[notes.size - 1].type != NoteType.EXTRA) min(
+                if (lastNote != null) min(
                     carItem.startMileage,
-                    notes[notes.size - 1].mileage
-                )
-                else carItem.startMileage
+                    lastNote.mileage
+                ) else carItem.startMileage
             abs(maxMil - minMil)
         } else 0
 
@@ -141,6 +141,14 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 allMileage = resMil
             )
         )
+    }
+
+    private suspend fun getLastNotExtraNote(): NoteItem? {
+        val notes = getNoteItemsListByMileageUseCase()
+        for (i in notes.reversed()) {
+            if (i.type != NoteType.EXTRA) return i
+        }
+        return null
     }
 
     private suspend fun addLastPrice(note: NoteItem) {
@@ -158,6 +166,8 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             allPrice += i.totalPrice
         }
 
+        if (allPrice < 0) allPrice = 0.0
+
         editCarItemUseCase(
             getCarItemUseCase(carId).copy(
                 allPrice = allPrice
@@ -165,28 +175,35 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
         )
     }
 
-    private suspend fun rollbackCarMileage() {
+    private suspend fun rollbackCarMileage(oldItem: NoteItem) {
         val cItem = getCarItemUseCase(carId)
-        val notesList = getNoteItemsListByMileageUseCase()
-        var newMileage = cItem.startMileage
-        if (notesList.isNotEmpty()) {
-            for (i in notesList) {
-                if (i.type != NoteType.EXTRA && i.mileage > newMileage) newMileage = i.mileage
+        if (oldItem.mileage == cItem.mileage) {
+            val notesList = getNoteItemsListByMileageUseCase()
+            var newMileage = cItem.startMileage
+            if (notesList.isNotEmpty()) {
+                for (i in notesList) {
+                    if (i.type != NoteType.EXTRA && i.mileage > newMileage) newMileage = i.mileage
+                }
             }
-        }
-        editCarItemUseCase(
-            cItem.copy(
-                mileage = newMileage
+            editCarItemUseCase(
+                cItem.copy(
+                    mileage = newMileage
+                )
             )
-        )
-        updateCarItem()
+            updateCarItem()
+        }
     }
 
     private suspend fun calculateAvgPrice() {
         val carItem = getCarItemUseCase(carId)
         val newMilPrice =
-            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) {
+                val res = carItem.allPrice / carItem.allMileage
+                if (res < 0) 0.0
+                else res
+            }
             else 0.0
+
         editCarItemUseCase(
             carItem.copy(
                 milPrice = newMilPrice

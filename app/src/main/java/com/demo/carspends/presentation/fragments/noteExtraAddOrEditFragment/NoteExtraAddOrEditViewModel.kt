@@ -113,8 +113,13 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     private suspend fun calculateAvgPrice() {
         val carItem = getCarItemUseCase(carId)
         val newMilPrice =
-            if (carItem.allPrice > 0 && carItem.allMileage > 0) carItem.allPrice / carItem.allMileage
+            if (carItem.allPrice > 0 && carItem.allMileage > 0) {
+                val res = carItem.allPrice / carItem.allMileage
+                if (res < 0) 0.0
+                else res
+            }
             else 0.0
+
         editCarItemUseCase(
             carItem.copy(
                 milPrice = newMilPrice
@@ -136,6 +141,8 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         for (i in getNoteItemsListByMileageUseCase()) {
             allPrice += i.totalPrice
         }
+
+        if (allPrice < 0) allPrice = 0.0
 
         editCarItemUseCase(
             getCarItemUseCase(carId).copy(

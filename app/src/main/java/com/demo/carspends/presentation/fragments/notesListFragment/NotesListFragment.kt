@@ -129,7 +129,6 @@ class NotesListFragment: Fragment() {
         val date = GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.YEAR, MINUS_ONE)
         }.time.time
-        Log.d("DATE_TEST", getFormattedDate(date))
         return date
     }
 
@@ -137,7 +136,6 @@ class NotesListFragment: Fragment() {
         val date = GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.MONTH, MINUS_ONE)
         }.time.time
-        Log.d("DATE_TEST", getFormattedDate(date))
         return date
     }
 
@@ -145,7 +143,6 @@ class NotesListFragment: Fragment() {
         val date = GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.DATE, MINUS_WEEK)
         }.time.time
-        Log.d("DATE_TEST", getFormattedDate(date))
         return date
     }
 
