@@ -63,18 +63,30 @@ class NotesListViewModel(app: Application) : AndroidViewModel(app) {
 
     private suspend fun calculateAllFuelPrice(note: NoteItem) {
         val carItem = getCarItemUseCase(carId)
+        val price = carItem.fuelPrice - note.totalPrice
+        val finalAllFuelPrice =
+            if (price < 0) 0.0
+            else price
 
-        editCarItemUseCase(carItem.copy(
-            fuelPrice = carItem.fuelPrice - note.totalPrice
-        ))
+        editCarItemUseCase(
+            carItem.copy(
+                fuelPrice = finalAllFuelPrice
+            )
+        )
     }
 
     private suspend fun calculateAllFuel(note: NoteItem) {
         val carItem = getCarItemUseCase(carId)
+        val liters = carItem.allFuel - note.liters
+        val finalAllFuel =
+            if (liters < 0) 0.0
+            else liters
 
-        editCarItemUseCase(carItem.copy(
-            allFuel = carItem.allFuel - note.liters
-        ))
+        editCarItemUseCase(
+            carItem.copy(
+                allFuel = finalAllFuel
+            )
+        )
     }
 
     private suspend fun calculateAllMileage() {

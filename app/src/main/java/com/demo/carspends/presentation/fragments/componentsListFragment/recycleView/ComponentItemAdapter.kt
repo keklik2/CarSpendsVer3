@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.demo.carspends.R
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.utils.getFormattedDate
+import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.getFormattedPercentsAsStr
 
 class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(ComponentItemDiffCallback()) {
@@ -48,7 +49,7 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
 
             // Setting resource statement value & color
             val milState = view.context.getString(R.string.text_measure_mileage_unit)
-            "$leftResourceValue$milState".also { tvResourceStatement.text = it }
+            "${getFormattedIntAsStrForDisplay(leftResourceValue)} $milState".also { tvResourceStatement.text = it }
             tvResourceStatement.setTextColor(progressColor)
 
             tvDate.text = getFormattedDate(currComponent.date)

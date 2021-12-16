@@ -7,7 +7,7 @@ import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDoubleAsStr
+import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 
 class NoteItemAdapter: ListAdapter<NoteItem, NoteItemViewHolder>(NoteItemDiffCallback()) {
 
@@ -34,7 +34,7 @@ class NoteItemAdapter: ListAdapter<NoteItem, NoteItemViewHolder>(NoteItemDiffCal
             ivTool.setImageResource(getImageID(currNote.type))
             tvTitle.text = currNote.title
             val currencyState = view.context.getString(R.string.text_measure_currency)
-            "${getFormattedDoubleAsStr(currNote.totalPrice)}$currencyState".also { tvAmount.text = it }
+            "${getFormattedDoubleAsStrForDisplay(currNote.totalPrice)}$currencyState".also { tvAmount.text = it }
             if (currNote.type == NoteType.FUEL) "- ${currNote.fuelType.strName}".also { tvExtraInfo.text = it }
             tvDate.text = getFormattedDate(currNote.date)
 
