@@ -1,10 +1,10 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -54,8 +54,8 @@ class NotesListFragment: Fragment() {
     }
 
     private fun setupListeners() {
-        setTypeSpinnerListener()
-        setDateSpinnerListener()
+        setupTypeSpinnerListener()
+        setupDateSpinnerListener()
         setupAdapterOnClickListener()
         setupAdapterOnLongClickListener()
         setupRecyclerOnSwipeListener()
@@ -64,7 +64,7 @@ class NotesListFragment: Fragment() {
         setupCarInfoListener()
     }
 
-    private fun setDateSpinnerListener() {
+    private fun setupDateSpinnerListener() {
         binding.nlfSpinnerDate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                 refreshDateSpinner(pos)
@@ -77,7 +77,7 @@ class NotesListFragment: Fragment() {
         }
     }
 
-    private fun setTypeSpinnerListener() {
+    private fun setupTypeSpinnerListener() {
         binding.nlfSpinnerNoteType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                 refreshTypeSpinner(pos)
@@ -193,14 +193,17 @@ class NotesListFragment: Fragment() {
     private fun setupAddNoteListeners() {
         with(binding) {
             nlfFbAddFilling.setOnClickListener {
+                floatingButtonsChangeStatement()
                 goToAddNoteItemFragment(NoteType.FUEL)
             }
 
             nlfFbAddRepair.setOnClickListener {
+                floatingButtonsChangeStatement()
                 goToAddNoteItemFragment(NoteType.REPAIR)
             }
 
             nlfFbAddExtra.setOnClickListener {
+                floatingButtonsChangeStatement()
                 goToAddNoteItemFragment(NoteType.EXTRA)
             }
         }
