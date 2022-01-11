@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/circle_background.xml" value="0.3614583333333333" />
         <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/circle_progress_bar.xml" value="0.3614583333333333" />
         <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/icon_color_schema.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/rounded_rectangle.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/rounded_rectangle_dark_dark_vine.xml" value="0.3614583333333333" />
+        <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/drawable/rounded_rectangle_white.xml" value="0.3614583333333333" />
         <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/layout/activity_bottom_nav_menu.xml" value="0.19114583333333332" />
         <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/layout/activity_detail_elements.xml" value="0.3453125" />
         <entry key="..\:/Users/keklik/AndroidStudioProjects/CarSpends/app/src/main/res/layout/activity_main.xml" value="0.25" />

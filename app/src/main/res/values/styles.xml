@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Button Styles -->
     <style name="floatingButton">
         <item name="backgroundColor">@color/light_light_vine</item>
         <item name="backgroundTint">@color/light_light_vine</item>
+    </style>
+
+    <style name="floatingButton.Secondary">
+        <item name="backgroundColor">@color/dark_vine</item>
+        <item name="backgroundTint">@color/dark_vine</item>
+        <item name="tint">@color/white</item>
     </style>
 
     <style name="acceptButton">
@@ -28,8 +34,16 @@
     <style name="inputText">
         <item name="android:textSize">6pt</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
-        <item name="backgroundColor">@color/white</item>
-        <item name="backgroundTint">@color/white</item>
+    </style>
+
+    <style name="inputTextLayout">
+        <item name="boxBackgroundColor">@color/light_light_vine</item>
+        <item name="boxCornerRadiusBottomEnd">15dp</item>
+        <item name="boxCornerRadiusBottomStart">15dp</item>
+        <item name="boxCornerRadiusTopEnd">15dp</item>
+        <item name="boxCornerRadiusTopStart">15dp</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
     <!-- ALL / Text Styles -->
@@ -53,6 +67,18 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="entryUnitText.RoundedRectangleBackground">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/vine</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@drawable/rounded_rectangle_light_light_vine</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
     <!-- statistics statements in main menu fragment -->
     <style name="entryUnitMainMenuText">
         <item name="android:textSize">16sp</item>
@@ -60,6 +86,15 @@
         <item name="textAllCaps">true</item>
         <item name="android:layout_margin">10dp</item>
         <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="entryUnitMainMenuText.White">
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <!-- title of car in main menu fragment -->
@@ -97,6 +132,13 @@
         <item name="android:textAlignment">center</item>
     </style>
 
+    <style name="dateText.White">
+        <item name="android:textSize">15sp</item>
+        <item name="fontFamily">@font/gotham_pro_narrow</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <!-- resource statement for component item in recycler view -->
     <style name="resourceStatementText">
         <item name="android:textSize">16sp</item>
@@ -114,7 +156,7 @@
     </style>
 
     <style name="inputTextDialog">
-        <item name="android:textSize">7pt</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/light_black</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>

@@ -35,7 +35,9 @@
                 android:layout_margin="10dp"
                 app:layout_constraintEnd_toStartOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+
+                style="@style/inputTextLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/caref_tiet_car_name"
@@ -65,7 +67,9 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_unit"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/caref_tiet_mileage_value"
@@ -109,7 +113,9 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toStartOf="@+id/caref_tv_engine_capacity"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/caref_tiet_engine_capacity"
@@ -153,7 +159,9 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintEnd_toStartOf="@+id/caref_tv_power"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+
+                    style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/caref_tiet_power"
@@ -237,11 +245,9 @@
                 <TextView
                     android:id="@+id/caref_tv_avg_fuel"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -295,11 +301,9 @@
                 <TextView
                     android:id="@+id/caref_tv_moment_fuel"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -353,11 +357,9 @@
                 <TextView
                     android:id="@+id/caref_tv_all_fuel"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -411,11 +413,9 @@
                 <TextView
                     android:id="@+id/caref_tv_all_fuel_price"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -469,11 +469,9 @@
                 <TextView
                     android:id="@+id/caref_tv_mileage_price"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -527,11 +525,9 @@
                 <TextView
                     android:id="@+id/caref_tv_all_price"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -585,11 +581,9 @@
                 <TextView
                     android:id="@+id/caref_tv_all_mileage"
 
-                    style="@style/entryUnitText"
+                    style="@style/entryUnitText.RoundedRectangleBackground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/light_light_vine"
-                    android:padding="5dp"
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
