@@ -9,7 +9,15 @@ __description:__ Android application to keep car expenses notes
 - etc (developing)
 
 ## (EN) Update Notes
-### Alpha v.2.2 (11.01.22) - current
+### Alpha v.3.1 (11.01.22) - current
+- Min SDK Versin is downgraded down to v.23 (Android 6, Marshmallow);
+- SDK versions conflicts fixed
+
+### Alpha v.3.0 (11.01.22)
+- Interface Update;
+- Min SDK Versin is updated to v.26 (Android 8, Oreo)
+
+### Alpha v.2.2 (09.01.22)
 - Bugs fixed
 
 ### Alpha v.2.1 (16.12.21)
