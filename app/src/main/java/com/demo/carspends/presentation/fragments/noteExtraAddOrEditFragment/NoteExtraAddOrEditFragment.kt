@@ -14,11 +14,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 class NoteExtraAddOrEditFragment: Fragment() {
 
@@ -31,14 +35,15 @@ class NoteExtraAddOrEditFragment: Fragment() {
     private var noteId = UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
 
-    private val viewModel by lazy {
-        ViewModelProvider(this)[NoteExtraAddOrEditViewModel::class.java]
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[NoteExtraAddOrEditViewModel::class.java]
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,6 +186,13 @@ class NoteExtraAddOrEditFragment: Fragment() {
         carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
         noteId = args.getInt(ID_KEY, UNDEFINED_ID)
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
+        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     override fun onCreateView(

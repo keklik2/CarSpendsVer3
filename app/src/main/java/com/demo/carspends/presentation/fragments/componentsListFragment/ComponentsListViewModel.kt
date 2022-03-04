@@ -1,23 +1,21 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
 import com.demo.carspends.data.repositoryImpls.ComponentRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.DeleteComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ComponentsListViewModel(app: Application): AndroidViewModel(app) {
-
-    private val carRepository = CarRepositoryImpl(app)
-    private val componentRepository = ComponentRepositoryImpl(app)
-
-    private val deleteComponentUseCase = DeleteComponentItemUseCase(componentRepository)
+class ComponentsListViewModel @Inject constructor(
+    private val carRepository: CarRepositoryImpl,
+    private val componentRepository: ComponentRepositoryImpl,
+    private val deleteComponentUseCase: DeleteComponentItemUseCase
+) : ViewModel() {
 
     private val _carsList = GetCarItemsListLDUseCase(carRepository).invoke()
     val carsList get() = _carsList

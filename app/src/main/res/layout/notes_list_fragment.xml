@@ -13,7 +13,7 @@
 
         android:background="@color/light_light_vine"
         android:backgroundTint="@color/light_light_vine"
-        app:cardCornerRadius="5dp"
+        app:cardCornerRadius="15dp"
         app:cardElevation="10dp"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -40,6 +40,20 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/nlf_iv_car_menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+
+                        android:contentDescription="@string/description_img_info"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+
+                        app:srcCompat="@drawable/ic_baseline_menu_24" />
 
                     <TextView
                         android:id="@+id/nlf_tv_car_title"
@@ -96,16 +110,22 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp">
 
                     <ImageView
                         android:id="@+id/nlf_iv_avg_fuel"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
+                        android:layout_height="0dp"
+                        android:layout_margin="4dp"
                         app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_fuel"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -115,14 +135,18 @@
                     <TextView
                         android:id="@+id/nlf_tv_avg_fuel"
                         style="@style/entryUnitMainMenuText.White"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
 
                         android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/nlf_iv_avg_fuel"
-
                         app:layout_constraintTop_toTopOf="parent"
+
                         tools:text="10.3/100км" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </RelativeLayout>
@@ -138,16 +162,20 @@
                 android:layout_margin="8dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true">
+                    android:layout_centerHorizontal="true"
+
+                    android:layout_margin="4dp">
 
                     <ImageView
                         android:id="@+id/nlf_iv_avg_cost"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-
+                        android:layout_height="0dp"
+                        android:layout_margin="4dp"
                         app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintDimensionRatio="1:1"
                         app:layout_constraintEnd_toStartOf="@+id/nlf_tv_avg_cost"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -156,9 +184,12 @@
                     <TextView
                         android:id="@+id/nlf_tv_avg_cost"
                         style="@style/entryUnitMainMenuText"
-                        android:layout_width="wrap_content"
-
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_margin="4dp"
+
+                        android:maxLines="1"
+                        android:ellipsize="end"
 
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"

@@ -14,10 +14,14 @@ import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 class ComponentAddOrEditFragment: Fragment() {
 
@@ -26,19 +30,20 @@ class ComponentAddOrEditFragment: Fragment() {
     private var _binding: ComponentAddEditFragmentBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[ComponentAddOrEditViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ComponentAddOrEditViewModel::class.java]
     }
 
     private lateinit var launchMode: String
     private var componentId = ComponentItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -203,6 +208,16 @@ class ComponentAddOrEditFragment: Fragment() {
         carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("ComponentItem id must be implemented for ComponentAddOrEditFragment")
         componentId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+    }
+
+
+
+    /** Basic functions to make Class work as Fragment */
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
+        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     override fun onCreateView(

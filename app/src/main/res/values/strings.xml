@@ -58,6 +58,7 @@
     <string name="description_add_new_note_repair">Добавить новую запись, категория "ремонт"</string>
     <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
     <string name="description_img_info">Иконка "информация об автомобиле"</string>
+    <string name="description_img_car_menu">Иконка "настройки приложения"</string>
     <string name="description_img_tools">Иконка "тип записи"</string>
     <string name="description_img_choose_date">Иконка выбора даты</string>
     <string name="description_img_currency">Иконка валюты</string>
@@ -71,7 +72,7 @@
     <string name="GAS">Газ</string>
     <string name="Electricity">Электричество</string>
 
-    <!-- Test Elements -->
+    <!-- Array values -->
     <string-array name="note_type_values">
         <item>Все записи</item>
         <item>Заправка</item>

@@ -1,12 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import androidx.lifecycle.*
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
@@ -15,24 +9,23 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.*
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class NotesListViewModel(app: Application) : AndroidViewModel(app) {
+class NotesListViewModel @Inject constructor(
+    private val getNoteItemsListUseCase: GetNoteItemsListUseCase,
+    private val deleteNoteItemUseCase: DeleteNoteItemUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val editCarItemUseCase: EditCarItemUseCase,
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase
+) : ViewModel() {
 
     private var carId = CarItem.UNDEFINED_ID
 
-    private val repository = NoteRepositoryImpl(app)
-    private val carRepository = CarRepositoryImpl(app)
-
-    private val getNoteItemsListUseCase = GetNoteItemsListUseCase(repository)
-    private val deleteNoteItemUseCase = DeleteNoteItemUseCase(repository)
-    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
-    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
-    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
-
-    private val _carsList = GetCarItemsListLDUseCase(carRepository).invoke()
+    private val _carsList = getCarItemsListLDUseCase()
     val carsList get() = _carsList
 
     private val _currCarItem = MutableLiveData<CarItem>()

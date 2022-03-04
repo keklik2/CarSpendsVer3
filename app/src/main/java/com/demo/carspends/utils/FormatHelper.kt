@@ -7,6 +7,7 @@ import java.util.*
 fun getFormattedDoubleAsStrForDisplay(value: Double): String {
     val df = DecimalFormat()
     with(df) {
+        maximumFractionDigits = 1
         isGroupingUsed = true
         groupingSize = 3
 

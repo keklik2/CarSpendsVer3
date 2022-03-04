@@ -55,8 +55,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/neaef_tv_amount_unit"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
 
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintHorizontal_weight="8">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/neaef_tiet_amount_value"
@@ -72,7 +73,7 @@
 
         <ImageView
             android:id="@+id/neaef_tv_amount_unit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:contentDescription="@string/description_img_currency"
@@ -81,6 +82,8 @@
 
             app:layout_constraintStart_toEndOf="@+id/neaef_til_amount_value"
             app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintHorizontal_weight="1"
             app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import java.lang.Exception
+import javax.inject.Inject
 
 class CarAddOrEditFragment : Fragment() {
 
@@ -27,18 +29,19 @@ class CarAddOrEditFragment : Fragment() {
     private var _binding: CarAddEditFragmentBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[CarAddOrEditViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[CarAddOrEditViewModel::class.java]
     }
 
     private lateinit var launchMode: String
     private var carId = CarItem.UNDEFINED_ID
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,18 +56,6 @@ class CarAddOrEditFragment : Fragment() {
         setupListeners()
         chooseMode()
         setupBackPresser()
-    }
-
-    private fun setupBackPresser() {
-        if (launchMode == ADD_MODE) {
-            requireActivity().onBackPressedDispatcher.addCallback(object :
-                OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG)
-                        .show()
-                }
-            })
-        }
     }
 
     private fun setupListeners() {
@@ -135,6 +126,11 @@ class CarAddOrEditFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        setupTextFieldsErrorsObserver()
+        setupCanCloseFragmentListener()
+    }
+
+    private fun setupTextFieldsErrorsObserver() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
             if (it) binding.carefTilCarName.error = ERR_TITLE
             else binding.carefTilCarName.error = null
@@ -154,9 +150,26 @@ class CarAddOrEditFragment : Fragment() {
             if (it) binding.carefTilPower.error = ERR_MILEAGE
             else binding.carefTilPower.error = null
         }
+    }
 
+    private fun setupCanCloseFragmentListener() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
             onEditingFinishedListener.onFinish()
+        }
+    }
+
+
+
+    /** Additional functions */
+    private fun setupBackPresser() {
+        if (launchMode == ADD_MODE) {
+            requireActivity().onBackPressedDispatcher.addCallback(object :
+                OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG)
+                        .show()
+                }
+            })
         }
     }
 
@@ -229,6 +242,16 @@ class CarAddOrEditFragment : Fragment() {
         carId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
 
+
+
+    /** Basic functions to make class work as Fragment */
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
+        else throw Exception("Activity must implement OnEditingFinishedListener")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -244,10 +267,12 @@ class CarAddOrEditFragment : Fragment() {
     }
 
     companion object {
+        // Text Fields error text
         private const val ERR_TITLE = "Inappropriate title"
         private const val ERR_RESOURCE = "Inappropriate resource"
         private const val ERR_MILEAGE = "Inappropriate mileage"
 
+        // Bundle Arguments constants
         private const val MODE_KEY = "mode_car"
         private const val ID_KEY = "id_car"
 

@@ -1,20 +1,18 @@
 package com.demo.carspends.data.repositoryImpls
 
-import android.app.Application
-import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.demo.carspends.data.MainDataBase
 import com.demo.carspends.data.mapper.NoteMapper
-import com.demo.carspends.data.note.NoteItemDbModel
+import com.demo.carspends.data.note.NoteDao
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType
+import javax.inject.Inject
 
-class NoteRepositoryImpl(private val application: Application) : NoteRepository {
-
-    private val noteDao = MainDataBase.getInstance(application).noteDao()
-    private val mapper = NoteMapper()
+class NoteRepositoryImpl @Inject constructor(
+    private val noteDao: NoteDao,
+    private val mapper: NoteMapper
+) : NoteRepository {
 
     override suspend fun addNoteItemUseCase(noteItem: NoteItem) {
         noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
@@ -36,7 +34,7 @@ class NoteRepositoryImpl(private val application: Application) : NoteRepository 
         }
     }
 
-    override fun getNoteItemsListUseCase(type: NoteType ,date: Long): LiveData<List<NoteItem>> {
+    override fun getNoteItemsListUseCase(type: NoteType, date: Long): LiveData<List<NoteItem>> {
         return Transformations.map(noteDao.getNotesListLD(type, date)) {
             it.map {
                 mapper.mapNoteDbModelToEntity(it)

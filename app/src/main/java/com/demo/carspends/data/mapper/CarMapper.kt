@@ -2,8 +2,9 @@ package com.demo.carspends.data.mapper
 
 import com.demo.carspends.data.car.CarItemDbModel
 import com.demo.carspends.domain.car.CarItem
+import javax.inject.Inject
 
-class CarMapper {
+class CarMapper @Inject constructor() {
 
     fun mapCarItemDbModelToEntity(carItem: CarItemDbModel) = CarItem(
         carItem.id,

@@ -1,11 +1,8 @@
 package com.demo.carspends.presentation.fragments.componentAddOrEditFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.ComponentRepositoryImpl
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
@@ -14,15 +11,16 @@ import com.demo.carspends.domain.component.usecases.GetComponentItemByIdUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
-class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
-    private val repository = ComponentRepositoryImpl(app)
+class ComponentAddOrEditViewModel @Inject constructor(
+    private val addComponentUseCase: AddComponentItemUseCase,
+    private val editComponentUseCase: EditComponentItemUseCase,
+    private val getComponentItemUseCase: GetComponentItemByIdUseCase,
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase
+) : ViewModel() {
 
-    private val addComponentUseCase = AddComponentItemUseCase(repository)
-    private val editComponentUseCase = EditComponentItemUseCase(repository)
-    private val getComponentItemUseCase = GetComponentItemByIdUseCase(repository)
-
-    private val _carsList= GetCarItemsListLDUseCase(CarRepositoryImpl(app)).invoke()
+    private val _carsList = getCarItemsListLDUseCase()
     val carsList get() = _carsList
 
     private val _componentDate = MutableLiveData<Long>()
@@ -54,7 +52,7 @@ class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rResource = refactorInt(resource)
         val rMileage = refactorInt(mileage)
 
-        if(areFieldsValid(rTitle, rResource, rMileage)) {
+        if (areFieldsValid(rTitle, rResource, rMileage)) {
             viewModelScope.launch {
                 val cDate = _componentDate.value
                 if (cDate != null) {
@@ -79,7 +77,7 @@ class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rResource = refactorInt(resource)
         val rMileage = refactorInt(mileage)
 
-        if(areFieldsValid(rTitle, rResource, rMileage)) {
+        if (areFieldsValid(rTitle, rResource, rMileage)) {
             viewModelScope.launch {
                 val cItem = _componentItem.value
                 if (cItem != null) {
@@ -157,7 +155,9 @@ class ComponentAddOrEditViewModel(app: Application): AndroidViewModel(app) {
     }
 
     companion object {
-        private const val ERR_NULL_ITEM_EDIT = "Received NULL ComponentItem for EditComponentItemUseCase()"
-        private const val ERR_NULL_ITEM_ADD = "Received NULL ComponentItem for EditComponentItemUseCase()"
+        private const val ERR_NULL_ITEM_EDIT =
+            "Received NULL ComponentItem for EditComponentItemUseCase()"
+        private const val ERR_NULL_ITEM_ADD =
+            "Received NULL ComponentItem for EditComponentItemUseCase()"
     }
 }
