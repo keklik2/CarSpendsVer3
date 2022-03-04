@@ -2,8 +2,9 @@ package com.demo.carspends.data.mapper
 
 import com.demo.carspends.data.component.ComponentItemDbModel
 import com.demo.carspends.domain.component.ComponentItem
+import javax.inject.Inject
 
-class ComponentMapper {
+class ComponentMapper @Inject constructor(){
 
     fun mapComponentItemDbModelToEntity(componentItemDbModel: ComponentItemDbModel): ComponentItem
     = ComponentItem(

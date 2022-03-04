@@ -1,12 +1,8 @@
 package com.demo.carspends.presentation.fragments.carAddOrEditFragment
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -16,20 +12,19 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class CarAddOrEditViewModel(app: Application): AndroidViewModel(app) {
-    private val repository = CarRepositoryImpl(app)
-    private val noteRepository = NoteRepositoryImpl(app)
+class CarAddOrEditViewModel @Inject constructor(
+    private val addCarItemUseCase: AddCarItemUseCase,
+            private val editCarItemUseCase: EditCarItemUseCase,
+            private val getCarItemUseCase: GetCarItemUseCase,
+            private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase
+): ViewModel() {
 
     private var carId = CarItem.UNDEFINED_ID
-
-    private val addCarItemUseCase = AddCarItemUseCase(repository)
-    private val editCarItemUseCase = EditCarItemUseCase(repository)
-    private val getCarItemUseCase = GetCarItemUseCase(repository)
-    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(noteRepository)
 
     private val _errorPowerInput = MutableLiveData<Boolean>()
     val errorPowerInput get() = _errorPowerInput

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Button Styles -->
+    <!-- ALL / Button Styles -->
     <style name="floatingButton">
         <item name="backgroundColor">@color/light_light_vine</item>
         <item name="backgroundTint">@color/light_light_vine</item>
@@ -30,9 +30,10 @@
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
-    <!-- Text Input Edit Layouts -->
+
+    <!-- ALL / Text Input Edit Layouts -->
     <style name="inputText">
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
@@ -46,9 +47,10 @@
         <item name="boxStrokeWidthFocused">0dp</item>
     </style>
 
+
     <!-- ALL / Text Styles -->
     <style name="entryTitleText">
-        <item name="android:textSize">8pt</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/dark_vine</item>
         <item name="fontFamily">@font/gotham_pro_narrow</item>
         <item name="textAllCaps">true</item>
@@ -161,13 +163,14 @@
         <item name="fontFamily">@font/gotham_pro_narrow</item>
     </style>
 
-    <!-- Bottom Menu Styles -->
+
+    <!-- ALL / Bottom Menu Styles -->
     <style name="BottomNavItem" parent="@style/TextAppearance.AppCompat.Caption">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
     </style>
     <style name="BottomNavItem.Inactive" parent="@style/TextAppearance.AppCompat.Caption">
         <item name="android:textStyle">normal</item>
-        <item name="android:textSize">6pt</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

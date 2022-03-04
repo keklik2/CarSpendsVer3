@@ -1,10 +1,10 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AbsListView
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -15,12 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
-import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
+import com.demo.carspends.presentation.extra.ApplyActionDialog
+import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditViewModel
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import java.util.*
+import javax.inject.Inject
 
 class NotesListFragment: Fragment() {
 
@@ -30,8 +34,15 @@ class NotesListFragment: Fragment() {
     private var _binding: NotesListFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: NotesListViewModel by lazy {
-        ViewModelProvider(this)[NotesListViewModel::class.java]
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
     }
 
     private val mainAdapter by lazy {
@@ -56,9 +67,12 @@ class NotesListFragment: Fragment() {
     private fun setupListeners() {
         setupTypeSpinnerListener()
         setupDateSpinnerListener()
+
         setupAdapterOnClickListener()
         setupAdapterOnLongClickListener()
+
         setupRecyclerOnSwipeListener()
+
         setupAddNoteClickListener()
         setupAddNoteListeners()
         setupCarInfoListener()
@@ -325,6 +339,11 @@ class NotesListFragment: Fragment() {
 
     private fun startCarAddOrEdit(id: Int) {
         startActivity(DetailElementsActivity.newAddOrEditCarIntent(requireActivity(), id))
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

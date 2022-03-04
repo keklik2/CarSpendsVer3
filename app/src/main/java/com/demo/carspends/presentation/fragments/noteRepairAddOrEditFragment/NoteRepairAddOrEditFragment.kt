@@ -13,11 +13,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
 class NoteRepairAddOrEditFragment: Fragment() {
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
@@ -25,19 +29,20 @@ class NoteRepairAddOrEditFragment: Fragment() {
     private var _binding: NoteRepairAddEditFragmentBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[NoteRepairAddOrEditViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[NoteRepairAddOrEditViewModel::class.java]
     }
 
     private lateinit var launchMode: String
     private var noteId = NoteItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -208,6 +213,13 @@ class NoteRepairAddOrEditFragment: Fragment() {
         carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
         noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
+        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     override fun onCreateView(

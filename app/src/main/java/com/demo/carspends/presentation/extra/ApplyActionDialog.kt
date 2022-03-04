@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.extra
+package com.demo.carspends.presentation.extra
 
 import android.app.Activity
 import android.app.Dialog

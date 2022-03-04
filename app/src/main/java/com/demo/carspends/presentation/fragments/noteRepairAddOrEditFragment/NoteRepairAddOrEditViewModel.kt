@@ -1,11 +1,8 @@
 package com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
@@ -18,23 +15,22 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
-    private val repository = NoteRepositoryImpl(app)
-    private val carRepository = CarRepositoryImpl(app)
+class NoteRepairAddOrEditViewModel @Inject constructor(
+    private val addNoteItemUseCase: AddNoteItemUseCase,
+    private val editNoteItemUseCase: EditNoteItemUseCase,
+    private val getNoteItemUseCase: GetNoteItemUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val editCarItemUseCase: EditCarItemUseCase
+) : ViewModel() {
 
     private val noteType = NoteType.REPAIR
     private var carId = CarItem.UNDEFINED_ID
-
-    private val addNoteItemUseCase = AddNoteItemUseCase(repository)
-    private val editNoteItemUseCase = EditNoteItemUseCase(repository)
-    private val getNoteItemUseCase = GetNoteItemUseCase(repository)
-    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
-    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
-    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -201,8 +197,7 @@ class NoteRepairAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 val res = carItem.allPrice / carItem.allMileage
                 if (res < 0) 0.0
                 else res
-            }
-            else 0.0
+            } else 0.0
 
         editCarItemUseCase(
             carItem.copy(

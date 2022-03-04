@@ -1,17 +1,17 @@
 package com.demo.carspends.data.repositoryImpls
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.demo.carspends.data.MainDataBase
+import com.demo.carspends.data.component.ComponentDao
 import com.demo.carspends.data.mapper.ComponentMapper
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.ComponentRepository
+import javax.inject.Inject
 
-class ComponentRepositoryImpl(private val application: Application): ComponentRepository {
-
-    private val componentDao = MainDataBase.getInstance(application).componentDao()
-    private val mapper = ComponentMapper()
+class ComponentRepositoryImpl @Inject constructor(
+    private val componentDao: ComponentDao,
+    private val mapper: ComponentMapper
+) : ComponentRepository {
 
     override suspend fun addComponentItemUseCase(component: ComponentItem) {
         componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))

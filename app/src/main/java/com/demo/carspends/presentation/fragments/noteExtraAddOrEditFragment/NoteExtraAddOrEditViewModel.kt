@@ -1,15 +1,11 @@
 package com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
@@ -19,25 +15,19 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
-import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
+import javax.inject.Inject
 
-class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
+class NoteExtraAddOrEditViewModel @Inject constructor(
+    private val addNoteItemUseCase: AddNoteItemUseCase,
+    private val editNoteItemUseCase: EditNoteItemUseCase,
+    private val getNoteItemUseCase: GetNoteItemUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val editCarItemUseCase: EditCarItemUseCase
+) : ViewModel() {
 
     private var carId = CarItem.UNDEFINED_ID
-
-    private val repository = NoteRepositoryImpl(app)
-    private val carRepository = CarRepositoryImpl(app)
-
     private val noteType = NoteType.EXTRA
-
-    private val addNoteItemUseCase = AddNoteItemUseCase(repository)
-    private val editNoteItemUseCase = EditNoteItemUseCase(repository)
-    private val getNoteItemUseCase = GetNoteItemUseCase(repository)
-    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
-    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
-    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -62,7 +52,7 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rTitle = refactorTitle(title)
         val rPrice = refactorPrice(price)
 
-        if(areFieldsValid(rTitle, rPrice)) {
+        if (areFieldsValid(rTitle, rPrice)) {
             viewModelScope.launch {
                 val nDate = _noteDate.value
                 if (nDate != null) {
@@ -86,7 +76,7 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
         val rTitle = refactorTitle(title)
         val rPrice = refactorPrice(price)
 
-        if(areFieldsValid(rTitle, rPrice)) {
+        if (areFieldsValid(rTitle, rPrice)) {
             viewModelScope.launch {
                 val nItem = _noteItem.value
                 if (nItem != null) {
@@ -117,8 +107,7 @@ class NoteExtraAddOrEditViewModel(app: Application): AndroidViewModel(app) {
                 val res = carItem.allPrice / carItem.allMileage
                 if (res < 0) 0.0
                 else res
-            }
-            else 0.0
+            } else 0.0
 
         editCarItemUseCase(
             carItem.copy(

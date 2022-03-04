@@ -1,11 +1,11 @@
 package com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
@@ -18,25 +18,25 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
 import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
-class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
-    private val repository = NoteRepositoryImpl(app)
-    private val carRepository = CarRepositoryImpl(app)
+class NoteFillingAddOrEditViewModel @Inject constructor(
+    private val addNoteItemUseCase: AddNoteItemUseCase,
+    private val editNoteItemUseCase: EditNoteItemUseCase,
+    private val getNoteItemUseCase: GetNoteItemUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val editCarItemUseCase: EditCarItemUseCase,
+    private val app: Application
+) : AndroidViewModel(app) {
 
     private val noteType = NoteType.FUEL
-    private val noteTitle = "Заправка"
+    private val noteTitle = getApplication<Application>().getString(NOTE_TITLE_ID)
     private val noteFuelTypes = Fuel.values()
     private var carId: Int = CarItem.UNDEFINED_ID
-
-    private val addNoteItemUseCase = AddNoteItemUseCase(repository)
-    private val editNoteItemUseCase = EditNoteItemUseCase(repository)
-    private val getNoteItemUseCase = GetNoteItemUseCase(repository)
-    private val getNoteItemsListByMileageUseCase = GetNoteItemsListByMileageUseCase(repository)
-    private val getCarItemUseCase = GetCarItemUseCase(carRepository)
-    private val editCarItemUseCase = EditCarItemUseCase(carRepository)
 
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
@@ -169,7 +169,7 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private suspend fun getFuelNotes(): List<NoteItem> {
         val notes = getNoteItemsListByMileageUseCase()
         val notesFuel = mutableListOf<NoteItem>()
-        if(notes.isNotEmpty()) {
+        if (notes.isNotEmpty()) {
             for (i in notes) {
                 if (i.type == NoteType.FUEL) notesFuel.add(i)
             }
@@ -188,16 +188,20 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
 
         if (totalFuelPrice < 0) totalFuelPrice = 0.0
 
-        editCarItemUseCase(getCarItemUseCase(carId).copy(
-            fuelPrice = totalFuelPrice
-        ))
+        editCarItemUseCase(
+            getCarItemUseCase(carId).copy(
+                fuelPrice = totalFuelPrice
+            )
+        )
     }
 
     private suspend fun addAllFuelPrice(note: NoteItem) {
         val carItem = getCarItemUseCase(carId)
-        editCarItemUseCase(carItem.copy(
-            fuelPrice = carItem.fuelPrice + note.totalPrice
-        ))
+        editCarItemUseCase(
+            carItem.copy(
+                fuelPrice = carItem.fuelPrice + note.totalPrice
+            )
+        )
     }
 
     private suspend fun calculateAllFuel() {
@@ -211,16 +215,20 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
 
         if (totalFuel < 0) totalFuel = 0.0
 
-        editCarItemUseCase(getCarItemUseCase(carId).copy(
-            allFuel = totalFuel
-        ))
+        editCarItemUseCase(
+            getCarItemUseCase(carId).copy(
+                allFuel = totalFuel
+            )
+        )
     }
 
     private suspend fun addAllFuel(note: NoteItem) {
         val carItem = getCarItemUseCase(carId)
-        editCarItemUseCase(carItem.copy(
-            allFuel = carItem.allFuel + note.liters
-        ))
+        editCarItemUseCase(
+            carItem.copy(
+                allFuel = carItem.allFuel + note.liters
+            )
+        )
     }
 
     private suspend fun calculateAvgPrice() {
@@ -230,8 +238,7 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 val res = carItem.allPrice / carItem.allMileage
                 if (res < 0) 0.0
                 else res
-            }
-            else 0.0
+            } else 0.0
 
         editCarItemUseCase(
             carItem.copy(
@@ -323,9 +330,11 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
                 val note2 = listOfFuel[1]
                 if (note2 != note1) {
                     val cCarItem = getCarItemUseCase(carId)
+                    val test = calculatedAvgFuelOfTwoNotes(note1, note2)
+                    Log.d("tag_test", "Moment fuel: $test")
                     editCarItemUseCase(
                         cCarItem.copy(
-                            momentFuel = calculatedAvgFuelOfTwoNotes(note1, note2),
+                            momentFuel = test,
                             avgFuel = calculateAvgFuelOfAll(listOfFuel)
                         )
                     )
@@ -344,7 +353,10 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
             }
 
             val res = (allFuel / allMileage.toDouble()) * 100
-            return if (res > 0) res
+            return if (res > 0) {
+                if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
+                else res
+            }
             else 0.0
         }
         return 0.0
@@ -353,8 +365,11 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
     private fun calculatedAvgFuelOfTwoNotes(n1: NoteItem, n2: NoteItem): Double {
         val distance = maxOf(n1.mileage, n2.mileage) - minOf(n1.mileage, n2.mileage)
         val res = (n1.liters / distance) * 100
-        return if (res < 0) 0.0
-        else res
+        return if (res > 0) {
+            if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
+            else res
+        }
+        else 0.0
     }
 
     private suspend fun updateMileage(newMileage: Int) {
@@ -509,5 +524,9 @@ class NoteFillingAddOrEditViewModel(app: Application) : AndroidViewModel(app) {
 
     private fun setCanCloseScreen() {
         _canCloseScreen.value = Unit
+    }
+
+    companion object {
+        private const val NOTE_TITLE_ID = R.string.text_refill
     }
 }

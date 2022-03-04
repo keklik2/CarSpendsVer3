@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.componentsListFragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +12,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
-import com.demo.carspends.presentation.fragments.extra.ApplyActionDialog
+import com.demo.carspends.presentation.extra.ApplyActionDialog
+import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditViewModel
+import javax.inject.Inject
 
 class ComponentsListFragment: Fragment() {
 
@@ -30,8 +35,15 @@ class ComponentsListFragment: Fragment() {
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[ComponentsListViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[ComponentsListViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,6 +134,11 @@ class ComponentsListFragment: Fragment() {
 
     private fun goToAddOrEditComponentItemFragment(id: Int) {
         startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), getCarId(), id))
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(

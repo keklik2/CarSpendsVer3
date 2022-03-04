@@ -16,21 +16,32 @@ import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
+import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.presentation.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
+import javax.inject.Inject
 
-class NoteFillingAddOrEditFragment: Fragment() {
+class NoteFillingAddOrEditFragment : Fragment() {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
     private var _binding: NoteFillingAddEditFragmentBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (requireActivity().application as CarSpendsApp).component
+    }
+
     private val viewModel by lazy {
-        ViewModelProvider(this)[NoteFillingAddOrEditViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory)[NoteFillingAddOrEditViewModel::class.java]
     }
 
     private lateinit var launchMode: String
@@ -40,12 +51,6 @@ class NoteFillingAddOrEditFragment: Fragment() {
     private var lastChanged = CHANGED_NULL
     private var preLastChanged = CHANGED_NULL
     private var open = true
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,29 +97,32 @@ class NoteFillingAddOrEditFragment: Fragment() {
                     timeInMillis = it
                 }
             }
-            DatePickerDialog(requireContext(), dateSetListener,
+            DatePickerDialog(
+                requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
                 cCal.get(Calendar.MONTH),
-                cCal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
     }
 
     private fun setupVolumeTextChangeListener() {
         binding.nfaefTietFuelVolume.onFocusChangeListener =
-            View.OnFocusChangeListener { _, hasFocus -> if(hasFocus) {
-                preLastChanged = lastChanged
-                lastChanged = CHANGED_VOLUME
-            }
+            View.OnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    preLastChanged = lastChanged
+                    lastChanged = CHANGED_VOLUME
+                }
             }
 
-        binding.nfaefTietFuelVolume.addTextChangedListener(object: TextWatcher {
+        binding.nfaefTietFuelVolume.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 viewModel.resetVolumeError()
 
-                if(open) {
+                if (open) {
                     open = false
 
                     if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
@@ -139,20 +147,21 @@ class NoteFillingAddOrEditFragment: Fragment() {
 
     private fun setupAmountTextChangeListener() {
         binding.nfaefTietFuelAmount.onFocusChangeListener =
-            View.OnFocusChangeListener { _, hasFocus -> if(hasFocus) {
+            View.OnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
                     preLastChanged = lastChanged
                     lastChanged = CHANGED_AMOUNT
                 }
             }
 
-        binding.nfaefTietFuelAmount.addTextChangedListener(object: TextWatcher {
+        binding.nfaefTietFuelAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 viewModel.resetTotalPriceError()
 
-                if(open) {
+                if (open) {
                     open = false
 
                     if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
@@ -177,20 +186,21 @@ class NoteFillingAddOrEditFragment: Fragment() {
 
     private fun setupPriceTextChangeListener() {
         binding.nfaefTietFuelPrice.onFocusChangeListener =
-            View.OnFocusChangeListener { _, hasFocus -> if(hasFocus) {
-                preLastChanged = lastChanged
-                lastChanged = CHANGED_PRICE
-            }
+            View.OnFocusChangeListener { _, hasFocus ->
+                if (hasFocus) {
+                    preLastChanged = lastChanged
+                    lastChanged = CHANGED_PRICE
+                }
             }
 
-        binding.nfaefTietFuelPrice.addTextChangedListener(object: TextWatcher {
+        binding.nfaefTietFuelPrice.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 viewModel.resetPriceError()
 
-                if(open) {
+                if (open) {
                     open = false
 
                     if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
@@ -214,7 +224,7 @@ class NoteFillingAddOrEditFragment: Fragment() {
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.nfaefTietMileageValue.addTextChangedListener(object: TextWatcher {
+        binding.nfaefTietMileageValue.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
@@ -287,11 +297,16 @@ class NoteFillingAddOrEditFragment: Fragment() {
 
     private fun setupFuelSpinnerAdapter() {
         // Setting Fuel enum values for spinner
-        binding.nfaefSpinnerFuelType.adapter = ArrayAdapter<Fuel>(requireActivity(), R.layout.support_simple_spinner_dropdown_item, Fuel.values())
+
+        binding.nfaefSpinnerFuelType.adapter = ArrayAdapter(
+            requireActivity(),
+            R.layout.support_simple_spinner_dropdown_item,
+            Fuel.values()
+        )
     }
 
     private fun chooseMode() {
-        when(launchMode) {
+        when (launchMode) {
             ADD_MODE -> addNoteMode()
             else -> editNoteMode()
         }
@@ -350,6 +365,13 @@ class NoteFillingAddOrEditFragment: Fragment() {
         carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteFillingAddOrEditFragment")
         noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+    }
+
+    override fun onAttach(context: Context) {
+        component.inject(this)
+        super.onAttach(context)
+        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
+        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     override fun onCreateView(

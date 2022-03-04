@@ -57,7 +57,9 @@
             app:layout_constraintEnd_toStartOf="@+id/nraef_tv_amount_unit"
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintHorizontal_weight="8">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nraef_tiet_amount_value"
@@ -73,7 +75,7 @@
 
         <ImageView
             android:id="@+id/nraef_tv_amount_unit"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:contentDescription="@string/description_img_currency"
@@ -82,6 +84,8 @@
 
             app:layout_constraintStart_toEndOf="@+id/nraef_til_amount_value"
             app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintHorizontal_weight="1"
             app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -104,7 +108,9 @@
             app:layout_constraintEnd_toStartOf="@+id/nraef_tv_mileage_unit"
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintHorizontal_weight="8">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/nraef_tiet_mileage_value"
@@ -121,14 +127,16 @@
         <TextView
             android:id="@+id/nraef_tv_mileage_unit"
             style="@style/entryUnitText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/text_measure_mileage_unit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/nraef_til_mileage_value"
 
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:layout_constraintHorizontal_weight="1"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
