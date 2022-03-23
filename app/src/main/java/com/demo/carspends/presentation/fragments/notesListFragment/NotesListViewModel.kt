@@ -1,5 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesListFragment
 
+import android.util.Log
 import androidx.lifecycle.*
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -8,7 +9,10 @@ import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.*
+import com.demo.carspends.utils.Screens
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -20,7 +24,8 @@ class NotesListViewModel @Inject constructor(
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val getCarItemUseCase: GetCarItemUseCase,
     private val editCarItemUseCase: EditCarItemUseCase,
-    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase,
+    private val router: Router
 ) : ViewModel() {
 
     private var carId = CarItem.UNDEFINED_ID
@@ -32,6 +37,14 @@ class NotesListViewModel @Inject constructor(
 
     private var _notesList: LiveData<List<NoteItem>> = getNoteItemsListUseCase(ALL_TIME)
     val notesList get() = _notesList
+
+    fun test() {
+        Log.d("vmtest", "${router}")
+        try { router.navigateTo(Screens.ComponentsList()) }
+        catch(e: Exception) {
+            Log.d("vmtest", "Error: $e")
+        }
+    }
 
     fun deleteNote(note: NoteItem) {
         viewModelScope.launch {

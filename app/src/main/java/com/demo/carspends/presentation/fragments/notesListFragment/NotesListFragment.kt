@@ -21,8 +21,10 @@ import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.extra.ApplyActionDialog
 import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditViewModel
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
+import com.demo.carspends.utils.Screens
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
+import com.github.terrakok.cicerone.Router
 import java.util.*
 import javax.inject.Inject
 
@@ -35,11 +37,14 @@ class NotesListFragment: Fragment() {
     private val binding get() = _binding!!
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var router: Router
 
     private val component by lazy {
         (requireActivity().application as CarSpendsApp).component
     }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
@@ -191,8 +196,8 @@ class NotesListFragment: Fragment() {
     }
 
     private fun setupCarInfoListener() {
-        binding.nlfCarInfoLayout.setOnClickListener {
-            startCarAddOrEdit(getCarId())
+        binding.nlfCarTitle.setOnClickListener {
+            router.navigateTo(Screens.ComponentsList())
         }
     }
 
