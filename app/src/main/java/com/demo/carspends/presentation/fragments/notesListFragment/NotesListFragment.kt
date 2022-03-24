@@ -2,9 +2,7 @@ package com.demo.carspends.presentation.fragments.notesListFragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.view.isVisible
@@ -12,27 +10,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.presentation.CarSpendsApp
-import com.demo.carspends.presentation.ViewModelFactory
+import com.demo.carspends.CarSpendsApp
+import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.extra.ApplyActionDialog
-import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditViewModel
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import java.util.*
 import javax.inject.Inject
 
-class NotesListFragment: Fragment() {
+class NotesListFragment: Fragment(R.layout.notes_list_fragment) {
 
     private var date: Long? = null
     private var type: NoteType? = null
 
-    private var _binding: NotesListFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding: NotesListFragmentBinding by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -53,7 +50,6 @@ class NotesListFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         checkForCarExisting()
-
         setupListeners()
     }
 
@@ -344,20 +340,6 @@ class NotesListFragment: Fragment() {
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = NotesListFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

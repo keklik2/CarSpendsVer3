@@ -5,30 +5,28 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.presentation.CarSpendsApp
-import com.demo.carspends.presentation.ViewModelFactory
+import com.demo.carspends.CarSpendsApp
+import com.demo.carspends.R
+import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
-class ComponentAddOrEditFragment: Fragment() {
+class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment) {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
-    private var _binding: ComponentAddEditFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding: ComponentAddEditFragmentBinding by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -218,20 +216,6 @@ class ComponentAddOrEditFragment: Fragment() {
         super.onAttach(context)
         if (context is OnEditingFinishedListener) onEditingFinishedListener = context
         else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = ComponentAddEditFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

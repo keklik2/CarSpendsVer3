@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation
+package com.demo.carspends
 
 import android.app.Application
 import com.demo.carspends.di.DaggerApplicationComponent

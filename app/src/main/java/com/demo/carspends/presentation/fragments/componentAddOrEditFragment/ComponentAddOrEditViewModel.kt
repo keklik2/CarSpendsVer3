@@ -8,6 +8,8 @@ import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.EditComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemByIdUseCase
+import com.demo.carspends.utils.refactorInt
+import com.demo.carspends.utils.refactorString
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
@@ -95,18 +97,6 @@ class ComponentAddOrEditViewModel @Inject constructor(
                     } else Exception(ERR_NULL_ITEM_EDIT)
                 } else Exception(ERR_NULL_ITEM_EDIT)
             }
-        }
-    }
-
-    private fun refactorString(title: String?): String {
-        return title?.trim() ?: ""
-    }
-
-    private fun refactorInt(price: String?): Int {
-        return try {
-            price?.trim()?.toInt() ?: 0
-        } catch (e: Exception) {
-            0
         }
     }
 

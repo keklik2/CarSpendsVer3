@@ -3,27 +3,24 @@ package com.demo.carspends.presentation.fragments.componentsListFragment
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
-import com.demo.carspends.presentation.CarSpendsApp
-import com.demo.carspends.presentation.ViewModelFactory
+import com.demo.carspends.CarSpendsApp
+import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.extra.ApplyActionDialog
-import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditViewModel
 import javax.inject.Inject
 
-class ComponentsListFragment: Fragment() {
+class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
 
-    private var _binding: ComponentsListFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding: ComponentsListFragmentBinding by viewBinding()
 
     private var test = false
 
@@ -139,19 +136,5 @@ class ComponentsListFragment: Fragment() {
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = ComponentsListFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

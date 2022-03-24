@@ -12,6 +12,9 @@ import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.utils.refactorDouble
+import com.demo.carspends.utils.refactorInt
+import com.demo.carspends.utils.refactorString
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
@@ -215,26 +218,6 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
             )
         }
         updateCarItem()
-    }
-
-    private fun refactorString(title: String?): String {
-        return title?.trim() ?: ""
-    }
-
-    private fun refactorDouble(price: String?): Double {
-        return try {
-            price?.trim()?.toDouble() ?: 0.0
-        } catch (e: Exception) {
-            0.0
-        }
-    }
-
-    private fun refactorInt(price: String?): Int {
-        return try {
-            price?.trim()?.toInt() ?: 0
-        } catch (e: Exception) {
-            0
-        }
     }
 
     private fun areFieldsValid(title: String, totalPrice: Double, mileage: Int): Boolean {
