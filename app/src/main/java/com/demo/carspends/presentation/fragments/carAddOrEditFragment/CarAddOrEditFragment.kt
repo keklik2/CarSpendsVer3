@@ -7,35 +7,31 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.lang.Exception
-import javax.inject.Inject
 
-class CarAddOrEditFragment : Fragment(R.layout.car_add_edit_fragment) {
-
-    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
-
-    private val binding: CarAddEditFragmentBinding by viewBinding()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
+class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.car_add_edit_fragment) {
+    override val binding: CarAddEditFragmentBinding by viewBinding()
+    override val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[CarAddOrEditViewModel::class.java]
+    }
+    override var setupListeners: (() -> Unit)? = {
+        setupNameTextChangeListener()
+        setupMileageTextChangeListener()
+        setupEngineCapacityTextChangeListener()
+        setupPowerTextChangeListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setupTextFieldsErrorsObserver()
+        setupCanCloseScreenObserver()
     }
 
     private lateinit var launchMode: String
@@ -43,24 +39,13 @@ class CarAddOrEditFragment : Fragment(R.layout.car_add_edit_fragment) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         getArgs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupObservers()
-        setupListeners()
         chooseMode()
         setupBackPresser()
-    }
-
-    private fun setupListeners() {
-        setupNameTextChangeListener()
-        setupMileageTextChangeListener()
-        setupEngineCapacityTextChangeListener()
-        setupPowerTextChangeListener()
     }
 
     private fun setupNameTextChangeListener() {
@@ -123,11 +108,6 @@ class CarAddOrEditFragment : Fragment(R.layout.car_add_edit_fragment) {
         })
     }
 
-    private fun setupObservers() {
-        setupTextFieldsErrorsObserver()
-        setupCanCloseFragmentListener()
-    }
-
     private fun setupTextFieldsErrorsObserver() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
             if (it) binding.carefTilCarName.error = ERR_TITLE
@@ -150,12 +130,11 @@ class CarAddOrEditFragment : Fragment(R.layout.car_add_edit_fragment) {
         }
     }
 
-    private fun setupCanCloseFragmentListener() {
+    override fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
             onEditingFinishedListener.onFinish()
         }
     }
-
 
 
     /** Additional functions */

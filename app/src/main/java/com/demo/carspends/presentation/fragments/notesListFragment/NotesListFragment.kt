@@ -4,9 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -14,64 +12,50 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.extra.ApplyActionDialog
 import com.demo.carspends.presentation.fragments.notesListFragment.recyclerView.NoteItemAdapter
-import com.demo.carspends.utils.getFormattedDate
+import com.demo.carspends.utils.ui.BaseFragment
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import java.util.*
-import javax.inject.Inject
 
-class NotesListFragment: Fragment(R.layout.notes_list_fragment) {
+class NotesListFragment: BaseFragment(R.layout.notes_list_fragment) {
 
-    private var date: Long? = null
-    private var type: NoteType? = null
-
-    private val binding: NotesListFragmentBinding by viewBinding()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
+    override val binding: NotesListFragmentBinding by viewBinding()
+    override val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
     }
-
-    private val mainAdapter by lazy {
-        NoteItemAdapter()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        checkForCarExisting()
-        setupListeners()
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        refreshSpinners()
-        setNotesObserver()
-    }
-
-    private fun setupListeners() {
+    override var setupListeners: (() -> Unit)? = {
         setupTypeSpinnerListener()
         setupDateSpinnerListener()
-
-        setupAdapterOnClickListener()
-        setupAdapterOnLongClickListener()
 
         setupRecyclerOnSwipeListener()
 
         setupAddNoteClickListener()
         setupAddNoteListeners()
         setupCarInfoListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setNotesObserver()
+    }
+
+
+    private var date: Long? = null
+    private var type: NoteType? = null
+    private val mainAdapter by lazy {
+        NoteItemAdapter.get {
+            goToEditNoteItemFragment(it.type, it.id)
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        checkForCarExisting()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshSpinners()
     }
 
     private fun setupDateSpinnerListener() {
@@ -275,18 +259,6 @@ class NotesListFragment: Fragment(R.layout.notes_list_fragment) {
         }
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(binding.nlfRvNotes)
-    }
-
-    private fun setupAdapterOnClickListener() {
-        mainAdapter.onClickListener = {
-            goToEditNoteItemFragment(it.type, it.id)
-        }
-    }
-
-    private fun setupAdapterOnLongClickListener() {
-        mainAdapter.onLongClickListener = {
-            Toast.makeText(activity, "Note: (${it.id}, ${getFormattedDate(it.date)})", Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun goToEditNoteItemFragment(type: NoteType, id: Int) {
