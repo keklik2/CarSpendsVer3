@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.demo.carspends.R
@@ -66,18 +67,9 @@ class CarAddOrEditFragment : Fragment() {
     }
 
     private fun setupNameTextChangeListener() {
-        binding.carefTietCarName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetNameError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.carefTietCarName.addTextChangedListener {
+            viewModel.resetNameError()
+        }
     }
 
     private fun setupMileageTextChangeListener() {
@@ -132,8 +124,7 @@ class CarAddOrEditFragment : Fragment() {
 
     private fun setupTextFieldsErrorsObserver() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
-            if (it) binding.carefTilCarName.error = ERR_TITLE
-            else binding.carefTilCarName.error = null
+            binding.carefTilCarName.error = if (it) ERR_TITLE else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
@@ -157,7 +148,6 @@ class CarAddOrEditFragment : Fragment() {
             onEditingFinishedListener.onFinish()
         }
     }
-
 
 
     /** Additional functions */
@@ -200,8 +190,10 @@ class CarAddOrEditFragment : Fragment() {
                 carefTietMileageValue.setText(it.mileage.toString())
                 carefTietEngineCapacity.setText(it.engineVolume.toString())
                 carefTietPower.setText(it.power.toString())
-                "${getFormattedDoubleAsStrForDisplay(it.avgFuel)} ${getString(R.string.text_measure_gas_charge)}"
-                    .also { carefTvAvgFuel.text = it }
+                carefTvAvgFuel.text = getString(
+                    R.string.text_measure_gas_charge_param,
+                    getFormattedDoubleAsStrForDisplay(it.avgFuel)
+                )
                 "${getFormattedDoubleAsStrForDisplay(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
                     .also { carefTvMomentFuel.text = it }
                 "${getFormattedDoubleAsStrForDisplay(it.allFuel)} ${getString(R.string.text_measure_gas_volume_unit)}"
@@ -235,21 +227,19 @@ class CarAddOrEditFragment : Fragment() {
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for CarRepairAddOrEditFragment: $type")
 
         launchMode = type
-        if (launchMode == EDIT_MODE && !args.containsKey(
-                ID_KEY
-            )
-        ) throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
+        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
         carId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
-
 
 
     /** Basic functions to make class work as Fragment */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
+        if (context is OnEditingFinishedListener)
+            onEditingFinishedListener = context
+        else
+            throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     override fun onCreateView(

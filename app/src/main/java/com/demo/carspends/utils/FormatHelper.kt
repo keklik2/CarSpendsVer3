@@ -4,21 +4,18 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun getFormattedDoubleAsStrForDisplay(value: Double): String {
-    val df = DecimalFormat()
-    with(df) {
-        maximumFractionDigits = 1
-        isGroupingUsed = true
-        groupingSize = 3
+val df = DecimalFormat().apply {
+    maximumFractionDigits = 1
+    isGroupingUsed = true
+    groupingSize = 3
 
-        val dfs = decimalFormatSymbols
-        dfs.decimalSeparator = '.'
-        dfs.groupingSeparator = ' '
-        decimalFormatSymbols = dfs
-
-        return format(value)
-    }
+    val dfs = decimalFormatSymbols
+    dfs.decimalSeparator = '.'
+    dfs.groupingSeparator = ' '
+    decimalFormatSymbols = dfs
 }
+
+fun getFormattedDoubleAsStrForDisplay(value: Double): String = df.format(value)
 
 fun getFormattedIntAsStrForDisplay(value: Int): String {
     val df = DecimalFormat()

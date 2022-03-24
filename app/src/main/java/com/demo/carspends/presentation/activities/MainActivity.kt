@@ -7,7 +7,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ActivityMainBinding
 import com.demo.carspends.presentation.CarSpendsApp
+import com.demo.carspends.utils.Screens
+import com.github.terrakok.cicerone.Command
 import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.Replace
 import com.github.terrakok.cicerone.androidx.AppNavigator
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import javax.inject.Inject
@@ -25,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+        if (savedInstanceState == null)
+            navigator.applyCommands(arrayOf(Replace(Screens.NotesList())))
 
         // Setting bottom menu for activity
 //        binding = ActivityMainBinding.inflate(layoutInflater)
@@ -34,13 +39,15 @@ class MainActivity : AppCompatActivity() {
 //        navView.setupWithNavController(navController)
     }
 
-    override fun onResume() {
-        super.onResume()
-        navigatorHolder.removeNavigator()
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
     }
 
+
     override fun onPause() {
-        navigatorHolder.setNavigator(navigator)
+        navigatorHolder.removeNavigator()
         super.onPause()
     }
 

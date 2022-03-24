@@ -48,6 +48,7 @@ class ApplyActionDialog(activity: Activity, private val question: String?): Dial
                 dismiss()
             }
         } else throw error("onApplyClickListener is not assigned for ApplyActionDialog")
+
         if (onDenyClickListener != null) {
             buttonDeny.setOnClickListener {
                 onDenyClickListener?.invoke()

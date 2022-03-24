@@ -54,10 +54,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/caef_tv_resource_unit"
+            app:layout_constraintHorizontal_weight="8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
 
-            app:layout_constraintHorizontal_weight="8">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/caef_tiet_resource_value"
@@ -79,18 +79,19 @@
             android:text="@string/text_measure_mileage_unit"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/caef_til_resource_value"
-            app:layout_constraintTop_toTopOf="parent"
 
-            app:layout_constraintHorizontal_weight="1"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/caef_mileage_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
 
@@ -99,14 +100,15 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/caef_til_mileage_value"
             style="@style/inputTextLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             app:layout_constraintEnd_toStartOf="@+id/caef_tv_mileage_unit"
+            app:layout_constraintHorizontal_weight="8"
+
             app:layout_constraintStart_toStartOf="parent"
 
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="8">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/caef_tiet_mileage_value"
@@ -123,19 +125,13 @@
         <TextView
             android:id="@+id/caef_tv_mileage_unit"
             style="@style/entryUnitText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/text_measure_mileage_unit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center_vertical"
+            android:layout_width="44dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:text="@string/text_measure_mileage_unit" />
 
-            app:layout_constraintStart_toEndOf="@+id/caef_til_mileage_value"
-
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="1"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/caef_cv_date"

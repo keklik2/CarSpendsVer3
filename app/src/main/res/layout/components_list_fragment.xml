@@ -14,8 +14,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-
+        tools:itemCount="20"
         tools:listitem="@layout/component_item"
+        android:paddingBottom="92dp"
+        android:clipToPadding="false"
         />
 
     <TextView

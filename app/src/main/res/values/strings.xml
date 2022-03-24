@@ -31,6 +31,7 @@
     <string name="text_measure_gas_charge">л/100км</string>
     <string name="text_measure_price_charge">₽/км</string>
     <string name="text_measure_currency">₽</string>
+    <string name="text_measure_gas_charge_param">%s л/100км</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>

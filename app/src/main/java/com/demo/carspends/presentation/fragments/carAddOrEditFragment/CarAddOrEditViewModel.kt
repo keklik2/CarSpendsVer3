@@ -198,12 +198,12 @@ class CarAddOrEditViewModel @Inject constructor(
     fun setItem(id: Int) {
         carId = id
         viewModelScope.launch {
-            _carItem.value = getCarItemUseCase(carId)
+            _carItem.value = getCarItemUseCase.invoke(carId)
         }
     }
 
     private suspend fun updateItem() {
-        _carItem.value = getCarItemUseCase(carId)
+        _carItem.value = getCarItemUseCase.invoke(carId)
     }
 
     fun resetPowerError() {

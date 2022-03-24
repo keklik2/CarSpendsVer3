@@ -55,14 +55,14 @@ abstract class MainDataBase: RoomDatabase() {
         private val MIGRATION_10_12: Migration = object : Migration(10, 12) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 with(database) {
-                    database.execSQL(
-                        "CREATE TABLE cars_new (id INTEGER NOT NULL, title TEXT NOT NULL, startMileage INTEGER NOT NULL, mileage INTEGER NOT NULL, engineVolume DOUBLE NOT NULL, power INTEGER NOT NULL, avgFuel DOUBLE NOT NULL, momentFuel DOUBLE NOT NULL, allFuel DOUBLE NOT NULL, fuelPrice DOUBLE NOT NULL, milPrice DOUBLE NOT NULL, allPrice DOUBLE NOT NULL, PRIMARY KEY(id))")
-                    execSQL(
-                                "INSERT INTO cars_new (id, title, startMileage, mileage, engineVolume, power, avgFuel, momentFuel, allFuel, fuelPrice, milPrice, allPrice) SELECT id, title, startMileage, mileage, engineVolume, power, avgFuel, momentFuel, allFuel, fuelPrice, milPrice, allPrice FROM cars")
-                    execSQL("DROP TABLE cars");
+                    beginTransaction()
+                    execSQL("CREATE TABLE cars_new (id INTEGER NOT NULL, title TEXT NOT NULL, startMileage INTEGER NOT NULL, mileage INTEGER NOT NULL, engineVolume DOUBLE NOT NULL, power INTEGER NOT NULL, avgFuel DOUBLE NOT NULL, momentFuel DOUBLE NOT NULL, allFuel DOUBLE NOT NULL, fuelPrice DOUBLE NOT NULL, milPrice DOUBLE NOT NULL, allPrice DOUBLE NOT NULL, PRIMARY KEY(id))")
+                    execSQL("INSERT INTO cars_new (id, title, startMileage, mileage, engineVolume, power, avgFuel, momentFuel, allFuel, fuelPrice, milPrice, allPrice) SELECT id, title, startMileage, mileage, engineVolume, power, avgFuel, momentFuel, allFuel, fuelPrice, milPrice, allPrice FROM cars")
+                    execSQL("DROP TABLE cars")
                     execSQL("ALTER TABLE cars_new ADD COLUMN allMileage INTEGER DEFAULT 0 NOT NULL")
                     execSQL("ALTER TABLE cars_new RENAME TO cars")
-                };
+                    endTransaction()
+                }
             }
         }
     }

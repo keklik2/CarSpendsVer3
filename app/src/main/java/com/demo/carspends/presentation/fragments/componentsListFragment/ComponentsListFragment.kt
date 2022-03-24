@@ -62,13 +62,11 @@ class ComponentsListFragment: Fragment() {
     }
 
     private fun setComponentsObserver() {
+        binding.clfRvComponents.adapter = mainAdapter
+
         viewModel.componentsList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.clfTvEmptyNotes.visibility = View.VISIBLE
-            else {
-                binding.clfTvEmptyNotes.visibility = View.INVISIBLE
-                mainAdapter.submitList(it)
-                binding.clfRvComponents.adapter = mainAdapter
-            }
+            binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE else View.INVISIBLE
+            mainAdapter.submitList(it)
         }
     }
 
@@ -117,6 +115,7 @@ class ComponentsListFragment: Fragment() {
                     viewModel.deleteComponent(currItem)
                 }
                 testDialog.onDenyClickListener = {
+                    //TODO : Fix
                     setComponentsObserver()
                 }
                 testDialog.show()

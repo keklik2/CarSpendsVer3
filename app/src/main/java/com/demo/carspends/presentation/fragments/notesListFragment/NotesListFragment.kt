@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +29,7 @@ import com.github.terrakok.cicerone.Router
 import java.util.*
 import javax.inject.Inject
 
-class NotesListFragment: Fragment() {
+class NotesListFragment : Fragment() {
 
     private var date: Long? = null
     private var type: NoteType? = null
@@ -46,9 +47,11 @@ class NotesListFragment: Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
-    }
+//    private val viewModel by lazy {
+//        ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
+//    }
+
+    private val viewModel: NotesListViewModel by viewModels { viewModelFactory }
 
     private val mainAdapter by lazy {
         NoteItemAdapter()
@@ -84,33 +87,35 @@ class NotesListFragment: Fragment() {
     }
 
     private fun setupDateSpinnerListener() {
-        binding.nlfSpinnerDate.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                refreshDateSpinner(pos)
-                setNotesObserver()
-            }
+        binding.nlfSpinnerDate.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                    refreshDateSpinner(pos)
+                    setNotesObserver()
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
 
-        }
+            }
     }
 
     private fun setupTypeSpinnerListener() {
-        binding.nlfSpinnerNoteType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                refreshTypeSpinner(pos)
-                setNotesObserver()
-            }
+        binding.nlfSpinnerNoteType.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
+                    refreshTypeSpinner(pos)
+                    setNotesObserver()
+                }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-            }
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+                }
 
-        }
+            }
     }
 
     private fun refreshDateSpinner(pos: Int) {
-        date = when(pos) {
+        date = when (pos) {
             0 -> null
             1 -> getYearDate()
             2 -> getMonthDate()
@@ -119,7 +124,7 @@ class NotesListFragment: Fragment() {
     }
 
     private fun refreshTypeSpinner(pos: Int) {
-        type = when(pos) {
+        type = when (pos) {
             0 -> null
             1 -> NoteType.FUEL
             2 -> NoteType.REPAIR
@@ -180,7 +185,7 @@ class NotesListFragment: Fragment() {
 
     private fun checkForCarExisting() {
         viewModel.carsList.observe(viewLifecycleOwner) {
-            if(it.isEmpty()) startCarAddOrEdit()
+            if (it.isEmpty()) startCarAddOrEdit()
             else {
                 val carItem = it[0]
                 with(binding) {
@@ -204,7 +209,7 @@ class NotesListFragment: Fragment() {
     private fun getCarId(): Int {
         var id = 0
         viewModel.carsList.observe(viewLifecycleOwner) {
-              id = it[0].id
+            id = it[0].id
         }
         return id
     }
@@ -258,7 +263,7 @@ class NotesListFragment: Fragment() {
     }
 
     private fun setupRecyclerOnSwipeListener() {
-        val callback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -270,7 +275,8 @@ class NotesListFragment: Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
 
-                val question = String.format(getString(R.string.text_delete_note_confirmation), currItem.title)
+                val question =
+                    String.format(getString(R.string.text_delete_note_confirmation), currItem.title)
                 val testDialog = ApplyActionDialog(requireActivity(), question)
                 testDialog.onApplyClickListener = {
                     viewModel.deleteNote(currItem)
@@ -294,12 +300,16 @@ class NotesListFragment: Fragment() {
 
     private fun setupAdapterOnLongClickListener() {
         mainAdapter.onLongClickListener = {
-            Toast.makeText(activity, "Note: (${it.id}, ${getFormattedDate(it.date)})", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity,
+                "Note: (${it.id}, ${getFormattedDate(it.date)})",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
     private fun goToEditNoteItemFragment(type: NoteType, id: Int) {
-        when(type) {
+        when (type) {
             NoteType.FUEL -> startFillingNoteAddOrEdit(id)
             NoteType.REPAIR -> startRepairNoteAddOrEdit(id)
             NoteType.EXTRA -> startExtraNoteAddOrEdit(id)
@@ -307,7 +317,7 @@ class NotesListFragment: Fragment() {
     }
 
     private fun goToAddNoteItemFragment(type: NoteType) {
-        when(type) {
+        when (type) {
             NoteType.FUEL -> startFillingNoteAddOrEdit()
             NoteType.REPAIR -> startRepairNoteAddOrEdit()
             NoteType.EXTRA -> startExtraNoteAddOrEdit()
@@ -315,27 +325,60 @@ class NotesListFragment: Fragment() {
     }
 
     private fun startFillingNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), getCarId()))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteFillingIntent(
+                requireActivity(),
+                getCarId()
+            )
+        )
     }
 
     private fun startFillingNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteFillingIntent(requireActivity(), getCarId(), id))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteFillingIntent(
+                requireActivity(),
+                getCarId(),
+                id
+            )
+        )
     }
 
     private fun startRepairNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), getCarId()))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteRepairIntent(
+                requireActivity(),
+                getCarId()
+            )
+        )
     }
 
     private fun startRepairNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteRepairIntent(requireActivity(), getCarId(), id))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteRepairIntent(
+                requireActivity(),
+                getCarId(),
+                id
+            )
+        )
     }
 
     private fun startExtraNoteAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId()))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteExtraIntent(
+                requireActivity(),
+                getCarId()
+            )
+        )
     }
 
     private fun startExtraNoteAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditNoteExtraIntent(requireActivity(), getCarId(), id))
+        startActivity(
+            DetailElementsActivity.newAddOrEditNoteExtraIntent(
+                requireActivity(),
+                getCarId(),
+                id
+            )
+        )
     }
 
     private fun startCarAddOrEdit() {

@@ -5,6 +5,7 @@ import android.content.Intent
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditFragment
 import com.demo.carspends.presentation.fragments.componentsListFragment.ComponentsListFragment
+import com.demo.carspends.presentation.fragments.notesListFragment.NotesListFragment
 import com.github.terrakok.cicerone.androidx.ActivityScreen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
@@ -20,6 +21,10 @@ object Screens {
 
     fun ComponentsList() = FragmentScreen {
         ComponentsListFragment()
+    }
+
+    fun NotesList() = FragmentScreen {
+        NotesListFragment()
     }
 
 }
