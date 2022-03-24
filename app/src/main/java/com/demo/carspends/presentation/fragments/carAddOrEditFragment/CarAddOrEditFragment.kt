@@ -4,30 +4,28 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.presentation.CarSpendsApp
-import com.demo.carspends.presentation.ViewModelFactory
+import com.demo.carspends.CarSpendsApp
+import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import java.lang.Exception
 import javax.inject.Inject
 
-class CarAddOrEditFragment : Fragment() {
+class CarAddOrEditFragment : Fragment(R.layout.car_add_edit_fragment) {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
-    private var _binding: CarAddEditFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding: CarAddEditFragmentBinding by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -250,20 +248,6 @@ class CarAddOrEditFragment : Fragment() {
         super.onAttach(context)
         if (context is OnEditingFinishedListener) onEditingFinishedListener = context
         else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = CarAddEditFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

@@ -10,6 +10,9 @@ import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.utils.refactorDouble
+import com.demo.carspends.utils.refactorInt
+import com.demo.carspends.utils.refactorString
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -173,26 +176,6 @@ class CarAddOrEditViewModel @Inject constructor(
             return false
         }
         return true
-    }
-
-    private fun refactorString(title: String?): String {
-        return title?.trim() ?: ""
-    }
-
-    private fun refactorInt(price: String?): Int {
-        return try {
-            price?.trim()?.toInt() ?: 0
-        } catch (e: Exception) {
-            0
-        }
-    }
-
-    private fun refactorDouble(price: String?): Double {
-        return try {
-            price?.trim()?.toDouble() ?: 0.0
-        } catch (e: Exception) {
-            0.0
-        }
     }
 
     fun setItem(id: Int) {

@@ -5,33 +5,30 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
-import com.demo.carspends.presentation.CarSpendsApp
-import com.demo.carspends.presentation.ViewModelFactory
+import com.demo.carspends.CarSpendsApp
+import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditViewModel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
-class NoteFillingAddOrEditFragment : Fragment() {
+class NoteFillingAddOrEditFragment : Fragment(R.layout.note_filling_add_edit_fragment) {
 
     private lateinit var onEditingFinishedListener: OnEditingFinishedListener
 
-    private var _binding: NoteFillingAddEditFragmentBinding? = null
-    private val binding get() = _binding!!
+    private val binding: NoteFillingAddEditFragmentBinding by viewBinding()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -372,20 +369,6 @@ class NoteFillingAddOrEditFragment : Fragment() {
         super.onAttach(context)
         if (context is OnEditingFinishedListener) onEditingFinishedListener = context
         else throw Exception("Activity must implement OnEditingFinishedListener")
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = NoteFillingAddEditFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

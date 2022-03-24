@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation
+package com.demo.carspends
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

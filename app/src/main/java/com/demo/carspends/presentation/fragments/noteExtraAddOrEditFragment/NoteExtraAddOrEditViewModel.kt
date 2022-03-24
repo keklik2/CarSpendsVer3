@@ -12,6 +12,8 @@ import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.utils.refactorDouble
+import com.demo.carspends.utils.refactorString
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
@@ -49,8 +51,8 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     }
 
     fun addNoteItem(title: String?, price: String?) {
-        val rTitle = refactorTitle(title)
-        val rPrice = refactorPrice(price)
+        val rTitle = refactorString(title)
+        val rPrice = refactorDouble(price)
 
         if (areFieldsValid(rTitle, rPrice)) {
             viewModelScope.launch {
@@ -73,8 +75,8 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     }
 
     fun editNoteItem(title: String?, price: String?) {
-        val rTitle = refactorTitle(title)
-        val rPrice = refactorPrice(price)
+        val rTitle = refactorString(title)
+        val rPrice = refactorDouble(price)
 
         if (areFieldsValid(rTitle, rPrice)) {
             viewModelScope.launch {
@@ -138,18 +140,6 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
                 allPrice = allPrice
             )
         )
-    }
-
-    private fun refactorTitle(title: String?): String {
-        return title?.trim() ?: ""
-    }
-
-    private fun refactorPrice(price: String?): Double {
-        return try {
-            price?.trim()?.toDouble() ?: 0.0
-        } catch (e: Exception) {
-            0.0
-        }
     }
 
     private fun areFieldsValid(title: String, price: Double): Boolean {
