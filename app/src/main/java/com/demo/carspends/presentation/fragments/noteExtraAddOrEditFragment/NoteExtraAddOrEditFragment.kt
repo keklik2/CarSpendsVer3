@@ -21,43 +21,42 @@ import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
-class NoteExtraAddOrEditFragment: Fragment(R.layout.note_extra_add_edit_fragment) {
+class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.note_extra_add_edit_fragment) {
+    override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
+    override val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[NoteExtraAddOrEditViewModel::class.java]
+    }
+    override var setupListeners: (() -> Unit)? = {
+        setupDatePickerListener()
+        setupTitleTextChangeListener()
+        setupPriceTextChangeListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setupErrorObserver()
+        setupNoteDateObserver()
+        setupCanCloseScreenObserver()
+    }
 
-    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
-
-    private val binding: NoteExtraAddEditFragmentBinding by viewBinding()
 
     private lateinit var launchMode: String
     private var noteId = UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
 
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NoteExtraAddOrEditViewModel::class.java]
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         getArgs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupCurrCarNote()
-        setupObservers()
-        setupListeners()
         chooseMode()
     }
 
@@ -65,7 +64,7 @@ class NoteExtraAddOrEditFragment: Fragment(R.layout.note_extra_add_edit_fragment
         viewModel.setCarId(carId)
     }
 
-    private fun setupObservers() {
+    private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
             if (it) binding.neaefTilName.error = ERR_TITLE
             else binding.neaefTilName.error = null
@@ -75,17 +74,21 @@ class NoteExtraAddOrEditFragment: Fragment(R.layout.note_extra_add_edit_fragment
             if (it) binding.neaefTilAmountValue.error = ERR_PRICE
             else binding.neaefTilAmountValue.error = null
         }
+    }
 
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
-        }
-
+    private fun setupNoteDateObserver() {
         viewModel.noteDate.observe(viewLifecycleOwner) {
             binding.neaefTvDateValue.text = getFormattedDate(it)
         }
     }
 
-    private fun setupListeners() {
+    override fun setupCanCloseScreenObserver() {
+        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
+            onEditingFinishedListener.onFinish()
+        }
+    }
+
+    private fun setupDatePickerListener() {
         val dateSetListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             val cal = GregorianCalendar.getInstance()
             cal.set(Calendar.YEAR, year)
@@ -106,9 +109,6 @@ class NoteExtraAddOrEditFragment: Fragment(R.layout.note_extra_add_edit_fragment
                 cCal.get(Calendar.MONTH),
                 cCal.get(Calendar.DAY_OF_MONTH)).show()
         }
-
-        setupTitleTextChangeListener()
-        setupPriceTextChangeListener()
     }
 
     private fun setupTitleTextChangeListener() {
@@ -188,11 +188,11 @@ class NoteExtraAddOrEditFragment: Fragment(R.layout.note_extra_add_edit_fragment
         noteId = args.getInt(ID_KEY, UNDEFINED_ID)
     }
 
+
+
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     companion object {

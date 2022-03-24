@@ -59,4 +59,6 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.40.5'
 
     implementation 'com.github.kirich1409:viewbindingpropertydelegate:1.5.3'
+
+    implementation 'io.github.ibrahimyilmaz:kiel:1.2.1'
 }

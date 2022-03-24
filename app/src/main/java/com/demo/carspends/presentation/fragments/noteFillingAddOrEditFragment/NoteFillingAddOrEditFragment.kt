@@ -7,7 +7,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
@@ -15,66 +14,53 @@ import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.ViewModelFactory
-import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import java.lang.Exception
 import java.util.*
-import javax.inject.Inject
 
-class NoteFillingAddOrEditFragment : Fragment(R.layout.note_filling_add_edit_fragment) {
-
-    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
-
-    private val binding: NoteFillingAddEditFragmentBinding by viewBinding()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
+class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.note_filling_add_edit_fragment) {
+    override val binding: NoteFillingAddEditFragmentBinding by viewBinding()
+    override val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[NoteFillingAddOrEditViewModel::class.java]
+    }
+    override var setupListeners: (() -> Unit)? = {
+        setupDatePickerDialogListener()
+        setupVolumeTextChangeListener()
+        setupAmountTextChangeListener()
+        setupPriceTextChangeListener()
+        setupMileageTextChangeListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setupCalcListener()
+        setupErrorListener()
+        setupCanCloseScreenObserver()
+        setupNoteDateListener()
+        setupLastFuelTypeListener()
     }
 
     private lateinit var launchMode: String
     private var noteId = NoteItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
-
     private var lastChanged = CHANGED_NULL
     private var preLastChanged = CHANGED_NULL
     private var open = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         getArgs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupCurrCarNote()
         setupFuelSpinnerAdapter()
-        setupObservers()
-        setupListeners()
         chooseMode()
     }
 
     private fun setupCurrCarNote() {
         viewModel.setCarItem(carId)
-    }
-
-    private fun setupListeners() {
-        setupDatePickerDialogListener()
-        setupVolumeTextChangeListener()
-        setupAmountTextChangeListener()
-        setupPriceTextChangeListener()
-        setupMileageTextChangeListener()
     }
 
     private fun setupDatePickerDialogListener() {
@@ -235,25 +221,42 @@ class NoteFillingAddOrEditFragment : Fragment(R.layout.note_filling_add_edit_fra
         })
     }
 
-//    private fun checkForRefillNote() {
-//        viewModel.notesListByMileage.observe(viewLifecycleOwner) {
-//            for (note in it) {
-//                if (note.type == NoteType.FUEL) {
-//                    viewModel.setLastRefillFuelType(note.id)
-//                    break
-//                }
-//            }
-//        }
-//    }
+    private fun setupLastFuelTypeListener() {
+        viewModel.lastFuelType.observe(viewLifecycleOwner) {
+            binding.nfaefSpinnerFuelType.setSelection(viewModel.getFuelId(it))
+        }
+    }
 
-    private fun setupObservers() {
+    private fun setupNoteDateListener() {
+        viewModel.noteDate.observe(viewLifecycleOwner) {
+            binding.nfaefTvDateValue.text = getFormattedDate(it)
+        }
+    }
+
+    override fun setupCanCloseScreenObserver() {
+        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
+            onEditingFinishedListener.onFinish()
+        }
+    }
+
+    private fun setupCalcListener() {
+        viewModel.calcVolume.observe(viewLifecycleOwner) {
+            binding.nfaefTietFuelVolume.setText(getFormattedDoubleAsStr(it))
+        }
+
+        viewModel.calcAmount.observe(viewLifecycleOwner) {
+            binding.nfaefTietFuelAmount.setText(getFormattedDoubleAsStr(it))
+        }
+
+        viewModel.calcPrice.observe(viewLifecycleOwner) {
+            binding.nfaefTietFuelPrice.setText(getFormattedDoubleAsStr(it))
+        }
+    }
+
+    private fun setupErrorListener() {
         viewModel.errorVolumeInput.observe(viewLifecycleOwner) {
             if (it) binding.nfaefTilFuelVolume.error = ERR_VOLUME
             else binding.nfaefTilFuelVolume.error = null
-        }
-
-        viewModel.calcVolume.observe(viewLifecycleOwner) {
-            binding.nfaefTietFuelVolume.setText(getFormattedDoubleAsStr(it))
         }
 
         viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
@@ -261,40 +264,19 @@ class NoteFillingAddOrEditFragment : Fragment(R.layout.note_filling_add_edit_fra
             else binding.nfaefTilFuelAmount.error = null
         }
 
-        viewModel.calcAmount.observe(viewLifecycleOwner) {
-            binding.nfaefTietFuelAmount.setText(getFormattedDoubleAsStr(it))
-        }
-
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
             if (it) binding.nfaefTilFuelPrice.error = ERR_PRICE
             else binding.nfaefTilFuelPrice.error = null
-        }
-
-        viewModel.calcPrice.observe(viewLifecycleOwner) {
-            binding.nfaefTietFuelPrice.setText(getFormattedDoubleAsStr(it))
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
             if (it) binding.nfaefTilMileageValue.error = ERR_MILEAGE
             else binding.nfaefTilMileageValue.error = null
         }
-
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
-        }
-
-        viewModel.noteDate.observe(viewLifecycleOwner) {
-            binding.nfaefTvDateValue.text = getFormattedDate(it)
-        }
-
-        viewModel.lastFuelType.observe(viewLifecycleOwner) {
-            binding.nfaefSpinnerFuelType.setSelection(viewModel.getFuelId(it))
-        }
     }
 
     private fun setupFuelSpinnerAdapter() {
         // Setting Fuel enum values for spinner
-
         binding.nfaefSpinnerFuelType.adapter = ArrayAdapter(
             requireActivity(),
             R.layout.support_simple_spinner_dropdown_item,
@@ -367,8 +349,6 @@ class NoteFillingAddOrEditFragment : Fragment(R.layout.note_filling_add_edit_fra
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     companion object {

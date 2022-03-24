@@ -16,38 +16,30 @@ import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.extra.ApplyActionDialog
+import com.demo.carspends.utils.ui.BaseFragment
 import javax.inject.Inject
 
-class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
-
-    private val binding: ComponentsListFragmentBinding by viewBinding()
+class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
+    override val binding: ComponentsListFragmentBinding by viewBinding()
+    override val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[ComponentsListViewModel::class.java]
+    }
+    override var setupListeners: (() -> Unit)? = {
+        setupRecyclerItemOnClickListener()
+        setupRecyclerOnSwipeListener()
+        setupAddComponentButtonListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setComponentsObserver()
+    }
 
     private var test = false
-
     private val mainAdapter by lazy {
         ComponentItemAdapter().apply {
             viewModel.carsList.observe(viewLifecycleOwner) {
                 currMileage = it[0].mileage
             }
         }
-    }
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ComponentsListViewModel::class.java]
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setComponentsObserver()
-        setupListeners()
     }
 
     private fun getCarId(): Int {
@@ -69,10 +61,10 @@ class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
         }
     }
 
-    private fun setupListeners() {
-        setupRecyclerItemOnClickListener()
-        setupRecyclerOnSwipeListener()
-        setupAddComponentButtonListener()
+    private fun setupRecyclerItemOnClickListener() {
+        mainAdapter.onClickListener = {
+            goToAddOrEditComponentItemFragment(it.id)
+        }
     }
 
     private fun setupAddComponentButtonListener() {
@@ -81,15 +73,9 @@ class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
         }
     }
 
-    private fun setupRecyclerItemOnClickListener() {
-        mainAdapter.onClickListener = {
-            goToAddOrEditComponentItemFragment(it.id)
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun setupRecyclerOnSwipeListener() {
-        val callback = object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -108,7 +94,10 @@ class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
 
-                val question = String.format(getString(R.string.text_delete_component_confirmation), currItem.title)
+                val question = String.format(
+                    getString(R.string.text_delete_component_confirmation),
+                    currItem.title
+                )
                 val testDialog = ApplyActionDialog(requireActivity(), question)
                 testDialog.onApplyClickListener = {
                     viewModel.deleteComponent(currItem)
@@ -126,11 +115,22 @@ class ComponentsListFragment: Fragment(R.layout.components_list_fragment) {
     }
 
     private fun goToAddOrEditComponentItemFragment() {
-        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), getCarId()))
+        startActivity(
+            DetailElementsActivity.newAddOrEditComponentIntent(
+                requireActivity(),
+                getCarId()
+            )
+        )
     }
 
     private fun goToAddOrEditComponentItemFragment(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditComponentIntent(requireActivity(), getCarId(), id))
+        startActivity(
+            DetailElementsActivity.newAddOrEditComponentIntent(
+                requireActivity(),
+                getCarId(),
+                id
+            )
+        )
     }
 
     override fun onAttach(context: Context) {

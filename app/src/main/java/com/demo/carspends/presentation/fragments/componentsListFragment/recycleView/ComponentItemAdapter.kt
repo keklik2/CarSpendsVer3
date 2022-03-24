@@ -42,17 +42,21 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
             val progressColor = getColor(view, getResourceColorId(leftResourcePercent))
 
             // Setting progressbar value & color
-            pbLeftMileage.progress = leftResourcePercent
+            with(binding) {
+                ciPbLeftMileage.progress = leftResourcePercent
 
-            tvLeftMileage.text = getFormattedPercentsAsStr(leftResourcePercent)
-            tvTitle.text = currComponent.title
+                ciTvLeftMileage.text = getFormattedPercentsAsStr(leftResourcePercent)
+                ciTvTitle.text = currComponent.title
 
-            // Setting resource statement value & color
-            val milState = view.context.getString(R.string.text_measure_mileage_unit)
-            "${getFormattedIntAsStrForDisplay(leftResourceValue)} $milState".also { tvResourceStatement.text = it }
-            tvResourceStatement.setTextColor(progressColor)
+                // Setting resource statement value & color
+                val milState = view.context.getString(R.string.text_measure_mileage_unit)
+                "${getFormattedIntAsStrForDisplay(leftResourceValue)} $milState".also {
+                    ciTvResourceStatement.text = it
+                }
+                ciTvResourceStatement.setTextColor(progressColor)
 
-            tvDate.text = getFormattedDate(currComponent.date)
+                ciTvDate.text = getFormattedDate(currComponent.date)
+            }
 
             view.setOnClickListener {
                 onClickListener?.invoke(currComponent)

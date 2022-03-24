@@ -6,37 +6,33 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.CarSpendsApp
 import com.demo.carspends.R
-import com.demo.carspends.ViewModelFactory
-import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.lang.Exception
 import java.util.*
-import javax.inject.Inject
 
-class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment) {
-
-    private lateinit var onEditingFinishedListener: OnEditingFinishedListener
-
-    private val binding: ComponentAddEditFragmentBinding by viewBinding()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (requireActivity().application as CarSpendsApp).component
-    }
-
-    private val viewModel by lazy {
+class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.component_add_edit_fragment) {
+    override val binding: ComponentAddEditFragmentBinding by viewBinding()
+    override val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[ComponentAddOrEditViewModel::class.java]
+    }
+    override var setupListeners: (() -> Unit)? = {
+        setupDatePickerListener()
+        setupTitleTextChangeListener()
+        setupAmountTextChangeListener()
+        setupMileageTextChangeListener()
+    }
+    override var setupObservers: (() -> Unit)? = {
+        setupErrorObserver()
+        setupCanCloseScreenObserver()
+        setupDateObserver()
     }
 
     private lateinit var launchMode: String
@@ -45,19 +41,15 @@ class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         getArgs()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        setupObservers()
-        setupListeners()
         chooseMode()
     }
 
-    private fun setupListeners() {
+    private fun setupDatePickerListener() {
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
                 val cal = GregorianCalendar.getInstance()
@@ -79,10 +71,6 @@ class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment)
                 cCal.get(Calendar.MONTH),
                 cCal.get(Calendar.DAY_OF_MONTH)).show()
         }
-
-        setupTitleTextChangeListener()
-        setupAmountTextChangeListener()
-        setupMileageTextChangeListener()
     }
 
     private fun setupTitleTextChangeListener() {
@@ -130,7 +118,19 @@ class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment)
         })
     }
 
-    private fun setupObservers() {
+    private fun setupDateObserver() {
+        viewModel.componentDate.observe(viewLifecycleOwner) {
+            binding.caefTvDateValue.text = getFormattedDate(it)
+        }
+    }
+
+    override fun setupCanCloseScreenObserver() {
+        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
+            onEditingFinishedListener.onFinish()
+        }
+    }
+
+    private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
             if(it) binding.caefTilName.error = ERR_TITLE
             else binding.caefTilName.error = null
@@ -144,14 +144,6 @@ class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment)
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
             if (it) binding.caefTilMileageValue.error = ERR_MILEAGE
             else binding.caefTilMileageValue.error = null
-        }
-
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
-        }
-
-        viewModel.componentDate.observe(viewLifecycleOwner) {
-            binding.caefTvDateValue.text = getFormattedDate(it)
         }
     }
 
@@ -214,8 +206,6 @@ class ComponentAddOrEditFragment: Fragment(R.layout.component_add_edit_fragment)
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     companion object {

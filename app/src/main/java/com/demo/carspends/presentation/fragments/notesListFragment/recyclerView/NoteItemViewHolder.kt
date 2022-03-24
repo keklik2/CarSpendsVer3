@@ -1,15 +1,10 @@
 package com.demo.carspends.presentation.fragments.notesListFragment.recyclerView
 
 import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.demo.carspends.R
+import com.demo.carspends.databinding.NoteItemBinding
+import com.demo.carspends.domain.note.NoteItem
+import me.ibrahimyilmaz.kiel.core.RecyclerViewHolder
 
-class NoteItemViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-    val ivTool = view.findViewById<ImageView>(R.id.ni_iv_tool)
-    val tvTitle = view.findViewById<TextView>(R.id.ni_tv_title)
-    val tvAmount = view.findViewById<TextView>(R.id.ni_tv_amount)
-    val tvExtraInfo = view.findViewById<TextView>(R.id.ni_tv_extra_info)
-    val tvDate = view.findViewById<TextView>(R.id.ni_tv_date)
+class NoteItemViewHolder(view: View) : RecyclerViewHolder<NoteItem>(view) {
+    val binding = NoteItemBinding.bind(view)
 }
