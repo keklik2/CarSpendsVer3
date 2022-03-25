@@ -235,7 +235,7 @@ class NoteFillingAddOrEditFragment :
         binding.nfaefSpinnerFuelType.adapter = ArrayAdapter(
             requireActivity(),
             R.layout.support_simple_spinner_dropdown_item,
-            Fuel.values()
+            Fuel.values().map { it.toString(requireContext()) }
         )
     }
 

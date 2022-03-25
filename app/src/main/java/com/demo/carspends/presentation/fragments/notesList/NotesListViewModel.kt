@@ -195,12 +195,12 @@ class NotesListViewModel @Inject constructor(
     fun setCarItem(id: Int) {
         viewModelScope.launch {
             carId = id
-            _currCarItem.value = getCarItemUseCase(carId)
+            _currCarItem.value = getCarItemUseCase.invoke(carId)
         }
     }
 
     private suspend fun updateCarItem() {
-        _currCarItem.value = getCarItemUseCase(carId)
+        _currCarItem.value = getCarItemUseCase.invoke(carId)
     }
 
     fun setAllNotes(date: Long = ALL_TIME) {
