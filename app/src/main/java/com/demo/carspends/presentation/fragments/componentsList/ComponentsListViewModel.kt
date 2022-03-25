@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.componentsListFragment
+package com.demo.carspends.presentation.fragments.componentsList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

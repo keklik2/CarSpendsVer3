@@ -1,39 +1,36 @@
-package com.demo.carspends.presentation.fragments.componentsListFragment
+package com.demo.carspends.presentation.fragments.componentsList
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
-import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
-import com.demo.carspends.presentation.extra.ApplyActionDialog
+import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.utils.ui.BaseFragment
-import javax.inject.Inject
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     override val binding: ComponentsListFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ComponentsListViewModel::class.java]
-    }
+    override val viewModel: ComponentsListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRecyclerItemOnClickListener()
+
         setupRecyclerOnSwipeListener()
+        setupRecyclerScrollListener()
+
         setupAddComponentButtonListener()
     }
     override var setupObservers: (() -> Unit)? = {
         setComponentsObserver()
     }
 
-    private var test = false
+
     private val mainAdapter by lazy {
         ComponentItemAdapter().apply {
             viewModel.carsList.observe(viewLifecycleOwner) {
@@ -52,12 +49,10 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
 
     private fun setComponentsObserver() {
         viewModel.componentsList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) binding.clfTvEmptyNotes.visibility = View.VISIBLE
-            else {
-                binding.clfTvEmptyNotes.visibility = View.INVISIBLE
-                mainAdapter.submitList(it)
-                binding.clfRvComponents.adapter = mainAdapter
-            }
+            mainAdapter.submitList(it)
+            binding.clfRvComponents.adapter = mainAdapter
+            binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
+            else View.INVISIBLE
         }
     }
 
@@ -84,34 +79,45 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                 return false
             }
 
-            override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
-                return if (test) {
-                    test = false
-                    0
-                } else super.convertToAbsoluteDirection(flags, layoutDirection)
-            }
-
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val currItem = mainAdapter.currentList[viewHolder.adapterPosition]
+                val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition]
 
-                val question = String.format(
-                    getString(R.string.text_delete_component_confirmation),
-                    currItem.title
-                )
-                val testDialog = ApplyActionDialog(requireActivity(), question)
-                testDialog.onApplyClickListener = {
-                    viewModel.deleteComponent(currItem)
-                }
-                testDialog.onDenyClickListener = {
-                    setComponentsObserver()
-                }
-                testDialog.show()
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(
+                        String.format(
+                            getString(R.string.text_delete_component_confirmation),
+                            currItem.title
+                        )
+                    )
+                    .setPositiveButton(R.string.button_apply) { _, _ ->
+                        viewModel.deleteComponent(currItem)
+                    }
+                    .setNegativeButton(R.string.button_deny) { _, _ ->
+                        setComponentsObserver()
+                    }
+                    .show()
             }
         }
 
-
         val itemTouchHelper = ItemTouchHelper(callback)
         itemTouchHelper.attachToRecyclerView(binding.clfRvComponents)
+    }
+
+    private fun setupRecyclerScrollListener() {
+        binding.clfRvComponents.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(dy > 0) if (isFLBAddComponentShown()) setFLBAddComponentVisibility(false)
+                if(dy < 0) if (!isFLBAddComponentShown()) setFLBAddComponentVisibility(true)
+            }
+        })
+    }
+
+    private fun isFLBAddComponentShown(): Boolean = binding.clfFbAddComponent.isVisible
+
+    private fun setFLBAddComponentVisibility(visible: Boolean) {
+        if (visible) binding.clfFbAddComponent.show()
+        else binding.clfFbAddComponent.hide()
     }
 
     private fun goToAddOrEditComponentItemFragment() {

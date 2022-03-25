@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.notesListFragment.recyclerView
+package com.demo.carspends.presentation.fragments.notesList.recyclerView
 
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem
@@ -24,12 +24,15 @@ object NoteItemAdapter {
                 viewHolder.binding.apply {
                     niIvTool.setImageResource(getImageID(item.type))
                     niTvTitle.text = item.title
-                    val currencyState = root.context.getString(R.string.text_measure_currency)
-                    "${getFormattedDoubleAsStrForDisplay(item.totalPrice)}$currencyState".also {
-                        niTvAmount.text = it
-                    }
-                    if (item.type == NoteType.FUEL) "- ${item.fuelType.strName}".also {
-                        niTvExtraInfo.text = it
+                    niTvAmount.text = String.format(
+                        root.context.getString(R.string.text_measure_currency_for_formatting),
+                        getFormattedDoubleAsStrForDisplay(item.totalPrice)
+                    )
+                    if (item.type == NoteType.FUEL) {
+                        niTvExtraInfo.text = String.format(
+                            "- ${item.fuelType.strName}",
+                            item.fuelType.strName
+                        )
                     }
                     niTvDate.text = getFormattedDate(item.date)
                 }

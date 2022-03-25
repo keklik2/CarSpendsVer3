@@ -1,30 +1,27 @@
-package com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment
+package com.demo.carspends.presentation.fragments.noteFilling
 
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import java.lang.Exception
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.util.*
 
-class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.note_filling_add_edit_fragment) {
+class NoteFillingAddOrEditFragment :
+    BaseFragmentWithEditingFinishedListener(R.layout.note_filling_add_edit_fragment) {
     override val binding: NoteFillingAddEditFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NoteFillingAddOrEditViewModel::class.java]
-    }
+    override val viewModel: NoteFillingAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerDialogListener()
         setupVolumeTextChangeListener()
@@ -98,34 +95,23 @@ class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.l
                 }
             }
 
-        binding.nfaefTietFuelVolume.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+        binding.nfaefTietFuelVolume.addTextChangedListener {
+            viewModel.resetVolumeError()
+            if (open) {
+                open = false
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetVolumeError()
-
-                if (open) {
-                    open = false
-
-                    if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                        if (preLastChanged == CHANGED_AMOUNT) viewModel.calculatePrice(
-                            binding.nfaefTietFuelAmount.text.toString(),
-                            binding.nfaefTietFuelVolume.text.toString()
-                        )
-                        else if (preLastChanged == CHANGED_PRICE) viewModel.calculateAmount(
-                            binding.nfaefTietFuelVolume.text.toString(),
-                            binding.nfaefTietFuelPrice.text.toString()
-                        )
-                    }
+                if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
+                    if (preLastChanged == CHANGED_AMOUNT) viewModel.calculatePrice(
+                        binding.nfaefTietFuelAmount.text.toString(),
+                        binding.nfaefTietFuelVolume.text.toString()
+                    )
+                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateAmount(
+                        binding.nfaefTietFuelVolume.text.toString(),
+                        binding.nfaefTietFuelPrice.text.toString()
+                    )
                 }
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-                open = true
-            }
-
-        })
+        }
     }
 
     private fun setupAmountTextChangeListener() {
@@ -137,34 +123,23 @@ class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.l
                 }
             }
 
-        binding.nfaefTietFuelAmount.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+        binding.nfaefTietFuelAmount.addTextChangedListener {
+            viewModel.resetTotalPriceError()
+            if (open) {
+                open = false
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTotalPriceError()
-
-                if (open) {
-                    open = false
-
-                    if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                        if (preLastChanged == CHANGED_VOLUME) viewModel.calculatePrice(
-                            binding.nfaefTietFuelAmount.text.toString(),
-                            binding.nfaefTietFuelVolume.text.toString()
-                        )
-                        else if (preLastChanged == CHANGED_PRICE) viewModel.calculateVolume(
-                            binding.nfaefTietFuelAmount.text.toString(),
-                            binding.nfaefTietFuelPrice.text.toString()
-                        )
-                    }
+                if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
+                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculatePrice(
+                        binding.nfaefTietFuelAmount.text.toString(),
+                        binding.nfaefTietFuelVolume.text.toString()
+                    )
+                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateVolume(
+                        binding.nfaefTietFuelAmount.text.toString(),
+                        binding.nfaefTietFuelPrice.text.toString()
+                    )
                 }
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-                open = true
-            }
-
-        })
+        }
     }
 
     private fun setupPriceTextChangeListener() {
@@ -176,49 +151,29 @@ class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.l
                 }
             }
 
-        binding.nfaefTietFuelPrice.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
+        binding.nfaefTietFuelPrice.addTextChangedListener {
+            viewModel.resetPriceError()
+            if (open) {
+                open = false
 
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetPriceError()
-
-                if (open) {
-                    open = false
-
-                    if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                        if (preLastChanged == CHANGED_VOLUME) viewModel.calculateAmount(
-                            binding.nfaefTietFuelVolume.text.toString(),
-                            binding.nfaefTietFuelPrice.text.toString()
-                        )
-                        else if (preLastChanged == CHANGED_AMOUNT) viewModel.calculateVolume(
-                            binding.nfaefTietFuelAmount.text.toString(),
-                            binding.nfaefTietFuelPrice.text.toString()
-                        )
-                    }
+                if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
+                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculateAmount(
+                        binding.nfaefTietFuelVolume.text.toString(),
+                        binding.nfaefTietFuelPrice.text.toString()
+                    )
+                    else if (preLastChanged == CHANGED_AMOUNT) viewModel.calculateVolume(
+                        binding.nfaefTietFuelAmount.text.toString(),
+                        binding.nfaefTietFuelPrice.text.toString()
+                    )
                 }
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-                open = true
-            }
-
-        })
+        }
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.nfaefTietMileageValue.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetMileageError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.nfaefTietMileageValue.addTextChangedListener {
+            viewModel.resetMileageError()
+        }
     }
 
     private fun setupLastFuelTypeListener() {
@@ -255,23 +210,23 @@ class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.l
 
     private fun setupErrorListener() {
         viewModel.errorVolumeInput.observe(viewLifecycleOwner) {
-            if (it) binding.nfaefTilFuelVolume.error = ERR_VOLUME
-            else binding.nfaefTilFuelVolume.error = null
+            binding.nfaefTilFuelVolume.error = if (it) ERR_VOLUME
+            else null
         }
 
         viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            if (it) binding.nfaefTilFuelAmount.error = ERR_AMOUNT
-            else binding.nfaefTilFuelAmount.error = null
+            binding.nfaefTilFuelAmount.error = if (it) ERR_AMOUNT
+            else null
         }
 
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            if (it) binding.nfaefTilFuelPrice.error = ERR_PRICE
-            else binding.nfaefTilFuelPrice.error = null
+            binding.nfaefTilFuelPrice.error = if (it) ERR_PRICE
+            else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            if (it) binding.nfaefTilMileageValue.error = ERR_MILEAGE
-            else binding.nfaefTilMileageValue.error = null
+            binding.nfaefTilMileageValue.error = if (it) ERR_MILEAGE
+            else null
         }
     }
 

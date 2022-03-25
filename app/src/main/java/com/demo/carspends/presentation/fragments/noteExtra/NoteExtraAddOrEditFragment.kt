@@ -1,36 +1,25 @@
-package com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment
+package com.demo.carspends.presentation.fragments.noteExtra
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.R
-import com.demo.carspends.ViewModelFactory
-import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
-import java.lang.Exception
 import java.util.*
-import javax.inject.Inject
 
 class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.note_extra_add_edit_fragment) {
     override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NoteExtraAddOrEditViewModel::class.java]
-    }
+    override val viewModel: NoteExtraAddOrEditViewModel by viewModels {viewModelFactory}
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTitleTextChangeListener()
@@ -66,13 +55,13 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
 
     private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            if (it) binding.neaefTilName.error = ERR_TITLE
-            else binding.neaefTilName.error = null
+            binding.neaefTilName.error = if (it) ERR_TITLE
+            else null
         }
 
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            if (it) binding.neaefTilAmountValue.error = ERR_PRICE
-            else binding.neaefTilAmountValue.error = null
+            binding.neaefTilAmountValue.error = if (it) ERR_PRICE
+            else null
         }
     }
 
@@ -112,33 +101,15 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.neaefTietName.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTitleError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.neaefTietName.addTextChangedListener {
+            viewModel.resetTitleError()
+        }
     }
 
     private fun setupPriceTextChangeListener() {
-        binding.neaefTietAmountValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetPriceError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.neaefTietAmountValue.addTextChangedListener {
+            viewModel.resetPriceError()
+        }
     }
 
     private fun chooseMode() {

@@ -8,11 +8,11 @@ import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
-import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditFragment
-import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditFragment
+import com.demo.carspends.presentation.fragments.car.CarAddOrEditFragment
+import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditFragment
 import java.lang.Exception
 
 class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {

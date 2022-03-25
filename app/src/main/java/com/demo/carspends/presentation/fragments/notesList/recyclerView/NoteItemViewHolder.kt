@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.notesListFragment.recyclerView
+package com.demo.carspends.presentation.fragments.notesList.recyclerView
 
 import android.view.View
 import com.demo.carspends.databinding.NoteItemBinding

@@ -25,12 +25,19 @@
     <string name="text_delete_component_confirmation">Точно хотите удалить ресурс «%s»?</string>
 
     <string name="text_measure_mileage_unit">км</string>
+    <string name="text_measure_mileage_unit_for_formatting">%s км</string>
     <string name="text_measure_power_unit">л.с.</string>
+    <string name="text_measure_power_unit_for_formatting">%s л.с.</string>
     <string name="text_measure_engine_capacity_unit">л</string>
+    <string name="text_measure_engine_capacity_unit_for_formatting">%s л</string>
     <string name="text_measure_gas_volume_unit">л</string>
+    <string name="text_measure_gas_volume_unit_for_formatting">%s л</string>
     <string name="text_measure_gas_charge">л/100км</string>
+    <string name="text_measure_gas_charge_for_formatting">%s л/100км</string>
     <string name="text_measure_price_charge">₽/км</string>
+    <string name="text_measure_price_charge_for_formatting">%s ₽/км</string>
     <string name="text_measure_currency">₽</string>
+    <string name="text_measure_currency_for_formatting">%s ₽</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
@@ -57,7 +64,6 @@
     <string name="description_add_new_note_extra">Добавить новую запись, категория "прочее"</string>
     <string name="description_add_new_note_repair">Добавить новую запись, категория "ремонт"</string>
     <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
-    <string name="description_img_info">Иконка "информация об автомобиле"</string>
     <string name="description_img_car_menu">Иконка "настройки приложения"</string>
     <string name="description_img_tools">Иконка "тип записи"</string>
     <string name="description_img_choose_date">Иконка выбора даты</string>

@@ -41,20 +41,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
-                        android:id="@+id/nlf_iv_car_menu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-
-                        android:contentDescription="@string/description_img_info"
-
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        app:srcCompat="@drawable/ic_baseline_menu_24" />
-
                     <TextView
                         android:id="@+id/nlf_tv_car_title"
                         style="@style/carTitleText"
@@ -73,12 +59,12 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="8dp"
 
-                        android:contentDescription="@string/description_img_info"
+                        android:contentDescription="@string/description_img_car_menu"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
 
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_info_24" />
+                        app:srcCompat="@drawable/ic_round_settings_24" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,7 +88,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/rounded_rectangle_dark_vine"
-                android:layout_margin="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
 
                 app:layout_constraintEnd_toStartOf="@+id/cv_guide_line"
                 app:layout_constraintStart_toStartOf="parent"
@@ -166,7 +154,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
 
-                    android:layout_margin="4dp">
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginBottom="4dp">
 
                     <ImageView
                         android:id="@+id/nlf_iv_avg_cost"
@@ -188,8 +179,8 @@
                         android:layout_height="match_parent"
                         android:layout_margin="4dp"
 
-                        android:maxLines="1"
                         android:ellipsize="end"
+                        android:maxLines="1"
 
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
