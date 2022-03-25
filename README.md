@@ -9,8 +9,9 @@ __description:__ Android application to keep car expenses notes
 - etc (developing)
 
 ## (EN) Update Notes
-### Alpha v.3.10.2 (25.03.22) - current
-- Code restructure.
+### Alpha v.3.10.3 (25.03.22) - current
+- Code restructure;
+- UI fixes (dark theme fixed).
 
 ### Alpha v.3.10.2 (24.03.22)
 - Kiel repository added;
