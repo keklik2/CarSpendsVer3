@@ -31,7 +31,7 @@ class NoteFillingAddOrEditFragment :
     }
     override var setupObservers: (() -> Unit)? = {
         setupCalcListener()
-        setupErrorListener()
+        setupErrorObservers()
         setupCanCloseScreenObserver()
         setupNoteDateListener()
         setupLastFuelTypeListener()
@@ -208,7 +208,7 @@ class NoteFillingAddOrEditFragment :
         }
     }
 
-    private fun setupErrorListener() {
+    private fun setupErrorObservers() {
         viewModel.errorVolumeInput.observe(viewLifecycleOwner) {
             binding.nfaefTilFuelVolume.error = if (it) ERR_VOLUME
             else null

@@ -26,7 +26,7 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
         setupPriceTextChangeListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupErrorObserver()
+        setupErrorObservers()
         setupNoteDateObserver()
         setupCanCloseScreenObserver()
     }
@@ -53,7 +53,7 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
         viewModel.setCarId(carId)
     }
 
-    private fun setupErrorObserver() {
+    private fun setupErrorObservers() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
             binding.neaefTilName.error = if (it) ERR_TITLE
             else null

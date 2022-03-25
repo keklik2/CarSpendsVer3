@@ -39,6 +39,9 @@
     <string name="text_measure_currency">₽</string>
     <string name="text_measure_currency_for_formatting">%s ₽</string>
 
+    <!-- Toast messages -->
+    <string name="toast_missing_data">Заполните все поля</string>
+
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
     <string name="hint_amount">Сумма</string>
