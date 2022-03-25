@@ -7,24 +7,21 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import java.lang.Exception
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.util.*
 
 class NoteFillingAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.note_filling_add_edit_fragment) {
     override val binding: NoteFillingAddEditFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NoteFillingAddOrEditViewModel::class.java]
-    }
+    override val viewModel: NoteFillingAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerDialogListener()
         setupVolumeTextChangeListener()

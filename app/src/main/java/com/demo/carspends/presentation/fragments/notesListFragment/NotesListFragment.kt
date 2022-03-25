@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -22,9 +22,7 @@ import java.util.*
 class NotesListFragment: BaseFragment(R.layout.notes_list_fragment) {
 
     override val binding: NotesListFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NotesListViewModel::class.java]
-    }
+    override val viewModel: NotesListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTypeSpinnerListener()
         setupDateSpinnerListener()
@@ -67,7 +65,6 @@ class NotesListFragment: BaseFragment(R.layout.notes_list_fragment) {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
-
         }
     }
 
@@ -80,7 +77,6 @@ class NotesListFragment: BaseFragment(R.layout.notes_list_fragment) {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
             }
-
         }
     }
 

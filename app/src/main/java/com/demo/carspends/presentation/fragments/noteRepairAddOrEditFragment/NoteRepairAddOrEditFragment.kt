@@ -6,23 +6,21 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.R
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import java.lang.Exception
+import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
 import java.util.*
 
 class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.note_repair_add_edit_fragment) {
     override val binding: NoteRepairAddEditFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[NoteRepairAddOrEditViewModel::class.java]
-    }
+    override val viewModel: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTitleTextChangeListener()
@@ -80,6 +78,8 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
     }
 
     private fun setupTitleTextChangeListener() {
+        binding.nraefTietName.addTextChangedListener()
+
         binding.nraefTietName.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }

@@ -6,23 +6,20 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.R
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
-import java.lang.Exception
 import java.util.*
 
 class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.component_add_edit_fragment) {
     override val binding: ComponentAddEditFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ComponentAddOrEditViewModel::class.java]
-    }
+    override val viewModel: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTitleTextChangeListener()

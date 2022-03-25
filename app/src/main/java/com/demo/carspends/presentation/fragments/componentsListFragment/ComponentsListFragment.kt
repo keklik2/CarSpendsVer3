@@ -2,28 +2,21 @@ package com.demo.carspends.presentation.fragments.componentsListFragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
-import com.demo.carspends.CarSpendsApp
-import com.demo.carspends.ViewModelFactory
 import com.demo.carspends.presentation.activities.DetailElementsActivity
-import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.extra.ApplyActionDialog
+import com.demo.carspends.presentation.fragments.componentsListFragment.recycleView.ComponentItemAdapter
 import com.demo.carspends.utils.ui.BaseFragment
-import javax.inject.Inject
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     override val binding: ComponentsListFragmentBinding by viewBinding()
-    override val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory)[ComponentsListViewModel::class.java]
-    }
+    override val viewModel: ComponentsListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRecyclerItemOnClickListener()
         setupRecyclerOnSwipeListener()
