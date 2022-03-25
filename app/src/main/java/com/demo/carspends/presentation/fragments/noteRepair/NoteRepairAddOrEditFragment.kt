@@ -26,7 +26,7 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
         setupMileageTextChangeListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupErrorObserver()
+        setupErrorObservers()
         setupCanCloseScreenObserver()
         setupNoteDateObserver()
     }
@@ -105,7 +105,7 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
         }
     }
 
-    private fun setupErrorObserver() {
+    private fun setupErrorObservers() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
             binding.nraefTilName.error = if(it) ERR_TITLE
             else null

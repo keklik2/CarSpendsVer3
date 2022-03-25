@@ -30,8 +30,8 @@ object NoteItemAdapter {
                     )
                     if (item.type == NoteType.FUEL) {
                         niTvExtraInfo.text = String.format(
-                            "- ${item.fuelType.strName}",
-                            item.fuelType.strName
+                            "- ${item.fuelType.toString(root.context)}",
+                            item.fuelType.toString(root.context)
                         )
                     }
                     niTvDate.text = getFormattedDate(item.date)

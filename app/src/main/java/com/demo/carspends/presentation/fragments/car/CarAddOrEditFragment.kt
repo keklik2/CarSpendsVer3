@@ -26,7 +26,7 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
         setupPowerTextChangeListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupTextFieldsErrorsObserver()
+        setupErrorObservers()
         setupCanCloseScreenObserver()
     }
 
@@ -68,7 +68,7 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
         }
     }
 
-    private fun setupTextFieldsErrorsObserver() {
+    private fun setupErrorObservers() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
             binding.carefTilCarName.error = if (it) ERR_TITLE
             else null
@@ -103,7 +103,7 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
             requireActivity().onBackPressedDispatcher.addCallback(object :
                 OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Toast.makeText(requireActivity(), "Заполните все данные", Toast.LENGTH_LONG)
+                    Toast.makeText(requireActivity(), getString(R.string.toast_missing_data), Toast.LENGTH_LONG)
                         .show()
                 }
             })
