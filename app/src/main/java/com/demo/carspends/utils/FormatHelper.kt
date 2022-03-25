@@ -4,39 +4,31 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-fun getFormattedDoubleAsStrForDisplay(value: Double): String {
-    val df = DecimalFormat()
-    with(df) {
-        maximumFractionDigits = 1
-        isGroupingUsed = true
-        groupingSize = 3
+val doubleDf = DecimalFormat().apply {
+    maximumFractionDigits = 1
+    isGroupingUsed = true
+    groupingSize = 3
 
-        val dfs = decimalFormatSymbols
-        dfs.decimalSeparator = '.'
-        dfs.groupingSeparator = ' '
-        decimalFormatSymbols = dfs
-
-        return format(value)
+    decimalFormatSymbols.apply {
+        decimalSeparator = '.'
+        groupingSeparator = ' '
     }
 }
 
-fun getFormattedIntAsStrForDisplay(value: Int): String {
-    val df = DecimalFormat()
-    with(df) {
-        isGroupingUsed = true
-        groupingSize = 3
+val intDf = DecimalFormat().apply {
+    isGroupingUsed = true
+    groupingSize = 3
 
-        val dfs = decimalFormatSymbols
-        dfs.groupingSeparator = ' '
-        decimalFormatSymbols = dfs
-
-        return format(value)
-    }
+    val dfs = decimalFormatSymbols
+    dfs.groupingSeparator = ' '
+    decimalFormatSymbols = dfs
 }
 
-fun getFormattedDoubleAsStr(value: Double): String {
-    return "%.2f".format(Locale.US, value)
-}
+fun getFormattedDoubleAsStrForDisplay(value: Double): String = doubleDf.format(value)
+
+fun getFormattedIntAsStrForDisplay(value: Int): String = intDf.format(value)
+
+fun getFormattedDoubleAsStr(value: Double): String = "%.2f".format(Locale.US, value)
 
 fun getFormattedDate(receivedDate: Long): String {
     val date = Date(receivedDate)
@@ -44,10 +36,6 @@ fun getFormattedDate(receivedDate: Long): String {
     return form.format(date)
 }
 
-fun getFormattedPercentsAsStr(value: Int): String {
-    return "$value%"
-}
+fun getFormattedPercentsAsStr(value: Int): String = "$value%"
 
-fun getFormattedPercentsAsStr(value: Double): String {
-    return "${value.toInt()}%"
-}
+fun getFormattedPercentsAsStr(value: Double): String = "${value.toInt()}%"

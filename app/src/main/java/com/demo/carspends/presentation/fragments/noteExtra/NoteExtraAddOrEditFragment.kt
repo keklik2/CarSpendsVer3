@@ -1,12 +1,11 @@
-package com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment
+package com.demo.carspends.presentation.fragments.noteExtra
 
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
@@ -56,13 +55,13 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
 
     private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            if (it) binding.neaefTilName.error = ERR_TITLE
-            else binding.neaefTilName.error = null
+            binding.neaefTilName.error = if (it) ERR_TITLE
+            else null
         }
 
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            if (it) binding.neaefTilAmountValue.error = ERR_PRICE
-            else binding.neaefTilAmountValue.error = null
+            binding.neaefTilAmountValue.error = if (it) ERR_PRICE
+            else null
         }
     }
 
@@ -102,33 +101,15 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.neaefTietName.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTitleError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.neaefTietName.addTextChangedListener {
+            viewModel.resetTitleError()
+        }
     }
 
     private fun setupPriceTextChangeListener() {
-        binding.neaefTietAmountValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetPriceError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.neaefTietAmountValue.addTextChangedListener {
+            viewModel.resetPriceError()
+        }
     }
 
     private fun chooseMode() {

@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.componentsListFragment.recycleView
+package com.demo.carspends.presentation.fragments.componentsList.recycleView
 
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
@@ -49,12 +49,11 @@ class ComponentItemAdapter: ListAdapter<ComponentItem, ComponentItemViewHolder>(
                 ciTvTitle.text = currComponent.title
 
                 // Setting resource statement value & color
-                val milState = view.context.getString(R.string.text_measure_mileage_unit)
-                "${getFormattedIntAsStrForDisplay(leftResourceValue)} $milState".also {
-                    ciTvResourceStatement.text = it
-                }
+                ciTvResourceStatement.text = String.format(
+                    view.context.getString(R.string.text_measure_mileage_unit_for_formatting),
+                    getFormattedIntAsStrForDisplay(leftResourceValue)
+                )
                 ciTvResourceStatement.setTextColor(progressColor)
-
                 ciTvDate.text = getFormattedDate(currComponent.date)
             }
 

@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.notesListFragment
+package com.demo.carspends.presentation.fragments.notesList
 
 import androidx.lifecycle.*
 import com.demo.carspends.domain.car.CarItem

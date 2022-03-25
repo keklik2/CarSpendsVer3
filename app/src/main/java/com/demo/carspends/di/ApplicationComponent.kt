@@ -1,14 +1,13 @@
 package com.demo.carspends.di
 
 import android.app.Application
-import androidx.fragment.app.Fragment
-import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditFragment
-import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditFragment
-import com.demo.carspends.presentation.fragments.componentsListFragment.ComponentsListFragment
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditFragment
-import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditFragment
-import com.demo.carspends.presentation.fragments.notesListFragment.NotesListFragment
+import com.demo.carspends.presentation.fragments.car.CarAddOrEditFragment
+import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditFragment
+import com.demo.carspends.presentation.fragments.componentsList.ComponentsListFragment
+import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditFragment
+import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditFragment
+import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
 import dagger.BindsInstance
 import dagger.Component
 

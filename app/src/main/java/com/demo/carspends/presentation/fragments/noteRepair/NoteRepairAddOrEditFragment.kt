@@ -1,12 +1,10 @@
-package com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment
+package com.demo.carspends.presentation.fragments.noteRepair
 
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
-import androidx.core.widget.doOnTextChanged
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
@@ -78,50 +76,21 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.nraefTietName.addTextChangedListener()
-
-        binding.nraefTietName.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTitleError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.nraefTietName.addTextChangedListener {
+            viewModel.resetTitleError()
+        }
     }
 
     private fun setupAmountTextChangeListener() {
-        binding.nraefTietAmountValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTotalPriceError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.nraefTietAmountValue.addTextChangedListener {
+            viewModel.resetTotalPriceError()
+        }
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.nraefTietMileageValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetMileageError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.nraefTietMileageValue.addTextChangedListener {
+            viewModel.resetMileageError()
+        }
     }
 
     private fun setupNoteDateObserver() {
@@ -138,18 +107,18 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
 
     private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            if(it) binding.nraefTilName.error = ERR_TITLE
-            else binding.nraefTilName.error = null
+            binding.nraefTilName.error = if(it) ERR_TITLE
+            else null
         }
 
         viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            if (it) binding.nraefTilAmountValue.error = ERR_AMOUNT
-            else binding.nraefTilAmountValue.error = null
+            binding.nraefTilAmountValue.error = if (it) ERR_AMOUNT
+            else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            if (it) binding.nraefTilMileageValue.error = ERR_MILEAGE
-            else binding.nraefTilMileageValue.error = null
+            binding.nraefTilMileageValue.error = if (it) ERR_MILEAGE
+            else null
         }
     }
 

@@ -1,11 +1,10 @@
-package com.demo.carspends.presentation.fragments.componentAddOrEditFragment
+package com.demo.carspends.presentation.fragments.component
 
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
@@ -71,48 +70,21 @@ class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.caefTietName.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetTitleError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.caefTietName.addTextChangedListener {
+            viewModel.resetTitleError()
+        }
     }
 
     private fun setupAmountTextChangeListener() {
-        binding.caefTietResourceValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetResourceError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.caefTietResourceValue.addTextChangedListener {
+            viewModel.resetResourceError()
+        }
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.caefTietMileageValue.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetMileageError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.caefTietMileageValue.addTextChangedListener {
+            viewModel.resetMileageError()
+        }
     }
 
     private fun setupDateObserver() {
@@ -129,18 +101,18 @@ class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
 
     private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            if(it) binding.caefTilName.error = ERR_TITLE
-            else binding.caefTilName.error = null
+            binding.caefTilName.error = if(it) ERR_TITLE
+            else null
         }
 
         viewModel.errorResourceInput.observe(viewLifecycleOwner) {
-            if (it) binding.caefTilResourceValue.error = ERR_RESOURCE
-            else binding.caefTilResourceValue.error = null
+            binding.caefTilResourceValue.error = if (it) ERR_RESOURCE
+            else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            if (it) binding.caefTilMileageValue.error = ERR_MILEAGE
-            else binding.caefTilMileageValue.error = null
+            binding.caefTilMileageValue.error = if (it) ERR_MILEAGE
+            else null
         }
     }
 

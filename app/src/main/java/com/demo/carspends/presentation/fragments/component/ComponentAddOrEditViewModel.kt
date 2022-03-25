@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.componentAddOrEditFragment
+package com.demo.carspends.presentation.fragments.component
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

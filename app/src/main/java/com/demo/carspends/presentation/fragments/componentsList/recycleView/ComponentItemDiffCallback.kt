@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.componentsListFragment.recycleView
+package com.demo.carspends.presentation.fragments.componentsList.recycleView
 
 import androidx.recyclerview.widget.DiffUtil
 import com.demo.carspends.domain.component.ComponentItem

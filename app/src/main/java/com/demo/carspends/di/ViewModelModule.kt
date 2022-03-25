@@ -1,13 +1,13 @@
 package com.demo.carspends.di
 
 import androidx.lifecycle.ViewModel
-import com.demo.carspends.presentation.fragments.carAddOrEditFragment.CarAddOrEditViewModel
-import com.demo.carspends.presentation.fragments.componentAddOrEditFragment.ComponentAddOrEditViewModel
-import com.demo.carspends.presentation.fragments.componentsListFragment.ComponentsListViewModel
-import com.demo.carspends.presentation.fragments.noteExtraAddOrEditFragment.NoteExtraAddOrEditViewModel
-import com.demo.carspends.presentation.fragments.noteFillingAddOrEditFragment.NoteFillingAddOrEditViewModel
-import com.demo.carspends.presentation.fragments.noteRepairAddOrEditFragment.NoteRepairAddOrEditViewModel
-import com.demo.carspends.presentation.fragments.notesListFragment.NotesListViewModel
+import com.demo.carspends.presentation.fragments.car.CarAddOrEditViewModel
+import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditViewModel
+import com.demo.carspends.presentation.fragments.componentsList.ComponentsListViewModel
+import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditViewModel
+import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditViewModel
+import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditViewModel
+import com.demo.carspends.presentation.fragments.notesList.NotesListViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

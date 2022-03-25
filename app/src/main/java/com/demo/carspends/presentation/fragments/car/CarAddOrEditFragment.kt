@@ -1,12 +1,11 @@
-package com.demo.carspends.presentation.fragments.carAddOrEditFragment
+package com.demo.carspends.presentation.fragments.car
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
@@ -46,84 +45,48 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
     }
 
     private fun setupNameTextChangeListener() {
-        binding.carefTietCarName.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetNameError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.carefTietCarName.addTextChangedListener {
+            viewModel.resetNameError()
+        }
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.carefTietMileageValue.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetMileageError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.carefTietMileageValue.addTextChangedListener {
+            viewModel.resetMileageError()
+        }
     }
 
     private fun setupEngineCapacityTextChangeListener() {
-        binding.carefTietEngineCapacity.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetEngineCapacityError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.carefTietEngineCapacity.addTextChangedListener {
+            viewModel.resetEngineCapacityError()
+        }
     }
 
     private fun setupPowerTextChangeListener() {
-        binding.carefTietPower.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                viewModel.resetPowerError()
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-        })
+        binding.carefTietPower.addTextChangedListener {
+            viewModel.resetPowerError()
+        }
     }
 
     private fun setupTextFieldsErrorsObserver() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
-            if (it) binding.carefTilCarName.error = ERR_TITLE
-            else binding.carefTilCarName.error = null
+            binding.carefTilCarName.error = if (it) ERR_TITLE
+            else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            if (it) binding.carefTilMileageValue.error = ERR_RESOURCE
-            else binding.carefTilMileageValue.error = null
+            binding.carefTilMileageValue.error = if (it) ERR_RESOURCE
+            else null
         }
 
         viewModel.errorEngineCapacityInput.observe(viewLifecycleOwner) {
-            if (it) binding.carefTilEngineCapacity.error = ERR_MILEAGE
-            else binding.carefTilEngineCapacity.error = null
+            binding.carefTilEngineCapacity.error = if (it) ERR_MILEAGE
+            else null
         }
 
         viewModel.errorPowerInput.observe(viewLifecycleOwner) {
-            if (it) binding.carefTilPower.error = ERR_MILEAGE
-            else binding.carefTilPower.error = null
+            binding.carefTilPower.error = if (it) ERR_MILEAGE
+            else null
         }
     }
 
@@ -174,20 +137,34 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
                 carefTietMileageValue.setText(it.mileage.toString())
                 carefTietEngineCapacity.setText(it.engineVolume.toString())
                 carefTietPower.setText(it.power.toString())
-                "${getFormattedDoubleAsStrForDisplay(it.avgFuel)} ${getString(R.string.text_measure_gas_charge)}"
-                    .also { carefTvAvgFuel.text = it }
-                "${getFormattedDoubleAsStrForDisplay(it.momentFuel)} ${getString(R.string.text_measure_gas_charge)}"
-                    .also { carefTvMomentFuel.text = it }
-                "${getFormattedDoubleAsStrForDisplay(it.allFuel)} ${getString(R.string.text_measure_gas_volume_unit)}"
-                    .also { carefTvAllFuel.text = it }
-                "${getFormattedDoubleAsStrForDisplay(it.fuelPrice)} ${getString(R.string.text_measure_currency)}"
-                    .also { carefTvAllFuelPrice.text = it }
-                "${getFormattedDoubleAsStrForDisplay(it.milPrice)} ${getString(R.string.text_measure_currency)}"
-                    .also { carefTvMileagePrice.text = it }
-                "${getFormattedDoubleAsStrForDisplay(it.allPrice)} ${getString(R.string.text_measure_currency)}"
-                    .also { carefTvAllPrice.text = it }
-                "${getFormattedIntAsStrForDisplay(it.allMileage)} ${getString(R.string.text_measure_mileage_unit)}"
-                    .also { carefTvAllMileage.text = it }
+                carefTvAvgFuel.text = String.format(
+                    getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.avgFuel)
+                )
+                carefTvMomentFuel.text = String.format(
+                    getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.momentFuel)
+                )
+                carefTvAllFuel.text = String.format(
+                    getString(R.string.text_measure_gas_volume_unit_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.allFuel)
+                )
+                carefTvAllFuelPrice.text = String.format(
+                    getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.fuelPrice)
+                )
+                carefTvMileagePrice.text = String.format(
+                    getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.milPrice)
+                )
+                carefTvAllPrice.text = String.format(
+                    getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(it.allPrice)
+                )
+                carefTvAllMileage.text = String.format(
+                    getString(R.string.text_measure_mileage_unit_for_formatting),
+                    getFormattedIntAsStrForDisplay(it.allMileage)
+                )
             }
         }
 
