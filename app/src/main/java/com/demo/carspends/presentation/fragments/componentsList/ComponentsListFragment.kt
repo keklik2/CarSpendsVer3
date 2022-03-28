@@ -12,6 +12,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.activities.DetailElementsActivity
+import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.utils.ui.BaseFragment
 
@@ -19,8 +20,6 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     override val binding: ComponentsListFragmentBinding by viewBinding()
     override val viewModel: ComponentsListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
-        setupRecyclerItemOnClickListener()
-
         setupRecyclerOnSwipeListener()
         setupRecyclerScrollListener()
 
@@ -30,35 +29,16 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         setComponentsObserver()
     }
 
-
-    private val mainAdapter by lazy {
-        ComponentItemAdapter().apply {
-            viewModel.carsList.observe(viewLifecycleOwner) {
-                currMileage = it[0].mileage
-            }
-        }
-    }
-
-    private fun getCarId(): Int {
-        var id = 0
-        viewModel.carsList.observe(viewLifecycleOwner) {
-            id = it[0].id
-        }
-        return id
+    private val mainAdapter = ComponentItemAdapter.get {
+        goToAddOrEditComponentItemFragment(it.componentItem.id)
     }
 
     private fun setComponentsObserver() {
         viewModel.componentsList.observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it)
+            mainAdapter.submitList(it.map { it1 -> ExtendedComponentItem(it1, viewModel.carMileage) })
             binding.clfRvComponents.adapter = mainAdapter
             binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
             else View.INVISIBLE
-        }
-    }
-
-    private fun setupRecyclerItemOnClickListener() {
-        mainAdapter.onClickListener = {
-            goToAddOrEditComponentItemFragment(it.id)
         }
     }
 
@@ -80,12 +60,12 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition]
+                val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
 
                 AlertDialog.Builder(requireActivity())
-                    .setTitle(
+                    .setMessage(
                         String.format(
-                            getString(R.string.text_delete_component_confirmation),
+                            getString(R.string.dialog_delete_component),
                             currItem.title
                         )
                     )
@@ -124,7 +104,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         startActivity(
             DetailElementsActivity.newAddOrEditComponentIntent(
                 requireActivity(),
-                getCarId()
+                viewModel.carId
             )
         )
     }
@@ -133,7 +113,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         startActivity(
             DetailElementsActivity.newAddOrEditComponentIntent(
                 requireActivity(),
-                getCarId(),
+                viewModel.carId,
                 id
             )
         )

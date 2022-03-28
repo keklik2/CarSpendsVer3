@@ -1,5 +1,6 @@
 package com.demo.carspends.presentation.fragments.car
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
@@ -103,7 +104,14 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
             requireActivity().onBackPressedDispatcher.addCallback(object :
                 OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Toast.makeText(requireActivity(), getString(R.string.toast_missing_data), Toast.LENGTH_LONG)
+                    androidx.appcompat.app.AlertDialog.Builder(requireActivity())
+                        .setMessage(
+                            getString(R.string.dialog_exit_car)
+                        )
+                        .setPositiveButton(R.string.button_apply) { _, _ ->
+                        }
+                        .setNegativeButton(R.string.button_deny) { _, _ ->
+                        }
                         .show()
                 }
             })
@@ -118,6 +126,17 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
     }
 
     private fun addNoteMode() {
+        with(binding) {
+            carefTvStatistics.visibility = View.INVISIBLE
+            carefAllFuelLayout.visibility = View.INVISIBLE
+            carefAllFuelPriceLayout.visibility = View.INVISIBLE
+            carefMomentFuelLayout.visibility = View.INVISIBLE
+            carefAvgFuelLayout.visibility = View.INVISIBLE
+            carefMileagePriceLayout.visibility = View.INVISIBLE
+            carefAllPriceLayout.visibility = View.INVISIBLE
+            carefAllMileageLayout.visibility = View.INVISIBLE
+        }
+
         binding.carefButtonApply.setOnClickListener {
             viewModel.addCar(
                 binding.carefTietCarName.text.toString(),
