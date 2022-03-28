@@ -47,4 +47,6 @@ object NoteItemAdapter {
             NoteType.EXTRA -> R.drawable.ic_baseline_more_horiz_24
         }
     }
+
+
 }
