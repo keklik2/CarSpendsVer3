@@ -246,9 +246,9 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition]
                 AlertDialog.Builder(requireActivity())
-                    .setTitle(
+                    .setMessage(
                         String.format(
-                            getString(R.string.text_delete_note_confirmation),
+                            getString(R.string.dialog_delete_note),
                             currItem.title
                         )
                     )

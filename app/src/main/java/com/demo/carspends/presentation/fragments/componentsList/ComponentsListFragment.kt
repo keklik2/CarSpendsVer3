@@ -63,9 +63,9 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                 val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
 
                 AlertDialog.Builder(requireActivity())
-                    .setTitle(
+                    .setMessage(
                         String.format(
-                            getString(R.string.text_delete_component_confirmation),
+                            getString(R.string.dialog_delete_component),
                             currItem.title
                         )
                     )
