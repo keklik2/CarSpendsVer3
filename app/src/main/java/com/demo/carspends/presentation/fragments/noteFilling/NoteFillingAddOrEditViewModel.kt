@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.noteFilling
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,6 +17,7 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -32,8 +32,11 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val getCarItemUseCase: GetCarItemUseCase,
     private val editCarItemUseCase: EditCarItemUseCase,
-    private val app: Application
+    private val app: Application,
+    private val router: Router
 ) : AndroidViewModel(app) {
+
+    fun goBack() = router.exit()
 
     private val noteType = NoteType.FUEL
     private val noteTitle = getApplication<Application>().getString(NOTE_TITLE_ID)
@@ -333,7 +336,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
                 if (note2 != note1) {
                     val cCarItem = getCarItemUseCase(carId)
                     val test = calculatedAvgFuelOfTwoNotes(note1, note2)
-                    Log.d("tag_test", "Moment fuel: $test")
                     editCarItemUseCase(
                         cCarItem.copy(
                             momentFuel = test,
@@ -417,12 +419,12 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     fun setCarItem(id: Int) {
         carId = id
         viewModelScope.launch {
-            _currCarItem.value = getCarItemUseCase(carId)
+            _currCarItem.value = getCarItemUseCase.invoke(carId)
         }
     }
 
     private suspend fun updateCarItem() {
-        _currCarItem.value = getCarItemUseCase(carId)
+        _currCarItem.value = getCarItemUseCase.invoke(carId)
     }
 
     fun getFuelId(fuel: Fuel): Int {

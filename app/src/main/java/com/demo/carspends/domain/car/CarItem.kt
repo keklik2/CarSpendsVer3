@@ -16,7 +16,7 @@ data class CarItem (
         val allMileage: Int = DEFAULT_INT
     ) {
     companion object {
-        const val UNDEFINED_ID = -1
+        const val UNDEFINED_ID = 0
         private const val DEFAULT_DOUBLE = 0.0
         private const val DEFAULT_INT = 0
     }

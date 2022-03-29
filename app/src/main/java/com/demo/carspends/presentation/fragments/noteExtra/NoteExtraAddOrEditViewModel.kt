@@ -14,8 +14,8 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorString
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -25,8 +25,11 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     private val getNoteItemUseCase: GetNoteItemUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val getCarItemUseCase: GetCarItemUseCase,
-    private val editCarItemUseCase: EditCarItemUseCase
+    private val editCarItemUseCase: EditCarItemUseCase,
+    private val router: Router
 ) : ViewModel() {
+
+    fun goBack() = router.exit()
 
     private var carId = CarItem.UNDEFINED_ID
     private val noteType = NoteType.EXTRA

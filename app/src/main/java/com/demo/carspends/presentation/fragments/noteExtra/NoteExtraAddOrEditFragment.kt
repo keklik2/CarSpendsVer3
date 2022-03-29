@@ -14,10 +14,10 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragment
 import java.util.*
 
-class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.note_extra_add_edit_fragment) {
+class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_fragment) {
     override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
     override val viewModel: NoteExtraAddOrEditViewModel by viewModels {viewModelFactory}
     override var setupListeners: (() -> Unit)? = {
@@ -55,12 +55,12 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
 
     private fun setupErrorObservers() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.neaefTilName.error = if (it) ERR_TITLE
+            binding.neaefTilName.error = if (it) getString(ERR_TITLE)
             else null
         }
 
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            binding.neaefTilAmountValue.error = if (it) ERR_PRICE
+            binding.neaefTilAmountValue.error = if (it) getString(ERR_PRICE)
             else null
         }
     }
@@ -71,9 +71,9 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
         }
     }
 
-    override fun setupCanCloseScreenObserver() {
+    private fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
+            viewModel.goBack()
         }
     }
 
@@ -167,8 +167,8 @@ class NoteExtraAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
     }
 
     companion object {
-        private const val ERR_TITLE = "Inappropriate name"
-        private const val ERR_PRICE = "Inappropriate amount"
+        private const val ERR_TITLE = R.string.inappropriate_title
+        private const val ERR_PRICE = R.string.inappropriate_price
 
         private const val MODE_KEY = "mode_note"
         private const val CAR_ID_KEY = "id_car"

@@ -15,8 +15,8 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
 import com.demo.carspends.utils.refactorString
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -29,8 +29,11 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
     private val getNoteItemUseCase: GetNoteItemUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val getCarItemUseCase: GetCarItemUseCase,
-    private val editCarItemUseCase: EditCarItemUseCase
+    private val editCarItemUseCase: EditCarItemUseCase,
+    private val router: Router
 ) : ViewModel() {
+
+    fun goBack() = router.exit()
 
     private val noteType = NoteType.REPAIR
     private var carId = CarItem.UNDEFINED_ID
@@ -239,12 +242,12 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
     fun setCarItem(id: Int) {
         viewModelScope.launch {
             carId = id
-            _currCarItem.value = getCarItemUseCase(carId)
+            _currCarItem.value = getCarItemUseCase.invoke(carId)
         }
     }
 
     private suspend fun updateCarItem() {
-        _currCarItem.value = getCarItemUseCase(carId)
+        _currCarItem.value = getCarItemUseCase.invoke(carId)
     }
 
     fun setItem(id: Int) {
