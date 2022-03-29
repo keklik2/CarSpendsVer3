@@ -1,7 +1,5 @@
 package com.demo.carspends.utils
 
-import java.lang.Exception
-
 fun refactorString(title: String?): String {
     return title?.trim() ?: ""
 }

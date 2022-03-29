@@ -3,6 +3,7 @@ package com.demo.carspends.presentation.fragments.car
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -13,8 +14,8 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
 import com.demo.carspends.utils.refactorString
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -22,10 +23,14 @@ import kotlin.math.min
 
 class CarAddOrEditViewModel @Inject constructor(
     private val addCarItemUseCase: AddCarItemUseCase,
-            private val editCarItemUseCase: EditCarItemUseCase,
-            private val getCarItemUseCase: GetCarItemUseCase,
-            private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase
-): ViewModel() {
+    private val editCarItemUseCase: EditCarItemUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val router: Router
+) : ViewModel() {
+
+    fun exit() = router.exit()
+    fun goToHomeScreen() = router.replaceScreen(Screens.HomePage())
 
     private var carId = CarItem.UNDEFINED_ID
 
@@ -53,7 +58,7 @@ class CarAddOrEditViewModel @Inject constructor(
         val rEngineCapacity = refactorDouble(engineCapacity)
         val rPower = refactorInt(power)
 
-        if(areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
+        if (areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
             viewModelScope.launch {
                 addCarItemUseCase(
                     CarItem(
@@ -75,7 +80,7 @@ class CarAddOrEditViewModel @Inject constructor(
         val rEngineCapacity = refactorDouble(engineCapacity)
         val rPower = refactorInt(power)
 
-        if(areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
+        if (areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
             val cItem = _carItem.value
             if (cItem != null) {
                 viewModelScope.launch {
@@ -139,8 +144,7 @@ class CarAddOrEditViewModel @Inject constructor(
                 val res = car.allPrice / car.allMileage
                 if (res < 0) 0.0
                 else res
-            }
-            else 0.0
+            } else 0.0
 
         editCarItemUseCase(
             car.copy(
@@ -158,7 +162,12 @@ class CarAddOrEditViewModel @Inject constructor(
         return null
     }
 
-    private fun areFieldsValid(name: String, mileage: Int, engineCapacity: Double, power: Int): Boolean {
+    private fun areFieldsValid(
+        name: String,
+        mileage: Int,
+        engineCapacity: Double,
+        power: Int
+    ): Boolean {
         if (name.isBlank()) {
             _errorNameInput.value = true
             return false
@@ -181,12 +190,12 @@ class CarAddOrEditViewModel @Inject constructor(
     fun setItem(id: Int) {
         carId = id
         viewModelScope.launch {
-            _carItem.value = getCarItemUseCase(carId)
+            _carItem.value = getCarItemUseCase.invoke(carId)
         }
     }
 
     private suspend fun updateItem() {
-        _carItem.value = getCarItemUseCase(carId)
+        _carItem.value = getCarItemUseCase.invoke(carId)
     }
 
     fun resetPowerError() {

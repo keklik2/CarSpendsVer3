@@ -15,11 +15,11 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragment
 import java.util.*
 
 class NoteFillingAddOrEditFragment :
-    BaseFragmentWithEditingFinishedListener(R.layout.note_filling_add_edit_fragment) {
+    BaseFragment(R.layout.note_filling_add_edit_fragment) {
     override val binding: NoteFillingAddEditFragmentBinding by viewBinding()
     override val viewModel: NoteFillingAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
@@ -30,11 +30,11 @@ class NoteFillingAddOrEditFragment :
         setupMileageTextChangeListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupCalcListener()
+        setupCalcObserver()
         setupErrorObservers()
         setupCanCloseScreenObserver()
-        setupNoteDateListener()
-        setupLastFuelTypeListener()
+        setupNoteDateObserver()
+        setupLastFuelTypeObserver()
     }
 
     private lateinit var launchMode: String
@@ -111,6 +111,7 @@ class NoteFillingAddOrEditFragment :
                     )
                 }
             }
+            open = true
         }
     }
 
@@ -139,6 +140,7 @@ class NoteFillingAddOrEditFragment :
                     )
                 }
             }
+            open = true
         }
     }
 
@@ -167,6 +169,7 @@ class NoteFillingAddOrEditFragment :
                     )
                 }
             }
+            open = true
         }
     }
 
@@ -176,25 +179,25 @@ class NoteFillingAddOrEditFragment :
         }
     }
 
-    private fun setupLastFuelTypeListener() {
+    private fun setupLastFuelTypeObserver() {
         viewModel.lastFuelType.observe(viewLifecycleOwner) {
             binding.nfaefSpinnerFuelType.setSelection(viewModel.getFuelId(it))
         }
     }
 
-    private fun setupNoteDateListener() {
+    private fun setupNoteDateObserver() {
         viewModel.noteDate.observe(viewLifecycleOwner) {
             binding.nfaefTvDateValue.text = getFormattedDate(it)
         }
     }
 
-    override fun setupCanCloseScreenObserver() {
+    private fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
+            viewModel.goBack()
         }
     }
 
-    private fun setupCalcListener() {
+    private fun setupCalcObserver() {
         viewModel.calcVolume.observe(viewLifecycleOwner) {
             binding.nfaefTietFuelVolume.setText(getFormattedDoubleAsStr(it))
         }
@@ -210,22 +213,22 @@ class NoteFillingAddOrEditFragment :
 
     private fun setupErrorObservers() {
         viewModel.errorVolumeInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelVolume.error = if (it) ERR_VOLUME
+            binding.nfaefTilFuelVolume.error = if (it) getString(ERR_VOLUME)
             else null
         }
 
         viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelAmount.error = if (it) ERR_AMOUNT
+            binding.nfaefTilFuelAmount.error = if (it) getString(ERR_AMOUNT)
             else null
         }
 
         viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelPrice.error = if (it) ERR_PRICE
+            binding.nfaefTilFuelPrice.error = if (it) getString(ERR_PRICE)
             else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilMileageValue.error = if (it) ERR_MILEAGE
+            binding.nfaefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
             else null
         }
     }
@@ -312,10 +315,10 @@ class NoteFillingAddOrEditFragment :
         private const val CHANGED_AMOUNT = 20
         private const val CHANGED_PRICE = 30
 
-        private const val ERR_VOLUME = "Inappropriate vol"
-        private const val ERR_AMOUNT = "Inappropriate amount"
-        private const val ERR_PRICE = "Inappropriate price"
-        private const val ERR_MILEAGE = "Inappropriate mileage"
+        private const val ERR_VOLUME = R.string.inappropriate_volume
+        private const val ERR_AMOUNT = R.string.inappropriate_amount
+        private const val ERR_PRICE = R.string.hint_fuel_price
+        private const val ERR_MILEAGE = R.string.inappropriate_mileage
 
         private const val MODE_KEY = "mode_note"
         private const val ID_KEY = "id_note"

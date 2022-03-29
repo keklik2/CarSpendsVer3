@@ -2,29 +2,36 @@ package com.demo.carspends.presentation.activities
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.demo.carspends.CarSpendsApp
 import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
-import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.presentation.fragments.car.CarAddOrEditFragment
 import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditFragment
-import java.lang.Exception
+import com.github.terrakok.cicerone.NavigatorHolder
+import com.github.terrakok.cicerone.androidx.AppNavigator
+import javax.inject.Inject
 
-class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
+class DetailElementsActivity : AppCompatActivity() {
 
     private lateinit var launchMode: String
     private var itemId = UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_elements)
+    @Inject
+    lateinit var navigatorHolder: NavigatorHolder
+    private val navigator = AppNavigator(this, R.id.detail_activity_fragment_container)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        (application as CarSpendsApp).component.inject(this)
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_detail_elements)
         receiveIntent()
 
         if (savedInstanceState == null) {
@@ -70,7 +77,7 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
         launchMode = keyType
         if (keyType == EXTRA_NOTE_EDIT || keyType == FILLING_NOTE_EDIT || keyType == REPAIR_NOTE_EDIT || keyType == COMPONENT_EDIT || keyType == CAR_EDIT) {
             if (!intent.hasExtra(KEY_NOTE_ID)) {
-                throw Exception("..._NOTE_EDIT requires KEY_NOTE_ID param with intent for DetailElementsActivity")
+                throw Exception("$keyType requires KEY_NOTE_ID param with intent for DetailElementsActivity")
             }
 
             val id = intent.getIntExtra(KEY_NOTE_ID, UNDEFINED_ID)
@@ -88,6 +95,17 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             }
             carId = cId
         }
+    }
+
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        navigatorHolder.setNavigator(navigator)
+    }
+
+
+    override fun onPause() {
+        navigatorHolder.removeNavigator()
+        super.onPause()
     }
 
     companion object {
@@ -178,9 +196,5 @@ class DetailElementsActivity : AppCompatActivity(), OnEditingFinishedListener {
             intent.putExtra(KEY_NOTE_ID, id)
             return intent
         }
-    }
-
-    override fun onFinish() {
-        finish()
     }
 }

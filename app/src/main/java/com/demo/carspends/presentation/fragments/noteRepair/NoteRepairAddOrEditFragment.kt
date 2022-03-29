@@ -13,10 +13,10 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragment
 import java.util.*
 
-class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.note_repair_add_edit_fragment) {
+class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fragment) {
     override val binding: NoteRepairAddEditFragmentBinding by viewBinding()
     override val viewModel: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
@@ -99,25 +99,25 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
         }
     }
 
-    override fun setupCanCloseScreenObserver() {
+    private fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
+            viewModel.goBack()
         }
     }
 
     private fun setupErrorObservers() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.nraefTilName.error = if(it) ERR_TITLE
+            binding.nraefTilName.error = if(it) getString(ERR_TITLE)
             else null
         }
 
         viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            binding.nraefTilAmountValue.error = if (it) ERR_AMOUNT
+            binding.nraefTilAmountValue.error = if (it) getString(ERR_AMOUNT)
             else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.nraefTilMileageValue.error = if (it) ERR_MILEAGE
+            binding.nraefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
             else null
         }
     }
@@ -182,9 +182,9 @@ class NoteRepairAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.lay
     }
 
     companion object {
-        private const val ERR_TITLE = "Inappropriate title"
-        private const val ERR_AMOUNT = "Inappropriate amount"
-        private const val ERR_MILEAGE = "Inappropriate mileage"
+        private const val ERR_TITLE = R.string.inappropriate_title
+        private const val ERR_AMOUNT = R.string.inappropriate_amount
+        private const val ERR_MILEAGE = R.string.inappropriate_mileage
 
         private const val MODE_KEY = "mode_note"
         private const val ID_KEY = "id_note"

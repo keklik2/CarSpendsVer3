@@ -10,8 +10,8 @@ import com.demo.carspends.domain.component.usecases.EditComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemByIdUseCase
 import com.demo.carspends.utils.refactorInt
 import com.demo.carspends.utils.refactorString
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -19,8 +19,11 @@ class ComponentAddOrEditViewModel @Inject constructor(
     private val addComponentUseCase: AddComponentItemUseCase,
     private val editComponentUseCase: EditComponentItemUseCase,
     private val getComponentItemUseCase: GetComponentItemByIdUseCase,
-    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase,
+    private val router: Router
 ) : ViewModel() {
+
+    fun goBack() = router.exit()
 
     private val _carsList = getCarItemsListLDUseCase()
     val carsList get() = _carsList
