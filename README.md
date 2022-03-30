@@ -9,7 +9,11 @@ __description:__ Android application to keep car expenses notes
 - etc (developing)
 
 ## (EN) Update Notes
-### Alpha v.3.10.4 (28.03.22) - current
+### Alpha v.3.10.5 (29.03.22) - current
+- Cicerone & Bottom navigation repository implementation;
+- Code restructure.
+
+### Alpha v.3.10.4 (28.03.22)
 - Code restructure;
 - Kiel repository usage.
 
