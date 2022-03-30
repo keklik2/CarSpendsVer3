@@ -1,13 +1,20 @@
 package com.demo.carspends.presentation.fragments.notesList
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.domain.note.usecases.*
+import com.demo.carspends.domain.note.usecases.DeleteNoteItemUseCase
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.math.abs
@@ -20,8 +27,26 @@ class NotesListViewModel @Inject constructor(
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val getCarItemUseCase: GetCarItemUseCase,
     private val editCarItemUseCase: EditCarItemUseCase,
-    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase,
+    private val router: Router
 ) : ViewModel() {
+
+    fun goToCarAddOrEditFragment() = router.replaceScreen(Screens.CarEditOrAdd())
+    fun goToCarAddOrEditFragment(carId: Int) = router.navigateTo(Screens.CarEditOrAdd(carId))
+    fun goToNoteAddOrEditFragment(noteType: NoteType) {
+        when(noteType) {
+            NoteType.FUEL -> router.navigateTo(Screens.NoteFilling(carId))
+            NoteType.REPAIR -> router.navigateTo(Screens.NoteRepair(carId))
+            NoteType.EXTRA -> router.navigateTo(Screens.NoteExtra(carId))
+        }
+    }
+    fun goToNoteAddOrEditFragment(noteType: NoteType, id: Int) {
+        when(noteType) {
+            NoteType.FUEL -> router.navigateTo(Screens.NoteFilling(carId, id))
+            NoteType.REPAIR -> router.navigateTo(Screens.NoteRepair(carId, id))
+            NoteType.EXTRA -> router.navigateTo(Screens.NoteExtra(carId, id))
+        }
+    }
 
     private var carId = CarItem.UNDEFINED_ID
 

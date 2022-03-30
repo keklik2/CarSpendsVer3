@@ -13,10 +13,10 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragment
 import java.util.*
 
-class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layout.component_add_edit_fragment) {
+class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragment) {
     override val binding: ComponentAddEditFragmentBinding by viewBinding()
     override val viewModel: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
@@ -93,25 +93,25 @@ class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
         }
     }
 
-    override fun setupCanCloseScreenObserver() {
+    private fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
+            viewModel.goBack()
         }
     }
 
     private fun setupErrorObserver() {
         viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.caefTilName.error = if(it) ERR_TITLE
+            binding.caefTilName.error = if(it) getString(ERR_TITLE)
             else null
         }
 
         viewModel.errorResourceInput.observe(viewLifecycleOwner) {
-            binding.caefTilResourceValue.error = if (it) ERR_RESOURCE
+            binding.caefTilResourceValue.error = if (it) getString(ERR_RESOURCE)
             else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.caefTilMileageValue.error = if (it) ERR_MILEAGE
+            binding.caefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
             else null
         }
     }
@@ -178,9 +178,9 @@ class ComponentAddOrEditFragment: BaseFragmentWithEditingFinishedListener(R.layo
     }
 
     companion object {
-        private const val ERR_TITLE = "Inappropriate title"
-        private const val ERR_RESOURCE = "Inappropriate resource"
-        private const val ERR_MILEAGE = "Inappropriate mileage"
+        private const val ERR_TITLE = R.string.inappropriate_title
+        private const val ERR_RESOURCE = R.string.inappropriate_resource
+        private const val ERR_MILEAGE = R.string.inappropriate_mileage
 
         private const val MODE_KEY = "mode_component"
         private const val ID_KEY = "id_component"

@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
@@ -12,12 +11,12 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.presentation.fragments.OnEditingFinishedListener
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
-import com.demo.carspends.utils.ui.BaseFragmentWithEditingFinishedListener
+import com.demo.carspends.utils.ui.BaseFragment
 
-class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.car_add_edit_fragment) {
+class CarAddOrEditFragment :
+    BaseFragment(R.layout.car_add_edit_fragment) {
     override val binding: CarAddEditFragmentBinding by viewBinding()
     override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
@@ -71,29 +70,30 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
 
     private fun setupErrorObservers() {
         viewModel.errorNameInput.observe(viewLifecycleOwner) {
-            binding.carefTilCarName.error = if (it) ERR_TITLE
+            binding.carefTilCarName.error = if (it) getString(ERR_TITLE)
             else null
         }
 
         viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.carefTilMileageValue.error = if (it) ERR_RESOURCE
+            binding.carefTilMileageValue.error = if (it) getString(ERR_RESOURCE)
             else null
         }
 
         viewModel.errorEngineCapacityInput.observe(viewLifecycleOwner) {
-            binding.carefTilEngineCapacity.error = if (it) ERR_MILEAGE
+            binding.carefTilEngineCapacity.error = if (it) getString(ERR_MILEAGE)
             else null
         }
 
         viewModel.errorPowerInput.observe(viewLifecycleOwner) {
-            binding.carefTilPower.error = if (it) ERR_MILEAGE
+            binding.carefTilPower.error = if (it) getString(ERR_MILEAGE)
             else null
         }
     }
 
-    override fun setupCanCloseScreenObserver() {
+    private fun setupCanCloseScreenObserver() {
         viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            onEditingFinishedListener.onFinish()
+            if (launchMode == ADD_MODE) viewModel.exit()
+            else viewModel.goToHomeScreen()
         }
     }
 
@@ -104,11 +104,13 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
             requireActivity().onBackPressedDispatcher.addCallback(object :
                 OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    androidx.appcompat.app.AlertDialog.Builder(requireActivity())
+                    AlertDialog.Builder(requireActivity())
                         .setMessage(
                             getString(R.string.dialog_exit_car)
                         )
                         .setPositiveButton(R.string.button_apply) { _, _ ->
+                            addModeApplyClickListener()
+                            viewModel.exit()
                         }
                         .setNegativeButton(R.string.button_deny) { _, _ ->
                         }
@@ -136,7 +138,10 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
             carefAllPriceLayout.visibility = View.INVISIBLE
             carefAllMileageLayout.visibility = View.INVISIBLE
         }
+        addModeApplyClickListener()
+    }
 
+    private fun addModeApplyClickListener() {
         binding.carefButtonApply.setOnClickListener {
             viewModel.addCar(
                 binding.carefTietCarName.text.toString(),
@@ -213,20 +218,17 @@ class CarAddOrEditFragment : BaseFragmentWithEditingFinishedListener(R.layout.ca
     }
 
 
-
     /** Basic functions to make class work as Fragment */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
-        if (context is OnEditingFinishedListener) onEditingFinishedListener = context
-        else throw Exception("Activity must implement OnEditingFinishedListener")
     }
 
     companion object {
         // Text Fields error text
-        private const val ERR_TITLE = "Inappropriate title"
-        private const val ERR_RESOURCE = "Inappropriate resource"
-        private const val ERR_MILEAGE = "Inappropriate mileage"
+        private const val ERR_TITLE = R.string.inappropriate_title
+        private const val ERR_RESOURCE = R.string.inappropriate_resource
+        private const val ERR_MILEAGE = R.string.inappropriate_mileage
 
         // Bundle Arguments constants
         private const val MODE_KEY = "mode_car"

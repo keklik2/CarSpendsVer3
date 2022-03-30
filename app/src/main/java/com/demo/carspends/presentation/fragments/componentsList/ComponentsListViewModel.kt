@@ -3,21 +3,25 @@ package com.demo.carspends.presentation.fragments.componentsList
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.ComponentRepositoryImpl
+import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.DeleteComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
+import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ComponentsListViewModel @Inject constructor(
-    private val carRepository: CarRepositoryImpl,
-    private val componentRepository: ComponentRepositoryImpl,
-    private val deleteComponentUseCase: DeleteComponentItemUseCase
+    private val deleteComponentUseCase: DeleteComponentItemUseCase,
+    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase,
+    private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
+    private val router: Router
 ) : ViewModel() {
+
+    fun goToComponentAddOrEdit() = router.navigateTo(Screens.ComponentEditOrAdd(carId))
+    fun goToComponentAddOrEdit(id: Int) = router.navigateTo(Screens.ComponentEditOrAdd(carId, id))
 
     private var _carId = 0
     val carId get() = _carId
@@ -25,10 +29,10 @@ class ComponentsListViewModel @Inject constructor(
     private var _carMileage = 0
     val carMileage get() = _carMileage
 
-    private val _carsList = GetCarItemsListLDUseCase(carRepository).invoke()
+    private val _carsList = getCarItemsListLDUseCase()
     val carsList get() = _carsList
 
-    private val _componentsList = GetComponentItemsListUseCase(componentRepository).invoke()
+    private val _componentsList = getComponentItemsListUseCase()
     val componentsList get() = _componentsList
 
     private val carIdObserver: Observer<List<CarItem>> = Observer {

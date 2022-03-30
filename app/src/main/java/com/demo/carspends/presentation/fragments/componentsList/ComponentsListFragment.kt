@@ -1,6 +1,5 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AlertDialog
@@ -11,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
-import com.demo.carspends.presentation.activities.DetailElementsActivity
-import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
+import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.utils.ui.BaseFragment
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
@@ -30,25 +28,27 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
 
     private val mainAdapter = ComponentItemAdapter.get {
-        goToAddOrEditComponentItemFragment(it.componentItem.id)
+        viewModel.goToComponentAddOrEdit(it.componentItem.id)
     }
 
     private fun setComponentsObserver() {
+        binding.clfRvComponents.adapter = mainAdapter
         viewModel.componentsList.observe(viewLifecycleOwner) {
-            mainAdapter.submitList(it.map { it1 -> ExtendedComponentItem(it1, viewModel.carMileage) })
-            binding.clfRvComponents.adapter = mainAdapter
-            binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
-            else View.INVISIBLE
+            viewModel.carsList.observe(viewLifecycleOwner) { it1 ->
+                mainAdapter.submitList(it.map { it2 -> ExtendedComponentItem(it2, it1.first().mileage) })
+                binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
+                else View.INVISIBLE
+            }
+
         }
     }
 
     private fun setupAddComponentButtonListener() {
         binding.clfFbAddComponent.setOnClickListener {
-            goToAddOrEditComponentItemFragment()
+            viewModel.goToComponentAddOrEdit()
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun setupRecyclerOnSwipeListener() {
         val callback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             override fun onMove(
@@ -98,25 +98,6 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     private fun setFLBAddComponentVisibility(visible: Boolean) {
         if (visible) binding.clfFbAddComponent.show()
         else binding.clfFbAddComponent.hide()
-    }
-
-    private fun goToAddOrEditComponentItemFragment() {
-        startActivity(
-            DetailElementsActivity.newAddOrEditComponentIntent(
-                requireActivity(),
-                viewModel.carId
-            )
-        )
-    }
-
-    private fun goToAddOrEditComponentItemFragment(id: Int) {
-        startActivity(
-            DetailElementsActivity.newAddOrEditComponentIntent(
-                requireActivity(),
-                viewModel.carId,
-                id
-            )
-        )
     }
 
     override fun onAttach(context: Context) {

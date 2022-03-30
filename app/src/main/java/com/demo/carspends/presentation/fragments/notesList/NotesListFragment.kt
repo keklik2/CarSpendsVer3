@@ -13,10 +13,9 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
-import com.demo.carspends.utils.ui.BaseFragment
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
+import com.demo.carspends.utils.ui.BaseFragment
 import java.util.*
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
@@ -43,7 +42,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     private var type: NoteType? = null
     private val mainAdapter by lazy {
         NoteItemAdapter.get {
-            goToEditNoteItemFragment(it.type, it.id)
+            viewModel.goToNoteAddOrEditFragment(it.type, it.id)
         }
     }
 
@@ -141,11 +140,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
     private fun setNotesObserver() {
         setNewNotesList()
-
-        viewModel.notesList.observe(viewLifecycleOwner) {
-            with(binding) {
+        with(binding) {
+            nlfRvNotes.adapter = mainAdapter
+            viewModel.notesList.observe(viewLifecycleOwner) {
                 mainAdapter.submitList(it)
-                nlfRvNotes.adapter = mainAdapter
                 nlfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
                 else View.INVISIBLE
             }
@@ -154,7 +152,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
     private fun checkForCarExisting() {
         viewModel.carsList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) startCarAddOrEdit()
+            if (it.isEmpty()) viewModel.goToCarAddOrEditFragment()
             else {
                 val carItem = it[0]
                 with(binding) {
@@ -175,7 +173,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
     private fun setupCarInfoListener() {
         binding.nlfCarInfoLayout.setOnClickListener {
-            startCarAddOrEdit(getCarId())
+            viewModel.goToCarAddOrEditFragment(getCarId())
         }
     }
 
@@ -191,17 +189,17 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         with(binding) {
             nlfFbAddFilling.setOnClickListener {
                 floatingButtonsChangeStatement()
-                goToAddNoteItemFragment(NoteType.FUEL)
+                viewModel.goToNoteAddOrEditFragment(NoteType.FUEL)
             }
 
             nlfFbAddRepair.setOnClickListener {
                 floatingButtonsChangeStatement()
-                goToAddNoteItemFragment(NoteType.REPAIR)
+                viewModel.goToNoteAddOrEditFragment(NoteType.REPAIR)
             }
 
             nlfFbAddExtra.setOnClickListener {
                 floatingButtonsChangeStatement()
-                goToAddNoteItemFragment(NoteType.EXTRA)
+                viewModel.goToNoteAddOrEditFragment(NoteType.EXTRA)
             }
         }
     }
@@ -284,87 +282,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     private fun setFLBAddNoteVisibility(visible: Boolean) {
         if (visible) binding.nlfFbAddNote.show()
         else binding.nlfFbAddNote.hide()
-    }
-
-    private fun goToEditNoteItemFragment(type: NoteType, id: Int) {
-        when (type) {
-            NoteType.FUEL -> startFillingNoteAddOrEdit(id)
-            NoteType.REPAIR -> startRepairNoteAddOrEdit(id)
-            NoteType.EXTRA -> startExtraNoteAddOrEdit(id)
-        }
-    }
-
-    private fun goToAddNoteItemFragment(type: NoteType) {
-        when (type) {
-            NoteType.FUEL -> startFillingNoteAddOrEdit()
-            NoteType.REPAIR -> startRepairNoteAddOrEdit()
-            NoteType.EXTRA -> startExtraNoteAddOrEdit()
-        }
-    }
-
-    private fun startFillingNoteAddOrEdit() {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteFillingIntent(
-                requireActivity(),
-                getCarId()
-            )
-        )
-    }
-
-    private fun startFillingNoteAddOrEdit(id: Int) {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteFillingIntent(
-                requireActivity(),
-                getCarId(),
-                id
-            )
-        )
-    }
-
-    private fun startRepairNoteAddOrEdit() {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteRepairIntent(
-                requireActivity(),
-                getCarId()
-            )
-        )
-    }
-
-    private fun startRepairNoteAddOrEdit(id: Int) {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteRepairIntent(
-                requireActivity(),
-                getCarId(),
-                id
-            )
-        )
-    }
-
-    private fun startExtraNoteAddOrEdit() {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteExtraIntent(
-                requireActivity(),
-                getCarId()
-            )
-        )
-    }
-
-    private fun startExtraNoteAddOrEdit(id: Int) {
-        startActivity(
-            DetailElementsActivity.newAddOrEditNoteExtraIntent(
-                requireActivity(),
-                getCarId(),
-                id
-            )
-        )
-    }
-
-    private fun startCarAddOrEdit() {
-        startActivity(DetailElementsActivity.newAddOrEditCarIntent(requireActivity()))
-    }
-
-    private fun startCarAddOrEdit(id: Int) {
-        startActivity(DetailElementsActivity.newAddOrEditCarIntent(requireActivity(), id))
     }
 
     override fun onAttach(context: Context) {
