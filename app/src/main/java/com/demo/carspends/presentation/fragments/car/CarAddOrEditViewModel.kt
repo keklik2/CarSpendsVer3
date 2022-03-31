@@ -34,18 +34,6 @@ class CarAddOrEditViewModel @Inject constructor(
 
     private var carId = CarItem.UNDEFINED_ID
 
-    private val _errorPowerInput = MutableLiveData<Boolean>()
-    val errorPowerInput get() = _errorPowerInput
-
-    private val _errorEngineCapacityInput = MutableLiveData<Boolean>()
-    val errorEngineCapacityInput get() = _errorEngineCapacityInput
-
-    private val _errorMileageInput = MutableLiveData<Boolean>()
-    val errorMileageInput get() = _errorMileageInput
-
-    private val _errorNameInput = MutableLiveData<Boolean>()
-    val errorNameInput get() = _errorNameInput
-
     private val _carItem = MutableLiveData<CarItem>()
     val carrItem get() = _carItem
 
@@ -58,19 +46,17 @@ class CarAddOrEditViewModel @Inject constructor(
         val rEngineCapacity = refactorDouble(engineCapacity)
         val rPower = refactorInt(power)
 
-        if (areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
-            viewModelScope.launch {
-                addCarItemUseCase(
-                    CarItem(
-                        title = rName,
-                        startMileage = rMileage,
-                        mileage = rMileage,
-                        engineVolume = rEngineCapacity,
-                        power = rPower
-                    )
+        viewModelScope.launch {
+            addCarItemUseCase(
+                CarItem(
+                    title = rName,
+                    startMileage = rMileage,
+                    mileage = rMileage,
+                    engineVolume = rEngineCapacity,
+                    power = rPower
                 )
-                setCanCloseScreen()
-            }
+            )
+            setCanCloseScreen()
         }
     }
 
@@ -80,38 +66,36 @@ class CarAddOrEditViewModel @Inject constructor(
         val rEngineCapacity = refactorDouble(engineCapacity)
         val rPower = refactorInt(power)
 
-        if (areFieldsValid(rName, rMileage, rEngineCapacity, rPower)) {
-            val cItem = _carItem.value
-            if (cItem != null) {
-                viewModelScope.launch {
+        val cItem = _carItem.value
+        if (cItem != null) {
+            viewModelScope.launch {
 
-                    val notes = getNoteItemsListByMileageUseCase()
-                    var newStartMileage: Int
-                    if (notes.isNotEmpty()) {
-                        newStartMileage = rMileage
-                        for (i in notes) {
-                            if (i.type != NoteType.EXTRA) {
-                                newStartMileage = cItem.startMileage
-                                break
-                            }
+                val notes = getNoteItemsListByMileageUseCase()
+                var newStartMileage: Int
+                if (notes.isNotEmpty()) {
+                    newStartMileage = rMileage
+                    for (i in notes) {
+                        if (i.type != NoteType.EXTRA) {
+                            newStartMileage = cItem.startMileage
+                            break
                         }
-                    } else newStartMileage = rMileage
+                    }
+                } else newStartMileage = rMileage
 
-                    val newCar = cItem.copy(
-                        title = rName,
-                        startMileage = newStartMileage,
-                        mileage = rMileage,
-                        engineVolume = rEngineCapacity,
-                        power = rPower
-                    )
-                    editCarItemUseCase(newCar)
+                val newCar = cItem.copy(
+                    title = rName,
+                    startMileage = newStartMileage,
+                    mileage = rMileage,
+                    engineVolume = rEngineCapacity,
+                    power = rPower
+                )
+                editCarItemUseCase(newCar)
 
-                    calculateAllMileage()
-                    calculateAvgPrice()
-                    setCanCloseScreen()
-                }
-            } else throw Exception(ERR_NULL_ITEM_EDIT)
-        }
+                calculateAllMileage()
+                calculateAvgPrice()
+                setCanCloseScreen()
+            }
+        } else throw Exception(ERR_NULL_ITEM_EDIT)
     }
 
     private suspend fun calculateAllMileage() {
@@ -162,31 +146,6 @@ class CarAddOrEditViewModel @Inject constructor(
         return null
     }
 
-    private fun areFieldsValid(
-        name: String,
-        mileage: Int,
-        engineCapacity: Double,
-        power: Int
-    ): Boolean {
-        if (name.isBlank()) {
-            _errorNameInput.value = true
-            return false
-        }
-        if (mileage <= 0) {
-            _errorMileageInput.value = true
-            return false
-        }
-        if (engineCapacity <= 0) {
-            _errorEngineCapacityInput.value = true
-            return false
-        }
-        if (power <= 0) {
-            _errorPowerInput.value = true
-            return false
-        }
-        return true
-    }
-
     fun setItem(id: Int) {
         carId = id
         viewModelScope.launch {
@@ -196,22 +155,6 @@ class CarAddOrEditViewModel @Inject constructor(
 
     private suspend fun updateItem() {
         _carItem.value = getCarItemUseCase.invoke(carId)
-    }
-
-    fun resetPowerError() {
-        _errorPowerInput.value = false
-    }
-
-    fun resetEngineCapacityError() {
-        _errorEngineCapacityInput.value = false
-    }
-
-    fun resetMileageError() {
-        _errorMileageInput.value = false
-    }
-
-    fun resetNameError() {
-        _errorNameInput.value = false
     }
 
     private fun setCanCloseScreen() {

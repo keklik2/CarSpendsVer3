@@ -41,15 +41,6 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
 
-    private val _errorMileageInput = MutableLiveData<Boolean>()
-    val errorMileageInput get() = _errorMileageInput
-
-    private val _errorTotalPriceInput = MutableLiveData<Boolean>()
-    val errorTotalPriceInput get() = _errorTotalPriceInput
-
-    private val _errorTitleInput = MutableLiveData<Boolean>()
-    val errorTitleInput get() = _errorTitleInput
-
     private val _noteItem = MutableLiveData<NoteItem>()
     val noteItem get() = _noteItem
 
@@ -68,26 +59,24 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
         val rTotalPrice = refactorDouble(totalPrice)
         val rMileage = refactorInt(mileage)
 
-        if (areFieldsValid(rTitle, rTotalPrice, rMileage)) {
-            viewModelScope.launch {
-                val nDate = _noteDate.value
-                if (nDate != null) {
-                    val newNote = NoteItem(
-                        title = rTitle,
-                        totalPrice = rTotalPrice,
-                        mileage = rMileage,
-                        date = nDate,
-                        type = noteType
-                    )
-                    addNoteItemUseCase(newNote)
+        viewModelScope.launch {
+            val nDate = _noteDate.value
+            if (nDate != null) {
+                val newNote = NoteItem(
+                    title = rTitle,
+                    totalPrice = rTotalPrice,
+                    mileage = rMileage,
+                    date = nDate,
+                    type = noteType
+                )
+                addNoteItemUseCase(newNote)
 
-                    updateMileage(rMileage)
-                    calculateAllMileage()
-                    addLastPrice(newNote)
-                    calculateAvgPrice()
-                    setCanCloseScreen()
-                } else throw Exception(ERR_NULL_ITEM_ADD)
-            }
+                updateMileage(rMileage)
+                calculateAllMileage()
+                addLastPrice(newNote)
+                calculateAvgPrice()
+                setCanCloseScreen()
+            } else throw Exception(ERR_NULL_ITEM_ADD)
         }
     }
 
@@ -96,30 +85,28 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
         val rTotalPrice = refactorDouble(totalPrice)
         val rMileage = refactorInt(mileage)
 
-        if (areFieldsValid(rTitle, rTotalPrice, rMileage)) {
-            viewModelScope.launch {
-                val nItem = _noteItem.value
-                if (nItem != null) {
-                    val nDate = _noteDate.value
-                    if (nDate != null) {
-                        editNoteItemUseCase(
-                            nItem.copy(
-                                title = rTitle,
-                                totalPrice = rTotalPrice,
-                                mileage = rMileage,
-                                date = nDate,
-                                type = noteType
-                            )
+        viewModelScope.launch {
+            val nItem = _noteItem.value
+            if (nItem != null) {
+                val nDate = _noteDate.value
+                if (nDate != null) {
+                    editNoteItemUseCase(
+                        nItem.copy(
+                            title = rTitle,
+                            totalPrice = rTotalPrice,
+                            mileage = rMileage,
+                            date = nDate,
+                            type = noteType
                         )
+                    )
 
-                        rollbackCarMileage(nItem)
-                        calculateAllMileage()
-                        addAllPrice()
-                        calculateAvgPrice()
-                        setCanCloseScreen()
-                    } else throw Exception(ERR_NULL_ITEM_EDIT)
+                    rollbackCarMileage(nItem)
+                    calculateAllMileage()
+                    addAllPrice()
+                    calculateAvgPrice()
+                    setCanCloseScreen()
                 } else throw Exception(ERR_NULL_ITEM_EDIT)
-            }
+            } else throw Exception(ERR_NULL_ITEM_EDIT)
         }
     }
 
@@ -223,22 +210,6 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
         updateCarItem()
     }
 
-    private fun areFieldsValid(title: String, totalPrice: Double, mileage: Int): Boolean {
-        if (title.isBlank()) {
-            _errorTitleInput.value = true
-            return false
-        }
-        if (totalPrice <= 0.0) {
-            _errorTotalPriceInput.value = true
-            return false
-        }
-        if (mileage <= 0) {
-            _errorMileageInput.value = true
-            return false
-        }
-        return true
-    }
-
     fun setCarItem(id: Int) {
         viewModelScope.launch {
             carId = id
@@ -256,18 +227,6 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
             _noteItem.value = item
             _noteDate.value = item.date
         }
-    }
-
-    fun resetMileageError() {
-        _errorMileageInput.value = false
-    }
-
-    fun resetTitleError() {
-        _errorTitleInput.value = false
-    }
-
-    fun resetTotalPriceError() {
-        _errorTotalPriceInput.value = false
     }
 
     fun setNoteDate(date: Long) {

@@ -37,12 +37,6 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
 
-    private val _errorPriceInput = MutableLiveData<Boolean>()
-    val errorPriceInput get() = _errorPriceInput
-
-    private val _errorTitleInput = MutableLiveData<Boolean>()
-    val errorTitleInput get() = _errorTitleInput
-
     private val _noteItem = MutableLiveData<NoteItem>()
     val noteItem get() = _noteItem
 
@@ -57,23 +51,21 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
         val rTitle = refactorString(title)
         val rPrice = refactorDouble(price)
 
-        if (areFieldsValid(rTitle, rPrice)) {
-            viewModelScope.launch {
-                val nDate = _noteDate.value
-                if (nDate != null) {
-                    val newNote = NoteItem(
-                        title = rTitle,
-                        totalPrice = rPrice,
-                        date = nDate,
-                        type = noteType
-                    )
-                    addNoteItemUseCase(newNote)
+        viewModelScope.launch {
+            val nDate = _noteDate.value
+            if (nDate != null) {
+                val newNote = NoteItem(
+                    title = rTitle,
+                    totalPrice = rPrice,
+                    date = nDate,
+                    type = noteType
+                )
+                addNoteItemUseCase(newNote)
 
-                    addLastPrice(newNote)
-                    calculateAvgPrice()
-                    setCanCloseScreen()
-                } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-            }
+                addLastPrice(newNote)
+                calculateAvgPrice()
+                setCanCloseScreen()
+            } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
         }
     }
 
@@ -81,27 +73,25 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
         val rTitle = refactorString(title)
         val rPrice = refactorDouble(price)
 
-        if (areFieldsValid(rTitle, rPrice)) {
-            viewModelScope.launch {
-                val nItem = _noteItem.value
-                if (nItem != null) {
-                    val nDate = _noteDate.value
-                    if (nDate != null) {
-                        editNoteItemUseCase(
-                            nItem.copy(
-                                title = rTitle,
-                                totalPrice = rPrice,
-                                date = nDate,
-                                type = noteType
-                            )
+        viewModelScope.launch {
+            val nItem = _noteItem.value
+            if (nItem != null) {
+                val nDate = _noteDate.value
+                if (nDate != null) {
+                    editNoteItemUseCase(
+                        nItem.copy(
+                            title = rTitle,
+                            totalPrice = rPrice,
+                            date = nDate,
+                            type = noteType
                         )
+                    )
 
-                        addAllPrice()
-                        calculateAvgPrice()
-                        setCanCloseScreen()
-                    } else throw Exception("Received NULL NoteDate for AddNoteItemUseCase()")
-                } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
-            }
+                    addAllPrice()
+                    calculateAvgPrice()
+                    setCanCloseScreen()
+                } else throw Exception("Received NULL NoteDate for AddNoteItemUseCase()")
+            } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
         }
     }
 
@@ -145,32 +135,12 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
         )
     }
 
-    private fun areFieldsValid(title: String, price: Double): Boolean {
-        if (title.isBlank()) {
-            _errorTitleInput.value = true
-            return false
-        }
-        if (price <= 0.0) {
-            _errorPriceInput.value = true
-            return false
-        }
-        return true
-    }
-
     fun setItem(id: Int) {
         viewModelScope.launch {
             val item = getNoteItemUseCase(id)
             _noteItem.value = item
             _noteDate.value = item.date
         }
-    }
-
-    fun resetTitleError() {
-        _errorTitleInput.value = false
-    }
-
-    fun resetPriceError() {
-        _errorPriceInput.value = false
     }
 
     fun setNoteDate(date: Long) {

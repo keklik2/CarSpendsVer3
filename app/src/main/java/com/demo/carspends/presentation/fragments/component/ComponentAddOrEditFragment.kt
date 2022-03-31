@@ -14,9 +14,14 @@ import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.BaseFragment
+import io.github.anderscheow.validator.Validator
+import io.github.anderscheow.validator.rules.common.NotBlankRule
+import io.github.anderscheow.validator.rules.common.NotEmptyRule
+import io.github.anderscheow.validator.validation
+import io.github.anderscheow.validator.validator
 import java.util.*
 
-class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragment) {
+class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_fragment) {
     override val binding: ComponentAddEditFragmentBinding by viewBinding()
     override val viewModel: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
@@ -24,6 +29,8 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
         setupTitleTextChangeListener()
         setupAmountTextChangeListener()
         setupMileageTextChangeListener()
+
+        setupOnAcceptButtonClickListener()
     }
     override var setupObservers: (() -> Unit)? = {
         setupErrorObserver()
@@ -34,6 +41,31 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
     private lateinit var launchMode: String
     private var componentId = ComponentItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
+
+    private val titleValidation by lazy {
+        validation(binding.caefTilName) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_TITLE)
+                +NotBlankRule(ERR_BLANK_TITLE)
+            }
+        }
+    }
+    private val mileageValidation by lazy {
+        validation(binding.caefTilMileageValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_MILEAGE)
+                +NotBlankRule(ERR_BLANK_MILEAGE)
+            }
+        }
+    }
+    private val resourceValidation by lazy {
+        validation(binding.caefTilResourceValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_RESOURCE)
+                +NotBlankRule(ERR_BLANK_RESOURCE)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,28 +94,82 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
                     timeInMillis = it
                 }
             }
-            DatePickerDialog(requireContext(), dateSetListener,
+            DatePickerDialog(
+                requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
                 cCal.get(Calendar.MONTH),
-                cCal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
     }
 
     private fun setupTitleTextChangeListener() {
         binding.caefTietName.addTextChangedListener {
-            viewModel.resetTitleError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(titleValidation)
+            }
         }
     }
 
     private fun setupAmountTextChangeListener() {
         binding.caefTietResourceValue.addTextChangedListener {
-            viewModel.resetResourceError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(resourceValidation)
+            }
         }
     }
 
     private fun setupMileageTextChangeListener() {
         binding.caefTietMileageValue.addTextChangedListener {
-            viewModel.resetMileageError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(mileageValidation)
+            }
+        }
+    }
+
+    private fun setupOnAcceptButtonClickListener() {
+        binding.caefButtonApply.setOnClickListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {
+                        when (launchMode) {
+                            ADD_MODE -> {
+                                with(binding) {
+                                    viewModel.addComponentItem(
+                                        caefTietName.text.toString(),
+                                        caefTietResourceValue.text.toString(),
+                                        caefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                            EDIT_MODE -> {
+                                with(binding) {
+                                    viewModel.editComponentItem(
+                                        caefTietName.text.toString(),
+                                        caefTietResourceValue.text.toString(),
+                                        caefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(resourceValidation, titleValidation, mileageValidation)
+            }
         }
     }
 
@@ -100,24 +186,24 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
     }
 
     private fun setupErrorObserver() {
-        viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.caefTilName.error = if(it) getString(ERR_TITLE)
-            else null
-        }
-
-        viewModel.errorResourceInput.observe(viewLifecycleOwner) {
-            binding.caefTilResourceValue.error = if (it) getString(ERR_RESOURCE)
-            else null
-        }
-
-        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.caefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
-            else null
-        }
+//        viewModel.errorTitleInput.observe(viewLifecycleOwner) {
+//            binding.caefTilName.error = if (it) getString(ERR_TITLE)
+//            else null
+//        }
+//
+//        viewModel.errorResourceInput.observe(viewLifecycleOwner) {
+//            binding.caefTilResourceValue.error = if (it) getString(ERR_RESOURCE)
+//            else null
+//        }
+//
+//        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
+//            binding.caefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
+//            else null
+//        }
     }
 
     private fun chooseMode() {
-        when(launchMode) {
+        when (launchMode) {
             ADD_MODE -> addNoteMode()
             else -> editNoteMode()
         }
@@ -126,13 +212,6 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
     private fun addNoteMode() {
         viewModel.carsList.observe(viewLifecycleOwner) {
             binding.caefTietMileageValue.setText(it[0].mileage.toString())
-        }
-        binding.caefButtonApply.setOnClickListener {
-            viewModel.addComponentItem(
-                binding.caefTietName.text.toString(),
-                binding.caefTietResourceValue.text.toString(),
-                binding.caefTietMileageValue.text.toString()
-            )
         }
     }
 
@@ -144,14 +223,6 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
                 caefTietResourceValue.setText(it.resourceMileage.toString())
                 caefTietMileageValue.setText(it.startMileage.toString())
             }
-        }
-
-        binding.caefButtonApply.setOnClickListener {
-            viewModel.editNoteItem(
-                binding.caefTietName.text.toString(),
-                binding.caefTietResourceValue.text.toString(),
-                binding.caefTietMileageValue.text.toString()
-            )
         }
     }
 
@@ -170,7 +241,6 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
     }
 
 
-
     /** Basic functions to make Class work as Fragment */
     override fun onAttach(context: Context) {
         component.inject(this)
@@ -178,9 +248,12 @@ class ComponentAddOrEditFragment: BaseFragment(R.layout.component_add_edit_fragm
     }
 
     companion object {
-        private const val ERR_TITLE = R.string.inappropriate_title
-        private const val ERR_RESOURCE = R.string.inappropriate_resource
-        private const val ERR_MILEAGE = R.string.inappropriate_mileage
+        private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title
+        private const val ERR_BLANK_TITLE = R.string.blank_validation
+        private const val ERR_EMPTY_RESOURCE = R.string.inappropriate_empty_resource
+        private const val ERR_BLANK_RESOURCE = R.string.blank_validation
+        private const val ERR_EMPTY_MILEAGE = R.string.inappropriate_empty_mileage
+        private const val ERR_BLANK_MILEAGE = R.string.blank_validation
 
         private const val MODE_KEY = "mode_component"
         private const val ID_KEY = "id_component"

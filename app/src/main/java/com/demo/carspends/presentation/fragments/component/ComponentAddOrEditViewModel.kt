@@ -31,15 +31,6 @@ class ComponentAddOrEditViewModel @Inject constructor(
     private val _componentDate = MutableLiveData<Long>()
     val componentDate get() = _componentDate
 
-    private val _errorMileageInput = MutableLiveData<Boolean>()
-    val errorMileageInput get() = _errorMileageInput
-
-    private val _errorResourceInput = MutableLiveData<Boolean>()
-    val errorResourceInput get() = _errorResourceInput
-
-    private val _errorTitleInput = MutableLiveData<Boolean>()
-    val errorTitleInput get() = _errorTitleInput
-
     private val _componentItem = MutableLiveData<ComponentItem>()
     val componentItem get() = _componentItem
 
@@ -48,8 +39,6 @@ class ComponentAddOrEditViewModel @Inject constructor(
 
     init {
         _componentDate.value = Date().time
-        // Add mileage loading from cars' list
-        // _noteMileage.value =
     }
 
     fun addComponentItem(title: String?, resource: String?, mileage: String?) {
@@ -57,67 +46,46 @@ class ComponentAddOrEditViewModel @Inject constructor(
         val rResource = refactorInt(resource)
         val rMileage = refactorInt(mileage)
 
-        if (areFieldsValid(rTitle, rResource, rMileage)) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            val cDate = _componentDate.value
+            if (cDate != null) {
+                addComponentUseCase(
+                    ComponentItem(
+                        title = rTitle,
+                        startMileage = rMileage,
+                        resourceMileage = rResource,
+                        date = cDate
+                    )
+                )
+                setCanCloseScreen()
+            } else Exception(ERR_NULL_ITEM_ADD)
+        }
+    }
+
+    fun editComponentItem(title: String?, resource: String?, mileage: String?) {
+        val rTitle = refactorString(title)
+        val rResource = refactorInt(resource)
+        val rMileage = refactorInt(mileage)
+
+        viewModelScope.launch {
+            val cItem = _componentItem.value
+            if (cItem != null) {
                 val cDate = _componentDate.value
                 if (cDate != null) {
-                    addComponentUseCase(
-                        ComponentItem(
+                    editComponentUseCase(
+                        cItem.copy(
                             title = rTitle,
                             startMileage = rMileage,
                             resourceMileage = rResource,
                             date = cDate
                         )
                     )
-                    // Add fun for changing curr mileage in cars' list
-                    // If mileage in note > mileage in cars' list = replace it in list
                     setCanCloseScreen()
-                } else Exception(ERR_NULL_ITEM_ADD)
-            }
-        }
-    }
-
-    fun editNoteItem(title: String?, resource: String?, mileage: String?) {
-        val rTitle = refactorString(title)
-        val rResource = refactorInt(resource)
-        val rMileage = refactorInt(mileage)
-
-        if (areFieldsValid(rTitle, rResource, rMileage)) {
-            viewModelScope.launch {
-                val cItem = _componentItem.value
-                if (cItem != null) {
-                    val cDate = _componentDate.value
-                    if (cDate != null) {
-                        editComponentUseCase(
-                            cItem.copy(
-                                title = rTitle,
-                                startMileage = rMileage,
-                                resourceMileage = rResource,
-                                date = cDate
-                            )
-                        )
-                        setCanCloseScreen()
-                    } else Exception(ERR_NULL_ITEM_EDIT)
                 } else Exception(ERR_NULL_ITEM_EDIT)
-            }
+            } else Exception(ERR_NULL_ITEM_EDIT)
         }
     }
 
-    private fun areFieldsValid(title: String, resource: Int, mileage: Int): Boolean {
-        if (title.isBlank()) {
-            _errorTitleInput.value = true
-            return false
-        }
-        if (resource <= 0.0) {
-            _errorResourceInput.value = true
-            return false
-        }
-        if (mileage <= 0) {
-            _errorMileageInput.value = true
-            return false
-        }
-        return true
-    }
 
     fun setItem(id: Int) {
         viewModelScope.launch {
@@ -125,18 +93,6 @@ class ComponentAddOrEditViewModel @Inject constructor(
             _componentItem.value = item
             _componentDate.value = item.date
         }
-    }
-
-    fun resetMileageError() {
-        _errorMileageInput.value = false
-    }
-
-    fun resetTitleError() {
-        _errorTitleInput.value = false
-    }
-
-    fun resetResourceError() {
-        _errorResourceInput.value = false
     }
 
     fun setComponentDate(date: Long) {

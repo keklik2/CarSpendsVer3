@@ -13,9 +13,15 @@ import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
+import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditFragment
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragment
+import io.github.anderscheow.validator.Validator
+import io.github.anderscheow.validator.rules.common.NotBlankRule
+import io.github.anderscheow.validator.rules.common.NotEmptyRule
+import io.github.anderscheow.validator.validation
+import io.github.anderscheow.validator.validator
 import java.util.*
 
 class NoteFillingAddOrEditFragment :
@@ -28,10 +34,10 @@ class NoteFillingAddOrEditFragment :
         setupAmountTextChangeListener()
         setupPriceTextChangeListener()
         setupMileageTextChangeListener()
+        setupApplyButtonClickListener()
     }
     override var setupObservers: (() -> Unit)? = {
         setupCalcObserver()
-        setupErrorObservers()
         setupCanCloseScreenObserver()
         setupNoteDateObserver()
         setupLastFuelTypeObserver()
@@ -43,6 +49,41 @@ class NoteFillingAddOrEditFragment :
     private var lastChanged = CHANGED_NULL
     private var preLastChanged = CHANGED_NULL
     private var open = true
+
+
+    private val fuelVolumeValidation by lazy {
+        validation(binding.nfaefTilFuelVolume) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_VOLUME)
+                +NotBlankRule(ERR_BLANK_VOLUME)
+            }
+        }
+    }
+    private val fuelAmountValidation by lazy {
+        validation(binding.nfaefTilFuelAmount) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_AMOUNT)
+                +NotBlankRule(ERR_BLANK_AMOUNT)
+            }
+        }
+    }
+    private val fuelPriceValidation by lazy {
+        validation(binding.nfaefTilFuelPrice) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_PRICE)
+                +NotBlankRule(ERR_BLANK_PRICE)
+            }
+        }
+    }
+    private val mileageValidation by lazy {
+        validation(binding.nfaefTilMileageValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_MILEAGE)
+                +NotBlankRule(ERR_BLANK_MILEAGE)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +137,15 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.nfaefTietFuelVolume.addTextChangedListener {
-            viewModel.resetVolumeError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(fuelVolumeValidation)
+            }
+
+
             if (open) {
                 open = false
 
@@ -125,7 +174,15 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.nfaefTietFuelAmount.addTextChangedListener {
-            viewModel.resetTotalPriceError()
+
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(fuelAmountValidation)
+            }
+
             if (open) {
                 open = false
 
@@ -154,7 +211,15 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.nfaefTietFuelPrice.addTextChangedListener {
-            viewModel.resetPriceError()
+
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(fuelPriceValidation)
+            }
+
             if (open) {
                 open = false
 
@@ -175,7 +240,51 @@ class NoteFillingAddOrEditFragment :
 
     private fun setupMileageTextChangeListener() {
         binding.nfaefTietMileageValue.addTextChangedListener {
-            viewModel.resetMileageError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(mileageValidation)
+            }
+        }
+    }
+
+    private fun setupApplyButtonClickListener() {
+        binding.nfaefButtonApply.setOnClickListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {
+                        when (launchMode) {
+                            ADD_MODE -> {
+                                with(binding) {
+                                    viewModel.addNoteItem(
+                                        nfaefSpinnerFuelType.selectedItemPosition,
+                                        nfaefTietFuelVolume.text.toString(),
+                                        nfaefTietFuelAmount.text.toString(),
+                                        nfaefTietFuelPrice.text.toString(),
+                                        nfaefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                            EDIT_MODE -> {
+                                with(binding) {
+                                    viewModel.editNoteItem(
+                                        nfaefSpinnerFuelType.selectedItemPosition,
+                                        nfaefTietFuelVolume.text.toString(),
+                                        nfaefTietFuelAmount.text.toString(),
+                                        nfaefTietFuelPrice.text.toString(),
+                                        nfaefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(mileageValidation, fuelPriceValidation, fuelAmountValidation, fuelVolumeValidation)
+            }
         }
     }
 
@@ -211,28 +320,6 @@ class NoteFillingAddOrEditFragment :
         }
     }
 
-    private fun setupErrorObservers() {
-        viewModel.errorVolumeInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelVolume.error = if (it) getString(ERR_VOLUME)
-            else null
-        }
-
-        viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelAmount.error = if (it) getString(ERR_AMOUNT)
-            else null
-        }
-
-        viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilFuelPrice.error = if (it) getString(ERR_PRICE)
-            else null
-        }
-
-        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.nfaefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
-            else null
-        }
-    }
-
     private fun setupFuelSpinnerAdapter() {
         // Setting Fuel enum values for spinner
         binding.nfaefSpinnerFuelType.adapter = ArrayAdapter(
@@ -255,16 +342,6 @@ class NoteFillingAddOrEditFragment :
         viewModel.currCarItem.observe(viewLifecycleOwner) {
             binding.nfaefTietMileageValue.setText(it.mileage.toString())
         }
-
-        binding.nfaefButtonApply.setOnClickListener {
-            viewModel.addNoteItem(
-                binding.nfaefSpinnerFuelType.selectedItemPosition,
-                binding.nfaefTietFuelVolume.text.toString(),
-                binding.nfaefTietFuelAmount.text.toString(),
-                binding.nfaefTietFuelPrice.text.toString(),
-                binding.nfaefTietMileageValue.text.toString()
-            )
-        }
     }
 
     private fun editNoteMode() {
@@ -277,16 +354,6 @@ class NoteFillingAddOrEditFragment :
                 nfaefTietFuelPrice.setText(getFormattedDoubleAsStr(it.price))
                 nfaefTietMileageValue.setText(it.mileage.toString())
             }
-        }
-
-        binding.nfaefButtonApply.setOnClickListener {
-            viewModel.editNoteItem(
-                binding.nfaefSpinnerFuelType.selectedItemPosition,
-                binding.nfaefTietFuelVolume.text.toString(),
-                binding.nfaefTietFuelAmount.text.toString(),
-                binding.nfaefTietFuelPrice.text.toString(),
-                binding.nfaefTietMileageValue.text.toString()
-            )
         }
     }
 
@@ -315,10 +382,14 @@ class NoteFillingAddOrEditFragment :
         private const val CHANGED_AMOUNT = 20
         private const val CHANGED_PRICE = 30
 
-        private const val ERR_VOLUME = R.string.inappropriate_volume
-        private const val ERR_AMOUNT = R.string.inappropriate_amount
-        private const val ERR_PRICE = R.string.hint_fuel_price
-        private const val ERR_MILEAGE = R.string.inappropriate_mileage
+        private const val ERR_EMPTY_VOLUME = R.string.inappropriate_empty_volume
+        private const val ERR_BLANK_VOLUME = R.string.blank_validation
+        private const val ERR_EMPTY_AMOUNT = R.string.inappropriate_empty_amount
+        private const val ERR_BLANK_AMOUNT = R.string.blank_validation
+        private const val ERR_EMPTY_PRICE = R.string.inappropriate_empty_price
+        private const val ERR_BLANK_PRICE = R.string.blank_validation
+        private const val ERR_EMPTY_MILEAGE = R.string.inappropriate_empty_mileage
+        private const val ERR_BLANK_MILEAGE = R.string.blank_validation
 
         private const val MODE_KEY = "mode_note"
         private const val ID_KEY = "id_note"

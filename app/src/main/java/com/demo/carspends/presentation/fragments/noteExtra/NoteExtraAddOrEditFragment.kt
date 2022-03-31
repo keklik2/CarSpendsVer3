@@ -15,18 +15,24 @@ import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragment
+import io.github.anderscheow.validator.Validator
+import io.github.anderscheow.validator.rules.common.NotBlankRule
+import io.github.anderscheow.validator.rules.common.NotEmptyRule
+import io.github.anderscheow.validator.validation
+import io.github.anderscheow.validator.validator
 import java.util.*
 
-class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_fragment) {
+class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fragment) {
     override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
-    override val viewModel: NoteExtraAddOrEditViewModel by viewModels {viewModelFactory}
+    override val viewModel: NoteExtraAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
+        setupOnAcceptButtonClickListener()
+
         setupTitleTextChangeListener()
         setupPriceTextChangeListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupErrorObservers()
         setupNoteDateObserver()
         setupCanCloseScreenObserver()
     }
@@ -36,6 +42,22 @@ class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_frag
     private var noteId = UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
 
+    private val titleValidation by lazy {
+        validation(binding.neaefTilName) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_TITLE)
+                +NotBlankRule(ERR_BLANK_TITLE)
+            }
+        }
+    }
+    private val amountValidation by lazy {
+        validation(binding.neaefTilAmountValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_AMOUNT)
+                +NotBlankRule(ERR_BLANK_AMOUNT)
+            }
+        }
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,18 +73,6 @@ class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_frag
 
     private fun setupCurrCarNote() {
         viewModel.setCarId(carId)
-    }
-
-    private fun setupErrorObservers() {
-        viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.neaefTilName.error = if (it) getString(ERR_TITLE)
-            else null
-        }
-
-        viewModel.errorPriceInput.observe(viewLifecycleOwner) {
-            binding.neaefTilAmountValue.error = if (it) getString(ERR_PRICE)
-            else null
-        }
     }
 
     private fun setupNoteDateObserver() {
@@ -93,38 +103,75 @@ class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_frag
                     timeInMillis = it
                 }
             }
-            DatePickerDialog(requireContext(), dateSetListener,
+            DatePickerDialog(
+                requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
                 cCal.get(Calendar.MONTH),
-                cCal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+    }
+
+    private fun setupOnAcceptButtonClickListener() {
+        binding.neaefButtonApply.setOnClickListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {
+                        when (launchMode) {
+                            ADD_MODE -> {
+                                with(binding) {
+                                    viewModel.addNoteItem(
+                                        neaefTietName.text.toString(),
+                                        neaefTietAmountValue.text.toString()
+                                    )
+                                }
+                            }
+                            EDIT_MODE -> {
+                                with(binding) {
+                                    viewModel.editNoteItem(
+                                        neaefTietName.text.toString(),
+                                        neaefTietAmountValue.text.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(titleValidation, amountValidation)
+            }
         }
     }
 
     private fun setupTitleTextChangeListener() {
         binding.neaefTietName.addTextChangedListener {
-            viewModel.resetTitleError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {  }
+                    override fun onValidateFailed(errors: List<String>) {  }
+                }
+                validate(titleValidation)
+            }
         }
     }
 
     private fun setupPriceTextChangeListener() {
         binding.neaefTietAmountValue.addTextChangedListener {
-            viewModel.resetPriceError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {  }
+                    override fun onValidateFailed(errors: List<String>) {  }
+                }
+                validate(amountValidation)
+            }
         }
     }
 
     private fun chooseMode() {
-        when(launchMode) {
-            ADD_MODE -> addNoteMode()
-            else -> editNoteMode()
-        }
-    }
-
-    private fun addNoteMode() {
-        binding.neaefButtonApply.setOnClickListener {
-            viewModel.addNoteItem(
-                binding.neaefTietName.text.toString(),
-                binding.neaefTietAmountValue.text.toString()
-            )
+        when (launchMode) {
+            EDIT_MODE -> editNoteMode()
+            else -> Any()
         }
     }
 
@@ -135,13 +182,6 @@ class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_frag
                 neaefTietName.setText(it.title)
                 neaefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
             }
-        }
-
-        binding.neaefButtonApply.setOnClickListener {
-            viewModel.editNoteItem(
-                binding.neaefTietName.text.toString(),
-                binding.neaefTietAmountValue.text.toString()
-            )
         }
     }
 
@@ -160,15 +200,16 @@ class NoteExtraAddOrEditFragment: BaseFragment(R.layout.note_extra_add_edit_frag
     }
 
 
-
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
     }
 
     companion object {
-        private const val ERR_TITLE = R.string.inappropriate_title
-        private const val ERR_PRICE = R.string.inappropriate_price
+        private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title
+        private const val ERR_BLANK_TITLE = R.string.blank_validation
+        private const val ERR_EMPTY_AMOUNT = R.string.inappropriate_empty_amount
+        private const val ERR_BLANK_AMOUNT = R.string.blank_validation
 
         private const val MODE_KEY = "mode_note"
         private const val CAR_ID_KEY = "id_car"
