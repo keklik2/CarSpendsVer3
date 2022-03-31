@@ -11,30 +11,60 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFragment
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragment
+import io.github.anderscheow.validator.Validator
+import io.github.anderscheow.validator.rules.common.NotBlankRule
+import io.github.anderscheow.validator.rules.common.NotEmptyRule
+import io.github.anderscheow.validator.validation
+import io.github.anderscheow.validator.validator
 import java.util.*
 
-class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fragment) {
+class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_fragment) {
     override val binding: NoteRepairAddEditFragmentBinding by viewBinding()
     override val viewModel: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
-        setupTitleTextChangeListener()
-        setupAmountTextChangeListener()
-        setupMileageTextChangeListener()
+        setupTextChangeListeners()
+        setupApplyButtonClickListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupErrorObservers()
         setupCanCloseScreenObserver()
         setupNoteDateObserver()
     }
 
-
     private lateinit var launchMode: String
     private var noteId = NoteItem.UNDEFINED_ID
     private var carId = CarItem.UNDEFINED_ID
+
+
+    private val titleValidation by lazy {
+        validation(binding.nraefTilName) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_TITLE)
+                +NotBlankRule(ERR_BLANK_TITLE)
+            }
+        }
+    }
+    private val amountValidation by lazy {
+        validation(binding.nraefTilAmountValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_AMOUNT)
+                +NotBlankRule(ERR_BLANK_AMOUNT)
+            }
+        }
+    }
+    private val mileageValidation by lazy {
+        validation(binding.nraefTilMileageValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_MILEAGE)
+                +NotBlankRule(ERR_BLANK_MILEAGE)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,28 +98,78 @@ class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fr
                     timeInMillis = it
                 }
             }
-            DatePickerDialog(requireContext(), dateSetListener,
+            DatePickerDialog(
+                requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
                 cCal.get(Calendar.MONTH),
-                cCal.get(Calendar.DAY_OF_MONTH)).show()
+                cCal.get(Calendar.DAY_OF_MONTH)
+            ).show()
         }
     }
 
-    private fun setupTitleTextChangeListener() {
+    private fun setupTextChangeListeners() {
         binding.nraefTietName.addTextChangedListener {
-            viewModel.resetTitleError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(titleValidation)
+            }
         }
-    }
 
-    private fun setupAmountTextChangeListener() {
         binding.nraefTietAmountValue.addTextChangedListener {
-            viewModel.resetTotalPriceError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(amountValidation)
+            }
+        }
+
+        binding.nraefTietMileageValue.addTextChangedListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {}
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(mileageValidation)
+            }
         }
     }
 
-    private fun setupMileageTextChangeListener() {
-        binding.nraefTietMileageValue.addTextChangedListener {
-            viewModel.resetMileageError()
+    private fun setupApplyButtonClickListener() {
+        binding.nraefButtonApply.setOnClickListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {
+                        when (launchMode) {
+                            ADD_MODE -> {
+                                with(binding) {
+                                    viewModel.addNoteItem(
+                                        nraefTietName.text.toString(),
+                                        nraefTietAmountValue.text.toString(),
+                                        nraefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                            EDIT_MODE -> {
+                                with(binding) {
+                                    viewModel.editNoteItem(
+                                        nraefTietName.text.toString(),
+                                        nraefTietAmountValue.text.toString(),
+                                        nraefTietMileageValue.text.toString()
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(titleValidation, amountValidation, mileageValidation)
+            }
         }
     }
 
@@ -105,25 +185,8 @@ class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fr
         }
     }
 
-    private fun setupErrorObservers() {
-        viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-            binding.nraefTilName.error = if(it) getString(ERR_TITLE)
-            else null
-        }
-
-        viewModel.errorTotalPriceInput.observe(viewLifecycleOwner) {
-            binding.nraefTilAmountValue.error = if (it) getString(ERR_AMOUNT)
-            else null
-        }
-
-        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.nraefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
-            else null
-        }
-    }
-
     private fun chooseMode() {
-        when(launchMode) {
+        when (launchMode) {
             ADD_MODE -> addNoteMode()
             else -> editNoteMode()
         }
@@ -132,14 +195,6 @@ class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fr
     private fun addNoteMode() {
         viewModel.currCarItem.observe(viewLifecycleOwner) {
             binding.nraefTietMileageValue.setText(it.mileage.toString())
-        }
-
-        binding.nraefButtonApply.setOnClickListener {
-            viewModel.addNoteItem(
-                binding.nraefTietName.text.toString(),
-                binding.nraefTietAmountValue.text.toString(),
-                binding.nraefTietMileageValue.text.toString()
-            )
         }
     }
 
@@ -151,14 +206,6 @@ class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fr
                 nraefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
                 nraefTietMileageValue.setText(it.mileage.toString())
             }
-        }
-
-        binding.nraefButtonApply.setOnClickListener {
-            viewModel.editNoteItem(
-                binding.nraefTietName.text.toString(),
-                binding.nraefTietAmountValue.text.toString(),
-                binding.nraefTietMileageValue.text.toString()
-            )
         }
     }
 
@@ -182,9 +229,12 @@ class NoteRepairAddOrEditFragment: BaseFragment(R.layout.note_repair_add_edit_fr
     }
 
     companion object {
-        private const val ERR_TITLE = R.string.inappropriate_title
-        private const val ERR_AMOUNT = R.string.inappropriate_amount
-        private const val ERR_MILEAGE = R.string.inappropriate_mileage
+        private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title
+        private const val ERR_BLANK_TITLE = R.string.blank_validation
+        private const val ERR_EMPTY_AMOUNT = R.string.inappropriate_empty_amount
+        private const val ERR_BLANK_AMOUNT = R.string.blank_validation
+        private const val ERR_EMPTY_MILEAGE = R.string.inappropriate_empty_mileage
+        private const val ERR_BLANK_MILEAGE = R.string.blank_validation
 
         private const val MODE_KEY = "mode_note"
         private const val ID_KEY = "id_note"

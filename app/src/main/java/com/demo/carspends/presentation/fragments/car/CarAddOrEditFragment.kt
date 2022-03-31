@@ -11,27 +11,64 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
+import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditFragment
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.BaseFragment
+import io.github.anderscheow.validator.Validator
+import io.github.anderscheow.validator.rules.common.NotBlankRule
+import io.github.anderscheow.validator.rules.common.NotEmptyRule
+import io.github.anderscheow.validator.validation
+import io.github.anderscheow.validator.validator
 
 class CarAddOrEditFragment :
     BaseFragment(R.layout.car_add_edit_fragment) {
     override val binding: CarAddEditFragmentBinding by viewBinding()
     override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
-        setupNameTextChangeListener()
-        setupMileageTextChangeListener()
-        setupEngineCapacityTextChangeListener()
-        setupPowerTextChangeListener()
+        setupTextChangeListeners()
+        setupApplyButtonOnClickListener()
     }
     override var setupObservers: (() -> Unit)? = {
-        setupErrorObservers()
         setupCanCloseScreenObserver()
     }
 
     private lateinit var launchMode: String
     private var carId = CarItem.UNDEFINED_ID
+
+    private val titleValidation by lazy {
+        validation(binding.carefTilCarName) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_TITLE)
+                +NotBlankRule(ERR_BLANK_TITLE)
+            }
+        }
+    }
+    private val mileageValidation by lazy {
+        validation(binding.carefTilMileageValue) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_MILEAGE)
+                +NotBlankRule(ERR_BLANK_MILEAGE)
+            }
+        }
+    }
+    private val engineCapacityValidation by lazy {
+        validation(binding.carefTilEngineCapacity) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_ENGINE_CAPACITY)
+                +NotBlankRule(ERR_BLANK_ENGINE_CAPACITY)
+            }
+        }
+    }
+    private val powerValidation by lazy {
+        validation(binding.carefTilPower) {
+            rules {
+                +NotEmptyRule(ERR_EMPTY_POWER)
+                +NotBlankRule(ERR_BLANK_POWER)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,49 +81,89 @@ class CarAddOrEditFragment :
         setupBackPresser()
     }
 
-    private fun setupNameTextChangeListener() {
+    private fun setupTextChangeListeners() {
         binding.carefTietCarName.addTextChangedListener {
-            viewModel.resetNameError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(titleValidation)
+            }
         }
-    }
 
-    private fun setupMileageTextChangeListener() {
         binding.carefTietMileageValue.addTextChangedListener {
-            viewModel.resetMileageError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(mileageValidation)
+            }
         }
-    }
 
-    private fun setupEngineCapacityTextChangeListener() {
         binding.carefTietEngineCapacity.addTextChangedListener {
-            viewModel.resetEngineCapacityError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(engineCapacityValidation)
+            }
         }
-    }
 
-    private fun setupPowerTextChangeListener() {
         binding.carefTietPower.addTextChangedListener {
-            viewModel.resetPowerError()
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateFailed(errors: List<String>) {}
+                    override fun onValidateSuccess(values: List<String>) {}
+                }
+                validate(powerValidation)
+            }
         }
     }
 
-    private fun setupErrorObservers() {
-        viewModel.errorNameInput.observe(viewLifecycleOwner) {
-            binding.carefTilCarName.error = if (it) getString(ERR_TITLE)
-            else null
+    private fun setupApplyButtonOnClickListener() {
+        binding.carefButtonApply.setOnClickListener {
+            validator(requireActivity()) {
+                listener = object : Validator.OnValidateListener {
+                    override fun onValidateSuccess(values: List<String>) {
+                        when (launchMode) {
+                            ADD_MODE -> addCar()
+                            EDIT_MODE -> editCar()
+                        }
+                    }
+                    override fun onValidateFailed(errors: List<String>) {}
+                }
+                validate(
+                    titleValidation,
+                    mileageValidation,
+                    powerValidation,
+                    engineCapacityValidation
+                )
+            }
         }
+    }
 
-        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-            binding.carefTilMileageValue.error = if (it) getString(ERR_RESOURCE)
-            else null
+    private fun addCar() {
+        with(binding) {
+            viewModel.addCar(
+                carefTietCarName.text.toString(),
+                carefTietMileageValue.text.toString(),
+                carefTietEngineCapacity.text.toString(),
+                carefTietPower.text.toString()
+            )
         }
+    }
 
-        viewModel.errorEngineCapacityInput.observe(viewLifecycleOwner) {
-            binding.carefTilEngineCapacity.error = if (it) getString(ERR_MILEAGE)
-            else null
-        }
-
-        viewModel.errorPowerInput.observe(viewLifecycleOwner) {
-            binding.carefTilPower.error = if (it) getString(ERR_MILEAGE)
-            else null
+    private fun editCar() {
+        with(binding) {
+            viewModel.editCar(
+                carefTietCarName.text.toString(),
+                carefTietMileageValue.text.toString(),
+                carefTietEngineCapacity.text.toString(),
+                carefTietPower.text.toString()
+            )
         }
     }
 
@@ -109,7 +186,7 @@ class CarAddOrEditFragment :
                             getString(R.string.dialog_exit_car)
                         )
                         .setPositiveButton(R.string.button_apply) { _, _ ->
-                            addModeApplyClickListener()
+                            addCar()
                             viewModel.exit()
                         }
                         .setNegativeButton(R.string.button_deny) { _, _ ->
@@ -137,18 +214,6 @@ class CarAddOrEditFragment :
             carefMileagePriceLayout.visibility = View.INVISIBLE
             carefAllPriceLayout.visibility = View.INVISIBLE
             carefAllMileageLayout.visibility = View.INVISIBLE
-        }
-        addModeApplyClickListener()
-    }
-
-    private fun addModeApplyClickListener() {
-        binding.carefButtonApply.setOnClickListener {
-            viewModel.addCar(
-                binding.carefTietCarName.text.toString(),
-                binding.carefTietMileageValue.text.toString(),
-                binding.carefTietEngineCapacity.text.toString(),
-                binding.carefTietPower.text.toString()
-            )
         }
     }
 
@@ -191,15 +256,6 @@ class CarAddOrEditFragment :
                 )
             }
         }
-
-        binding.carefButtonApply.setOnClickListener {
-            viewModel.editCar(
-                binding.carefTietCarName.text.toString(),
-                binding.carefTietMileageValue.text.toString(),
-                binding.carefTietEngineCapacity.text.toString(),
-                binding.carefTietPower.text.toString()
-            )
-        }
     }
 
     private fun getArgs() {
@@ -226,9 +282,14 @@ class CarAddOrEditFragment :
 
     companion object {
         // Text Fields error text
-        private const val ERR_TITLE = R.string.inappropriate_title
-        private const val ERR_RESOURCE = R.string.inappropriate_resource
-        private const val ERR_MILEAGE = R.string.inappropriate_mileage
+        private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title
+        private const val ERR_BLANK_TITLE = R.string.blank_validation
+        private const val ERR_EMPTY_MILEAGE = R.string.inappropriate_empty_mileage
+        private const val ERR_BLANK_MILEAGE = R.string.blank_validation
+        private const val ERR_EMPTY_ENGINE_CAPACITY = R.string.inappropriate_empty_engine_capacity
+        private const val ERR_BLANK_ENGINE_CAPACITY = R.string.blank_validation
+        private const val ERR_EMPTY_POWER = R.string.inappropriate_empty_power
+        private const val ERR_BLANK_POWER = R.string.blank_validation
 
         // Bundle Arguments constants
         private const val MODE_KEY = "mode_car"
