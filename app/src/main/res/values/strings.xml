@@ -62,12 +62,15 @@
     <string name="hint_car_power">Мощность</string>
 
     <!-- Input Test Layout errors -->
-    <string name="inappropriate_title">Неверный заголовок</string>
-    <string name="inappropriate_amount">Неверное количество</string>
-    <string name="inappropriate_mileage">Неверный пробег</string>
-    <string name="inappropriate_volume">Неверный объем</string>
-    <string name="inappropriate_price">Неверная цена</string>
-    <string name="inappropriate_resource">Неверный ресурс</string>
+    <string name="blank_validation">Недопустимое количество пробелов</string>
+    <string name="inappropriate_empty_title">Пустой заголовок</string>
+    <string name="inappropriate_empty_amount">Пустая сумма</string>
+    <string name="inappropriate_empty_mileage">Пустой пробег</string>
+    <string name="inappropriate_empty_volume">Пустой объем</string>
+    <string name="inappropriate_empty_price">Пустая цена</string>
+    <string name="inappropriate_empty_resource">Пустой ресурс</string>
+    <string name="inappropriate_empty_power">Пустая мощность</string>
+    <string name="inappropriate_empty_engine_capacity">Пустой объем двигател</string>
 
     <!-- Menu Values -->
     <string name="menu_home">Главная</string>

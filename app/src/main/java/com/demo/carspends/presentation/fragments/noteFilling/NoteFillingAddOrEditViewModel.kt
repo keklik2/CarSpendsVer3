@@ -46,9 +46,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     private val _noteDate = MutableLiveData<Long>()
     val noteDate get() = _noteDate
 
-    private val _errorMileageInput = MutableLiveData<Boolean>()
-    val errorMileageInput get() = _errorMileageInput
-
     private val _calcPrice = MutableLiveData<Double>()
     val calcPrice get() = _calcPrice
 
@@ -57,15 +54,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private val _calcVolume = MutableLiveData<Double>()
     val calcVolume get() = _calcVolume
-
-    private val _errorPriceInput = MutableLiveData<Boolean>()
-    val errorPriceInput get() = _errorPriceInput
-
-    private val _errorTotalPriceInput = MutableLiveData<Boolean>()
-    val errorTotalPriceInput get() = _errorTotalPriceInput
-
-    private val _errorVolumeInput = MutableLiveData<Boolean>()
-    val errorVolumeInput get() = _errorVolumeInput
 
     private val _lastFuelType = MutableLiveData<Fuel>()
     val lastFuelType get() = _lastFuelType
@@ -96,32 +84,30 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         val rPrice = refactorDouble(price)
         val rMileage = refactorInt(mileage)
 
-        if (areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
-            viewModelScope.launch {
-                val nDate = _noteDate.value
-                if (nDate != null) {
-                    val newNote = NoteItem(
-                        title = noteTitle,
-                        totalPrice = rTotalPrice,
-                        price = rPrice,
-                        liters = rVolume,
-                        mileage = rMileage,
-                        fuelType = rFuelType,
-                        date = nDate,
-                        type = noteType
-                    )
-                    addNoteItemUseCase(newNote)
+        viewModelScope.launch {
+            val nDate = _noteDate.value
+            if (nDate != null) {
+                val newNote = NoteItem(
+                    title = noteTitle,
+                    totalPrice = rTotalPrice,
+                    price = rPrice,
+                    liters = rVolume,
+                    mileage = rMileage,
+                    fuelType = rFuelType,
+                    date = nDate,
+                    type = noteType
+                )
+                addNoteItemUseCase(newNote)
 
-                    updateMileage(rMileage)
-                    calculateAllMileage()
-                    addLastPrice(newNote)
-                    calculateAvgFuel()
-                    calculateAvgPrice()
-                    addAllFuel(newNote)
-                    addAllFuelPrice(newNote)
-                    setCanCloseScreen()
-                } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-            }
+                updateMileage(rMileage)
+                calculateAllMileage()
+                addLastPrice(newNote)
+                calculateAvgFuel()
+                calculateAvgPrice()
+                addAllFuel(newNote)
+                addAllFuelPrice(newNote)
+                setCanCloseScreen()
+            } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
         }
     }
 
@@ -138,36 +124,34 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         val rPrice = refactorDouble(price)
         val rMileage = refactorInt(mileage)
 
-        if (areFieldsValid(rVolume, rTotalPrice, rPrice, rMileage)) {
-            viewModelScope.launch {
-                val nItem = _noteItem.value
-                if (nItem != null) {
-                    val nDate = _noteDate.value
-                    if (nDate != null) {
-                        editNoteItemUseCase(
-                            nItem.copy(
-                                title = noteTitle,
-                                totalPrice = rTotalPrice,
-                                price = rPrice,
-                                liters = rVolume,
-                                mileage = rMileage,
-                                fuelType = rFuelType,
-                                date = nDate,
-                                type = noteType
-                            )
+        viewModelScope.launch {
+            val nItem = _noteItem.value
+            if (nItem != null) {
+                val nDate = _noteDate.value
+                if (nDate != null) {
+                    editNoteItemUseCase(
+                        nItem.copy(
+                            title = noteTitle,
+                            totalPrice = rTotalPrice,
+                            price = rPrice,
+                            liters = rVolume,
+                            mileage = rMileage,
+                            fuelType = rFuelType,
+                            date = nDate,
+                            type = noteType
                         )
+                    )
 
-                        rollbackCarMileage()
-                        calculateAllMileage()
-                        addAllPrice()
-                        calculateAvgFuel()
-                        calculateAvgPrice()
-                        calculateAllFuelPrice()
-                        calculateAllFuel()
-                        setCanCloseScreen()
-                    } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
-                } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
-            }
+                    rollbackCarMileage()
+                    calculateAllMileage()
+                    addAllPrice()
+                    calculateAvgFuel()
+                    calculateAvgPrice()
+                    calculateAllFuelPrice()
+                    calculateAllFuel()
+                    setCanCloseScreen()
+                } else throw Exception("Received NULL NoteItem for AddNoteItemUseCase()")
+            } else throw Exception("Received NULL NoteItem for EditNoteItemUseCase()")
         }
     }
 
@@ -360,8 +344,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             return if (res > 0) {
                 if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
                 else res
-            }
-            else 0.0
+            } else 0.0
         }
         return 0.0
     }
@@ -372,8 +355,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         return if (res > 0) {
             if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
             else res
-        }
-        else 0.0
+        } else 0.0
     }
 
     private suspend fun updateMileage(newMileage: Int) {
@@ -389,31 +371,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun refactorFuel(id: Int): Fuel {
         return noteFuelTypes[id]
-    }
-
-    private fun areFieldsValid(
-        volume: Double,
-        totalPrice: Double,
-        price: Double,
-        mileage: Int
-    ): Boolean {
-        if (volume <= 0.0) {
-            _errorVolumeInput.value = true
-            return false
-        }
-        if (totalPrice <= 0.0) {
-            _errorTotalPriceInput.value = true
-            return false
-        }
-        if (price <= 0.0) {
-            _errorPriceInput.value = true
-            return false
-        }
-        if (mileage <= 0) {
-            _errorMileageInput.value = true
-            return false
-        }
-        return true
     }
 
     fun setCarItem(id: Int) {
@@ -440,22 +397,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             _noteItem.value = item
             _noteDate.value = item.date
         }
-    }
-
-    fun resetMileageError() {
-        _errorMileageInput.value = false
-    }
-
-    fun resetVolumeError() {
-        _errorVolumeInput.value = false
-    }
-
-    fun resetTotalPriceError() {
-        _errorTotalPriceInput.value = false
-    }
-
-    fun resetPriceError() {
-        _errorPriceInput.value = false
     }
 
     fun setNoteDate(date: Long) {
