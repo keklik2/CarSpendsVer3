@@ -7,7 +7,7 @@ import androidx.room.*
 interface ComponentDao {
 
     @Query("SELECT * FROM components ORDER BY date DESC")
-    fun getComponentsListLD(): LiveData<List<ComponentItemDbModel>>
+    suspend fun getComponentsList(): List<ComponentItemDbModel>
 
     @Query("SELECT * FROM components WHERE id == :requestedId LIMIT 1")
     suspend fun getComponentById(requestedId: Int): ComponentItemDbModel

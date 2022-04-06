@@ -28,7 +28,7 @@ fun getFormattedDoubleAsStrForDisplay(value: Double): String = doubleDf.format(v
 
 fun getFormattedIntAsStrForDisplay(value: Int): String = intDf.format(value)
 
-fun getFormattedDoubleAsStr(value: Double): String = "%.2f".format(Locale.US, value)
+fun getFormattedDoubleAsStr(value: Double): String = "%.1f".format(Locale.US, value)
 
 fun getFormattedDate(receivedDate: Long): String {
     val date = Date(receivedDate)

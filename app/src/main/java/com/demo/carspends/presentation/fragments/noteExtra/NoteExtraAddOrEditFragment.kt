@@ -11,9 +11,8 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.domain.note.NoteItem.Companion.UNDEFINED_ID
+import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -32,15 +31,12 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         setupTitleTextChangeListener()
         setupPriceTextChangeListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setupNoteDateObserver()
-        setupCanCloseScreenObserver()
+    override var setupObservers: (() -> Unit)? = {}
+    override var setupBinds: (() -> Unit)? = {
+        setupFieldsBind()
+        setupNoteDateBind()
+        setupCanCloseScreenBind()
     }
-
-
-    private lateinit var launchMode: String
-    private var noteId = UNDEFINED_ID
-    private var carId = CarItem.UNDEFINED_ID
 
     private val titleValidation by lazy {
         validation(binding.neaefTilName) {
@@ -59,33 +55,15 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         }
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getArgs()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupCurrCarNote()
-        chooseMode()
-    }
-
-    private fun setupCurrCarNote() {
-        viewModel.setCarId(carId)
-    }
-
-    private fun setupNoteDateObserver() {
-        viewModel.noteDate.observe(viewLifecycleOwner) {
-            binding.neaefTvDateValue.text = getFormattedDate(it)
+    private fun setupNoteDateBind() = viewModel::nDate bind { binding.neaefTvDateValue.text = getFormattedDate(it) }
+    private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+    private fun setupFieldsBind() {
+        with(viewModel) {
+            ::nTitle bind { it?.let { it1 -> binding.neaefTietName.setText(it1) }  }
+            ::nPrice bind { it?.let { it1 -> binding.neaefTietAmountValue.setText(it1) }  }
         }
     }
 
-    private fun setupCanCloseScreenObserver() {
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            viewModel.goBack()
-        }
-    }
 
     private fun setupDatePickerListener() {
         val dateSetListener = OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -94,14 +72,12 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
             cal.set(Calendar.MONTH, monthOfYear)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            viewModel.setNoteDate(cal.time.time)
+            viewModel.nDate = cal.time.time
         }
 
         binding.neaefDateLayout.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
-                viewModel.noteDate.value?.let {
-                    timeInMillis = it
-                }
+                timeInMillis = viewModel.nDate
             }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -117,26 +93,13 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
-                        when (launchMode) {
-                            ADD_MODE -> {
-                                with(binding) {
-                                    viewModel.addNoteItem(
-                                        neaefTietName.text.toString(),
-                                        neaefTietAmountValue.text.toString()
-                                    )
-                                }
-                            }
-                            EDIT_MODE -> {
-                                with(binding) {
-                                    viewModel.editNoteItem(
-                                        neaefTietName.text.toString(),
-                                        neaefTietAmountValue.text.toString()
-                                    )
-                                }
-                            }
+                        with(binding) {
+                            viewModel.addOrEditNoteItem(
+                                neaefTietName.text.toString(),
+                                neaefTietAmountValue.text.toString()
+                            )
                         }
                     }
-
                     override fun onValidateFailed(errors: List<String>) {}
                 }
                 validate(titleValidation, amountValidation)
@@ -168,23 +131,6 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         }
     }
 
-    private fun chooseMode() {
-        when (launchMode) {
-            EDIT_MODE -> editNoteMode()
-            else -> Any()
-        }
-    }
-
-    private fun editNoteMode() {
-        viewModel.setItem(noteId)
-        viewModel.noteItem.observe(viewLifecycleOwner) {
-            with(binding) {
-                neaefTietName.setText(it.title)
-                neaefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
-            }
-        }
-    }
-
     private fun getArgs() {
         val args = requireArguments()
         if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for NoteExtraAddOrEditFragment")
@@ -192,17 +138,26 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         val type = args.getString(MODE_KEY)
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteExtraAddOrEditFragment: $type")
 
-        launchMode = type
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteExtraAddOrEditFragment")
-        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
-        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
-        noteId = args.getInt(ID_KEY, UNDEFINED_ID)
+        viewModel.cId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
+        viewModel.nId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
+
+
+    /**
+     * Base functions to make class work as fragment
+     */
 
 
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getArgs()
     }
 
     companion object {

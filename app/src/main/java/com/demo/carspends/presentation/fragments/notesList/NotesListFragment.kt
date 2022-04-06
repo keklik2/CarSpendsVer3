@@ -1,7 +1,7 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.content.Context
-import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
@@ -14,8 +14,8 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
-import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.ui.BaseFragment
+import me.aartikov.sesame.loading.simple.Loading
 import java.util.*
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
@@ -33,35 +33,61 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         setupAddNoteListeners()
         setupCarInfoListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setNotesObserver()
+    override var setupObservers: (() -> Unit)? = {  }
+    override var setupBinds: (() -> Unit)? = {
+        bindNotesList()
+        bindCarFields()
     }
 
-
-    private var date: Long? = null
-    private var type: NoteType? = null
     private val mainAdapter by lazy {
         NoteItemAdapter.get {
             viewModel.goToNoteAddOrEditFragment(it.type, it.id)
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        checkForCarExisting()
-    }
-
     override fun onResume() {
         super.onResume()
-        refreshSpinners()
+        viewModel.refreshData()
+    }
+
+    private fun bindNotesList() {
+        binding.nlfRvNotes.adapter = mainAdapter
+        viewModel::notesListState bind {
+            when (it) {
+                is Loading.State.Data -> {
+                    mainAdapter.submitList(it.data)
+                    binding.nlfTvEmptyNotes.visibility =
+                        if (it.data.isNotEmpty()) View.INVISIBLE
+                        else View.VISIBLE
+                }
+                is Loading.State.Loading -> {
+//                    TODO("Make loading spinner on notes list recycler view")
+                }
+                else -> {
+                    binding.nlfTvEmptyNotes.visibility = View.VISIBLE
+                    mainAdapter.submitList(emptyList())
+                }
+            }
+
+        }
+    }
+
+    private fun bindCarFields() {
+        viewModel::carTitle bind { binding.nlfTvCarTitle.text = it }
+        viewModel::statisticsField1 bind { binding.nlfTvStatistics1.text = it }
+        viewModel::statisticsField2 bind { binding.nlfTvStatistics2.text = it }
     }
 
     private fun setupDateSpinnerListener() {
         binding.nlfSpinnerDate.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    refreshDateSpinner(pos)
-                    setNotesObserver()
+                    when (pos) {
+                        0 -> viewModel.setData()
+                        1 -> viewModel.setData(getYearDate())
+                        2 -> viewModel.setData(getMonthDate())
+                        else -> viewModel.setData(getWeekDate())
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -73,48 +99,17 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         binding.nlfSpinnerNoteType.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    refreshTypeSpinner(pos)
-                    setNotesObserver()
+                    when (pos) {
+                        0 -> viewModel.setType()
+                        1 -> viewModel.setType(NoteType.FUEL)
+                        2 -> viewModel.setType(NoteType.REPAIR)
+                        else -> viewModel.setType(NoteType.EXTRA)
+                    }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
-    }
-
-    private fun refreshDateSpinner(pos: Int) {
-        date = when (pos) {
-            0 -> null
-            1 -> getYearDate()
-            2 -> getMonthDate()
-            else -> getWeekDate()
-        }
-    }
-
-    private fun refreshTypeSpinner(pos: Int) {
-        type = when (pos) {
-            0 -> null
-            1 -> NoteType.FUEL
-            2 -> NoteType.REPAIR
-            else -> NoteType.EXTRA
-        }
-    }
-
-    private fun refreshSpinners() {
-        with(binding) {
-            refreshDateSpinner(nlfSpinnerDate.selectedItemPosition)
-            refreshTypeSpinner(nlfSpinnerNoteType.selectedItemPosition)
-        }
-    }
-
-    private fun setNewNotesList() {
-        if (date != null) {
-            if (type != null) viewModel.setTypedNotes(type!!, date!!)
-            else viewModel.setAllNotes(date!!)
-        } else {
-            if (type != null) viewModel.setTypedNotes(type!!)
-            else viewModel.setAllNotes()
-        }
     }
 
     private fun getYearDate(): Long {
@@ -138,51 +133,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         return date
     }
 
-    private fun setNotesObserver() {
-        setNewNotesList()
-        with(binding) {
-            nlfRvNotes.adapter = mainAdapter
-            viewModel.notesList.observe(viewLifecycleOwner) {
-                mainAdapter.submitList(it)
-                nlfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
-                else View.INVISIBLE
-            }
-        }
-    }
-
-    private fun checkForCarExisting() {
-        viewModel.carsList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) viewModel.goToCarAddOrEditFragment()
-            else {
-                val carItem = it[0]
-                with(binding) {
-                    nlfTvCarTitle.text = carItem.title
-                    nlfTvAvgFuel.text = String.format(
-                        getString(R.string.text_measure_gas_charge_for_formatting),
-                        getFormattedDoubleAsStrForDisplay(carItem.momentFuel)
-                    )
-                    nlfTvAvgCost.text = String.format(
-                        getString(R.string.text_measure_currency_for_formatting),
-                        getFormattedDoubleAsStrForDisplay(carItem.milPrice)
-                    )
-                }
-                viewModel.setCarItem(carItem.id)
-            }
-        }
-    }
-
     private fun setupCarInfoListener() {
         binding.nlfCarInfoLayout.setOnClickListener {
-            viewModel.goToCarAddOrEditFragment(getCarId())
+            viewModel.goToCarEditFragment()
         }
-    }
-
-    private fun getCarId(): Int {
-        var id = 0
-        viewModel.carsList.observe(viewLifecycleOwner) {
-            id = it[0].id
-        }
-        return id
     }
 
     private fun setupAddNoteListeners() {
@@ -243,7 +197,9 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition]
+                binding.nlfRvNotes.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
                 AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.dialog_delete_title)
                     .setMessage(
                         String.format(
                             getString(R.string.dialog_delete_note),
@@ -253,11 +209,11 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                     .setPositiveButton(R.string.button_apply) { _, _ ->
                         viewModel.deleteNote(currItem)
                     }
-                    .setNegativeButton(R.string.button_deny) { _, _ ->
-                        setNotesObserver()
-                    }
+                    .setNegativeButton(R.string.button_deny) { _, _ -> }
                     .show()
             }
+
+
         }
 
         val itemTouchHelper = ItemTouchHelper(callback)

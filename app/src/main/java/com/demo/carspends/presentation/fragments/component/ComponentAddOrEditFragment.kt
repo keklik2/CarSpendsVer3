@@ -3,15 +3,12 @@ package com.demo.carspends.presentation.fragments.component
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
-import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.component.ComponentItem
-import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.BaseFragment
 import io.github.anderscheow.validator.Validator
@@ -29,18 +26,14 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         setupTitleTextChangeListener()
         setupAmountTextChangeListener()
         setupMileageTextChangeListener()
-
         setupOnAcceptButtonClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setupErrorObserver()
-        setupCanCloseScreenObserver()
-        setupDateObserver()
+    override var setupObservers: (() -> Unit)? = {}
+    override var setupBinds: (() -> Unit)? = {
+        setupCanCloseScreenBind()
+        setupFieldsBind()
+        setupDateBind()
     }
-
-    private lateinit var launchMode: String
-    private var componentId = ComponentItem.UNDEFINED_ID
-    private var carId = CarItem.UNDEFINED_ID
 
     private val titleValidation by lazy {
         validation(binding.caefTilName) {
@@ -67,16 +60,23 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getArgs()
+    /**
+     * Bind methods are to make fragment observe values from viewModel
+     */
+    private fun setupDateBind() = viewModel::cDate bind { binding.caefTvDateValue.text = getFormattedDate(it) }
+    private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+    private fun setupFieldsBind() {
+        with(viewModel) {
+            ::cTitle bind { it?.let { binding.caefTietName.setText(it) } }
+            ::cResourceMileage bind { it?.let { binding.caefTietResourceValue.setText(it) } }
+            ::cStartMileage bind { it?.let { binding.caefTietMileageValue.setText(it) } }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        chooseMode()
-    }
 
+    /**
+     * Listener methods are to get feedback from users
+     */
     private fun setupDatePickerListener() {
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -85,14 +85,12 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                viewModel.setComponentDate(cal.time.time)
+                viewModel.cDate = cal.time.time
             }
 
         binding.caefDateLayout.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
-                viewModel.componentDate.value?.let {
-                    timeInMillis = it
-                }
+                timeInMillis = viewModel.cDate
             }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -144,28 +142,14 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
-                        when (launchMode) {
-                            ADD_MODE -> {
-                                with(binding) {
-                                    viewModel.addComponentItem(
-                                        caefTietName.text.toString(),
-                                        caefTietResourceValue.text.toString(),
-                                        caefTietMileageValue.text.toString()
-                                    )
-                                }
-                            }
-                            EDIT_MODE -> {
-                                with(binding) {
-                                    viewModel.editComponentItem(
-                                        caefTietName.text.toString(),
-                                        caefTietResourceValue.text.toString(),
-                                        caefTietMileageValue.text.toString()
-                                    )
-                                }
-                            }
+                        with(binding) {
+                            viewModel.addOrEditComponentItem(
+                                caefTietName.text.toString(),
+                                caefTietResourceValue.text.toString(),
+                                caefTietMileageValue.text.toString()
+                            )
                         }
                     }
-
                     override fun onValidateFailed(errors: List<String>) {}
                 }
                 validate(resourceValidation, titleValidation, mileageValidation)
@@ -173,57 +157,11 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         }
     }
 
-    private fun setupDateObserver() {
-        viewModel.componentDate.observe(viewLifecycleOwner) {
-            binding.caefTvDateValue.text = getFormattedDate(it)
-        }
-    }
 
-    private fun setupCanCloseScreenObserver() {
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            viewModel.goBack()
-        }
-    }
-
-    private fun setupErrorObserver() {
-//        viewModel.errorTitleInput.observe(viewLifecycleOwner) {
-//            binding.caefTilName.error = if (it) getString(ERR_TITLE)
-//            else null
-//        }
-//
-//        viewModel.errorResourceInput.observe(viewLifecycleOwner) {
-//            binding.caefTilResourceValue.error = if (it) getString(ERR_RESOURCE)
-//            else null
-//        }
-//
-//        viewModel.errorMileageInput.observe(viewLifecycleOwner) {
-//            binding.caefTilMileageValue.error = if (it) getString(ERR_MILEAGE)
-//            else null
-//        }
-    }
-
-    private fun chooseMode() {
-        when (launchMode) {
-            ADD_MODE -> addNoteMode()
-            else -> editNoteMode()
-        }
-    }
-
-    private fun addNoteMode() {
-        viewModel.carsList.observe(viewLifecycleOwner) {
-            binding.caefTietMileageValue.setText(it[0].mileage.toString())
-        }
-    }
-
-    private fun editNoteMode() {
-        viewModel.setItem(componentId)
-        viewModel.componentItem.observe(viewLifecycleOwner) {
-            with(binding) {
-                caefTietName.setText(it.title)
-                caefTietResourceValue.setText(it.resourceMileage.toString())
-                caefTietMileageValue.setText(it.startMileage.toString())
-            }
-        }
+    /** Basic functions to make Class work as Fragment */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getArgs()
     }
 
     private fun getArgs() {
@@ -233,19 +171,20 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         val type = args.getString(MODE_KEY)
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for ComponentAddOrEditFragment: $type")
 
-        launchMode = type
-        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for ComponentAddOrEditFragment")
-        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
-        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("ComponentItem id must be implemented for ComponentAddOrEditFragment")
-        componentId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        /**
+         * This check must be used when multiple cars allowed
+         */
+//        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for ComponentAddOrEditFragment")
+//        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("ComponentItem id must be implemented for ComponentAddOrEditFragment")
+        viewModel.cId = args.getInt(ID_KEY, ComponentItem.UNDEFINED_ID)
     }
 
-
-    /** Basic functions to make Class work as Fragment */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
     }
+
 
     companion object {
         private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title

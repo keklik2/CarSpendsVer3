@@ -1,5 +1,6 @@
 package com.demo.carspends.presentation.fragments.componentsList.recycleView
 
+import android.util.Log
 import com.demo.carspends.R
 import com.demo.carspends.domain.component.ComponentItem
 
@@ -8,7 +9,7 @@ data class ExtendedComponentItem(
     val currMileage: Int
 ) {
     val resourceColorId: Int get() = when(leftResourcePercent) {
-        in 70..1000000 -> R.color.green
+        in 70..Int.MAX_VALUE -> R.color.green
         in 35..70 -> R.color.yellow
         else -> R.color.vine
     }
@@ -24,6 +25,7 @@ data class ExtendedComponentItem(
 
     val leftResourcePercent: Int get() {
         val res = ((leftResourceValue.toDouble() * 100) / componentItem.resourceMileage).toInt()
+        Log.d("vmtest", "RES: $res")
         return when {
             res in 0..100 -> res
             res > 100 -> 100

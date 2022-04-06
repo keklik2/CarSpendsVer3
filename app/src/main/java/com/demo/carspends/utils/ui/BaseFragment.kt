@@ -1,13 +1,19 @@
 package com.demo.carspends.utils.ui
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.viewbinding.ViewBinding
 import com.demo.carspends.CarSpendsApp
 import com.demo.carspends.ViewModelFactory
+import me.aartikov.sesame.property.PropertyObserver
 import javax.inject.Inject
+import kotlin.properties.ObservableProperty
 
-abstract class BaseFragment(layout: Int): Fragment(layout) {
+abstract class BaseFragment(layout: Int): Fragment(layout), PropertyObserver {
+
+    override val propertyObserverLifecycleOwner: LifecycleOwner
+        get() = viewLifecycleOwner
 
     /**
      * Methods & variables that must be override
@@ -16,6 +22,7 @@ abstract class BaseFragment(layout: Int): Fragment(layout) {
     abstract val viewModel: ViewModel
     abstract var setupListeners: (() -> Unit)?
     abstract var setupObservers: (() -> Unit)?
+    abstract var setupBinds: (() -> Unit)?
 
 
     /**
@@ -32,5 +39,6 @@ abstract class BaseFragment(layout: Int): Fragment(layout) {
 
         setupListeners?.invoke()
         setupObservers?.invoke()
+        setupBinds?.invoke()
     }
 }

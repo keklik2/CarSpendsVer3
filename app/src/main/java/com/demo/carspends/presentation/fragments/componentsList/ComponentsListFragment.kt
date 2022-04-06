@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -13,6 +14,7 @@ import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.utils.ui.BaseFragment
+import me.aartikov.sesame.loading.simple.Loading
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     override val binding: ComponentsListFragmentBinding by viewBinding()
@@ -23,23 +25,40 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
 
         setupAddComponentButtonListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setComponentsObserver()
+    override var setupObservers: (() -> Unit)? = { }
+    override var setupBinds: (() -> Unit)? = {
+        setComponentsBind()
     }
 
     private val mainAdapter = ComponentItemAdapter.get {
         viewModel.goToComponentAddOrEdit(it.componentItem.id)
     }
 
-    private fun setComponentsObserver() {
-        binding.clfRvComponents.adapter = mainAdapter
-        viewModel.componentsList.observe(viewLifecycleOwner) {
-            viewModel.carsList.observe(viewLifecycleOwner) { it1 ->
-                mainAdapter.submitList(it.map { it2 -> ExtendedComponentItem(it2, it1.first().mileage) })
-                binding.clfTvEmptyNotes.visibility = if (it.isEmpty()) View.VISIBLE
-                else View.INVISIBLE
-            }
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshData()
+    }
 
+    private fun setComponentsBind() {
+        binding.clfRvComponents.adapter = mainAdapter
+        viewModel::componentsListState bind {
+            when(it) {
+                is Loading.State.Data -> {
+                    mainAdapter.submitList(it.data.map
+                        { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
+                    )
+                    binding.clfTvEmptyNotes.visibility =
+                        if (it.data.isNotEmpty()) View.INVISIBLE
+                        else View.VISIBLE
+                }
+                is Loading.State.Loading -> {
+                    // TODO("Make loading view Visible")
+                }
+                else -> {
+                    binding.clfTvEmptyNotes.visibility = View.VISIBLE
+                    mainAdapter.submitList(emptyList())
+                }
+            }
         }
     }
 
@@ -61,8 +80,9 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
-
+                binding.clfRvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
                 AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.dialog_delete_title)
                     .setMessage(
                         String.format(
                             getString(R.string.dialog_delete_component),
@@ -72,9 +92,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                     .setPositiveButton(R.string.button_apply) { _, _ ->
                         viewModel.deleteComponent(currItem)
                     }
-                    .setNegativeButton(R.string.button_deny) { _, _ ->
-                        setComponentsObserver()
-                    }
+                    .setNegativeButton(R.string.button_deny) { _, _ -> }
                     .show()
             }
         }

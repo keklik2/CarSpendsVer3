@@ -1,11 +1,14 @@
 package com.demo.carspends.data.repositoryImpls
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import android.util.Log
 import com.demo.carspends.data.component.ComponentDao
 import com.demo.carspends.data.mapper.ComponentMapper
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.ComponentRepository
+import com.google.android.material.internal.DescendantOffsetUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class ComponentRepositoryImpl @Inject constructor(
@@ -25,15 +28,16 @@ class ComponentRepositoryImpl @Inject constructor(
         componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
     }
 
-    override fun getComponentItemsListUseCase(): LiveData<List<ComponentItem>> {
-        return Transformations.map(componentDao.getComponentsListLD()) {
-            it.map {
+    override suspend fun getComponentItemsListUseCase(): List<ComponentItem> = withContext(Dispatchers.IO){
+        try {
+            componentDao.getComponentsList().map {
                 mapper.mapComponentItemDbModelToEntity(it)
             }
-        }
+        } catch (e: Exception) { throw e }
     }
 
-    override suspend fun getComponentItemUseCase(id: Int): ComponentItem {
-        return mapper.mapComponentItemDbModelToEntity(componentDao.getComponentById(id))
+    override suspend fun getComponentItemUseCase(id: Int): ComponentItem = withContext(Dispatchers.IO){
+        try { mapper.mapComponentItemDbModelToEntity(componentDao.getComponentById(id)) }
+        catch (e: Exception) { throw e }
     }
 }

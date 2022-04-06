@@ -1,12 +1,13 @@
 package com.demo.carspends.data.repositoryImpls
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
+import android.util.Log
 import com.demo.carspends.data.mapper.NoteMapper
 import com.demo.carspends.data.note.NoteDao
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
@@ -26,19 +27,25 @@ class NoteRepositoryImpl @Inject constructor(
         noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
-    override fun getNoteItemsListUseCase(date: Long): LiveData<List<NoteItem>> {
-        return Transformations.map(noteDao.getNotesListLD(date)) {
-            it.map {
+    override suspend fun getNoteItemsListUseCase(date: Long): List<NoteItem> {
+        return noteDao.getNotesList(date).map {
                 mapper.mapNoteDbModelToEntity(it)
             }
-        }
     }
 
-    override fun getNoteItemsListUseCase(type: NoteType, date: Long): LiveData<List<NoteItem>> {
-        return Transformations.map(noteDao.getNotesListLD(type, date)) {
-            it.map {
-                mapper.mapNoteDbModelToEntity(it)
+    override suspend fun getNoteItemsListUseCase(type: NoteType?, date: Long): List<NoteItem> = withContext(Dispatchers.IO) {
+        try {
+            if (type != null) {
+                noteDao.getNotesList(type, date).map {
+                    mapper.mapNoteDbModelToEntity(it)
+                }
+            } else {
+                noteDao.getNotesList(date).map {
+                    mapper.mapNoteDbModelToEntity(it)
+                }
             }
+        } catch (e: Exception) {
+            throw e
         }
     }
 
