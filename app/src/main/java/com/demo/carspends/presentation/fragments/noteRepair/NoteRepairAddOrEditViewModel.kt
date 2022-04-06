@@ -1,22 +1,39 @@
 package com.demo.carspends.presentation.fragments.noteRepair
 
+import android.app.Application
+import android.os.Build
+import android.util.Log
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
+import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
 import com.demo.carspends.utils.refactorString
 import com.github.terrakok.cicerone.Router
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import me.aartikov.sesame.loading.simple.Loading
+import me.aartikov.sesame.loading.simple.OrdinaryLoading
+import me.aartikov.sesame.loading.simple.refresh
+import me.aartikov.sesame.property.PropertyHost
+import me.aartikov.sesame.property.autorun
+import me.aartikov.sesame.property.state
+import me.aartikov.sesame.property.stateFromFlow
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -25,220 +42,239 @@ import kotlin.math.min
 
 class NoteRepairAddOrEditViewModel @Inject constructor(
     private val addNoteItemUseCase: AddNoteItemUseCase,
-    private val editNoteItemUseCase: EditNoteItemUseCase,
-    private val getNoteItemUseCase: GetNoteItemUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
-    private val getCarItemUseCase: GetCarItemUseCase,
+    private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val editCarItemUseCase: EditCarItemUseCase,
-    private val router: Router
-) : ViewModel() {
+    private val router: Router,
+    private val app: Application
+) : AndroidViewModel(app), PropertyHost {
 
     fun goBack() = router.exit()
 
+    var nTitle: String? by state(null)
+    var nPrice: String? by state(null)
+    var nMileage: String? by state(null)
+    var nDate by state(getCurrentDate())
+    var nId: Int? by state(null)
+    var cId: Int? by state(null)
+
+    private var noteItem: NoteItem? by state(null)
+    private var carItem: CarItem? by state(null)
     private val noteType = NoteType.REPAIR
-    private var carId = CarItem.UNDEFINED_ID
+    var canCloseScreen by state(false)
 
-    private val _noteDate = MutableLiveData<Long>()
-    val noteDate get() = _noteDate
+    private val _notesListLoading = OrdinaryLoading(
+        viewModelScope,
+        load = { getNoteItemsListByMileageUseCase.invoke() }
+    )
+    private val notesListState by stateFromFlow(_notesListLoading.stateFlow)
+    private var notesListForCalculation = mutableListOf<NoteItem>()
 
-    private val _noteItem = MutableLiveData<NoteItem>()
-    val noteItem get() = _noteItem
-
-    private val _currCarItem = MutableLiveData<CarItem>()
-    val currCarItem get() = _currCarItem
-
-    private val _canCloseScreen = MutableLiveData<Unit>()
-    val canCloseScreen get() = _canCloseScreen
+    private val _carsListLoading = OrdinaryLoading(
+        viewModelScope,
+        load = { getCarItemsListUseCase.invoke() }
+    )
+    private val carsListState by stateFromFlow(_carsListLoading.stateFlow)
 
     init {
-        _noteDate.value = Date().time
-    }
-
-    fun addNoteItem(title: String?, totalPrice: String?, mileage: String?) {
-        val rTitle = refactorString(title)
-        val rTotalPrice = refactorDouble(totalPrice)
-        val rMileage = refactorInt(mileage)
-
-        viewModelScope.launch {
-            val nDate = _noteDate.value
-            if (nDate != null) {
-                val newNote = NoteItem(
-                    title = rTitle,
-                    totalPrice = rTotalPrice,
-                    mileage = rMileage,
-                    date = nDate,
-                    type = noteType
-                )
-                addNoteItemUseCase(newNote)
-
-                updateMileage(rMileage)
-                calculateAllMileage()
-                addLastPrice(newNote)
-                calculateAvgPrice()
-                setCanCloseScreen()
-            } else throw Exception(ERR_NULL_ITEM_ADD)
-        }
-    }
-
-    fun editNoteItem(title: String?, totalPrice: String?, mileage: String?) {
-        val rTitle = refactorString(title)
-        val rTotalPrice = refactorDouble(totalPrice)
-        val rMileage = refactorInt(mileage)
-
-        viewModelScope.launch {
-            val nItem = _noteItem.value
-            if (nItem != null) {
-                val nDate = _noteDate.value
-                if (nDate != null) {
-                    editNoteItemUseCase(
-                        nItem.copy(
-                            title = rTitle,
-                            totalPrice = rTotalPrice,
-                            mileage = rMileage,
-                            date = nDate,
-                            type = noteType
-                        )
-                    )
-
-                    rollbackCarMileage(nItem)
-                    calculateAllMileage()
-                    addAllPrice()
-                    calculateAvgPrice()
-                    setCanCloseScreen()
-                } else throw Exception(ERR_NULL_ITEM_EDIT)
-            } else throw Exception(ERR_NULL_ITEM_EDIT)
-        }
-    }
-
-    private suspend fun calculateAllMileage() {
-        val carItem = getCarItemUseCase(carId)
-        val notes = getNoteItemsListByMileageUseCase()
-
-        val resMil = if (notes.isNotEmpty()) {
-            val maxMil = max(carItem.mileage, notes[0].mileage)
-            val lastNote = getLastNotExtraNote()
-            val minMil =
-                if (lastNote != null) min(
-                    carItem.startMileage,
-                    lastNote.mileage
-                ) else carItem.startMileage
-            abs(maxMil - minMil)
-        } else 0
-
-        editCarItemUseCase(
-            carItem.copy(
-                allMileage = resMil
-            )
-        )
-    }
-
-    private suspend fun getLastNotExtraNote(): NoteItem? {
-        val notes = getNoteItemsListByMileageUseCase()
-        for (i in notes.reversed()) {
-            if (i.type != NoteType.EXTRA) return i
-        }
-        return null
-    }
-
-    private suspend fun addLastPrice(note: NoteItem) {
-        val carItem = getCarItemUseCase(carId)
-        editCarItemUseCase(
-            carItem.copy(
-                allPrice = carItem.allPrice + note.totalPrice
-            )
-        )
-    }
-
-    private suspend fun addAllPrice() {
-        var allPrice = 0.0
-        for (i in getNoteItemsListByMileageUseCase()) {
-            allPrice += i.totalPrice
+        autorun(::nId) {
+            if (it != null) _notesListLoading.refresh()
+            else {
+                noteItem = null
+                nDate = getCurrentDate()
+            }
         }
 
-        if (allPrice < 0) allPrice = 0.0
+        autorun(::cId) {
+            if (it != null) _carsListLoading.refresh()
+            else carItem = null
+        }
 
-        editCarItemUseCase(
-            getCarItemUseCase(carId).copy(
-                allPrice = allPrice
-            )
-        )
-    }
+        autorun(::notesListState) { itState ->
+            when (itState) {
+                is Loading.State.Data -> {
+                    nId?.let { itId ->
+                        noteItem = itState.data.firstOrNull { itNote ->
+                            itNote.id == itId
+                        }
+                    }
+                    notesListForCalculation.clear()
+                    notesListForCalculation.addAll(itState.data)
+                }
+                is Loading.State.Error -> Toast.makeText(
+                    app.applicationContext,
+                    app.getString(R.string.toast_notes_loading_error),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
-    private suspend fun rollbackCarMileage(oldItem: NoteItem) {
-        val cItem = getCarItemUseCase(carId)
-        if (oldItem.mileage == cItem.mileage) {
-            val notesList = getNoteItemsListByMileageUseCase()
-            var newMileage = cItem.startMileage
-            if (notesList.isNotEmpty()) {
-                for (i in notesList) {
-                    if (i.type != NoteType.EXTRA && i.mileage > newMileage) newMileage = i.mileage
+        autorun(::carsListState) { itState ->
+            when (itState) {
+                is Loading.State.Data -> {
+                    cId?.let { itId ->
+                        carItem = itState.data.firstOrNull { itCar ->
+                            itCar.id == itId
+                        }
+                    }
                 }
             }
-            editCarItemUseCase(
-                cItem.copy(
-                    mileage = newMileage
-                )
-            )
-            updateCarItem()
+        }
+
+        autorun(::noteItem) {
+            if (it != null) {
+                nTitle = it.title
+                nPrice = getFormattedDoubleAsStr(it.totalPrice)
+                nMileage = it.mileage.toString()
+                nDate = it.date
+            } else {
+                nTitle = null
+                nPrice = null
+                nMileage = null
+                nDate = getCurrentDate()
+            }
+        }
+
+        autorun(::carItem) {
+            it?.let {
+                if(nMileage == null) nMileage = it.mileage.toString()
+            }
         }
     }
 
-    private suspend fun calculateAvgPrice() {
-        val carItem = getCarItemUseCase(carId)
-        val newMilPrice =
-            if (carItem.allPrice > 0 && carItem.allMileage > 0) {
-                val res = carItem.allPrice / carItem.allMileage
-                if (res < 0) 0.0
-                else res
-            } else 0.0
+    fun addOrEditNoteItem(title: String?, totalPrice: String?, mileage: String?) {
+        val rTitle = refactorString(title)
+        val rTotalPrice = refactorDouble(totalPrice)
+        val rMileage = refactorInt(mileage)
 
-        editCarItemUseCase(
-            carItem.copy(
+        val newNote = noteItem?.copy(
+            title = rTitle,
+            totalPrice = rTotalPrice,
+            mileage = rMileage,
+            date = nDate,
+            type = noteType
+        ) ?: NoteItem(
+            title = rTitle,
+            totalPrice = rTotalPrice,
+            mileage = rMileage,
+            date = nDate,
+            type = noteType
+        )
+
+        viewModelScope.launch {
+            addNoteItemUseCase(newNote)
+            notesListForCalculation.clear()
+            notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
+
+            if (noteItem == null) {
+                updateMileage(rMileage)
+                addLastPrice(newNote)
+            } else {
+                noteItem = newNote
+                rollbackCarMileage()
+                addAllPrice()
+            }
+
+            calculateAllMileage()
+            calculateAvgPrice()
+
+            updateCarItem()
+            setCanCloseScreen()
+        }
+    }
+
+    private fun getLastNotExtraNote(): NoteItem? {
+        return notesListForCalculation.lastOrNull {
+            it.type != NoteType.EXTRA
+        }
+    }
+
+    private fun calculateAllMileage() {
+        carItem?.let { itCar ->
+            val resMil = if (notesListForCalculation.isNotEmpty()) {
+                val maxMil = max(itCar.mileage, notesListForCalculation[0].mileage)
+                val lastNote = getLastNotExtraNote()
+                val minMil =
+                    if (lastNote != null) min(
+                        itCar.startMileage,
+                        lastNote.mileage
+                    ) else itCar.startMileage
+                abs(maxMil - minMil)
+            } else 0
+
+            carItem = itCar.copy(
+                allMileage = resMil
+            )
+        }
+
+    }
+
+    private fun addLastPrice(note: NoteItem) {
+        carItem?.let {
+            carItem = it.copy(
+                allPrice = it.allPrice + note.totalPrice
+            )
+        }
+    }
+
+    private fun addAllPrice() {
+        carItem?.let {
+            val allPrice = max(
+                notesListForCalculation.sumOf { it.totalPrice },
+                0.0
+            )
+
+            carItem = it.copy(
+                allPrice = allPrice
+            )
+        }
+    }
+
+    private fun calculateAvgPrice() {
+        carItem?.let { itCar ->
+            val newMilPrice =
+                if (itCar.allPrice > 0 && itCar.allMileage > 0) {
+                    val res = itCar.allPrice / itCar.allMileage
+                    if (res < 0) 0.0
+                    else res
+                } else 0.0
+
+            carItem = itCar.copy(
                 milPrice = newMilPrice
             )
-        )
+        }
     }
 
-    private suspend fun updateMileage(newMileage: Int) {
-        val cItem = getCarItemUseCase(carId)
-        val oldMileage = cItem.mileage
-        if (newMileage > oldMileage) {
-            editCarItemUseCase(
-                cItem.copy(mileage = newMileage)
+    private fun rollbackCarMileage() {
+        carItem?.let { itCar ->
+            val newMileage: Int = when (val item = notesListForCalculation.firstOrNull {
+                it.type != NoteType.EXTRA
+                        && it.mileage > itCar.startMileage
+            }) {
+                null -> itCar.startMileage
+                else -> item.mileage
+            }
+
+            carItem = itCar.copy(
+                mileage = newMileage
             )
         }
-        updateCarItem()
     }
 
-    fun setCarItem(id: Int) {
-        viewModelScope.launch {
-            carId = id
-            _currCarItem.value = getCarItemUseCase.invoke(carId)
+    private fun updateMileage(newMileage: Int) {
+        carItem?.let { itCar ->
+            carItem = itCar.copy(
+                mileage = max(newMileage, itCar.mileage)
+            )
         }
     }
 
-    private suspend fun updateCarItem() {
-        _currCarItem.value = getCarItemUseCase.invoke(carId)
-    }
-
-    fun setItem(id: Int) {
-        viewModelScope.launch {
-            val item = getNoteItemUseCase(id)
-            _noteItem.value = item
-            _noteDate.value = item.date
-        }
-    }
-
-    fun setNoteDate(date: Long) {
-        _noteDate.value = date
-    }
-
+    private suspend fun updateCarItem() = carItem?.let { editCarItemUseCase(it) }
+    private fun getCurrentDate(): Long = Date().time
     private fun setCanCloseScreen() {
-        _canCloseScreen.value = Unit
+        canCloseScreen = true
     }
 
-    companion object {
-        private const val ERR_NULL_ITEM_EDIT = "Received NULL NoteItem for EditNoteItemUseCase()"
-        private const val ERR_NULL_ITEM_ADD = "Received NULL NoteItem for AddNoteItemUseCase()"
-    }
+    override val propertyHostScope: CoroutineScope
+        get() = viewModelScope
 }

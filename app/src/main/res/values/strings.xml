@@ -38,12 +38,17 @@
     <string name="text_measure_currency_for_formatting">%s ₽</string>
 
     <!-- Dialog messages -->
+    <string name="dialog_delete_title">Удалить</string>
+    <string name="dialog_exit_title">Выйти</string>
     <string name="dialog_delete_note">Точно хотите удалить запись «%s»?</string>
     <string name="dialog_delete_component">Точно хотите удалить ресурс «%s»?</string>
     <string name="dialog_exit_car">Точно хотите выйти из приложения? Несохранённые данные будут потеряны.</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>
+    <string name="toast_components_loading_error">Ошибка при загрузке компонентов</string>
+    <string name="toast_cars_loading_error">Ошибка при загрузке автомобилей</string>
+    <string name="toast_notes_loading_error">Ошибка при загрузке записей</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>

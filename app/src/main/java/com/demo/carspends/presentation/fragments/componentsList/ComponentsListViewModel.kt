@@ -1,55 +1,77 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.domain.car.usecases.GetCarItemsListLDUseCase
+import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.DeleteComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import com.github.terrakok.cicerone.Router
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import me.aartikov.sesame.loading.simple.Loading
+import me.aartikov.sesame.loading.simple.OrdinaryLoading
+import me.aartikov.sesame.loading.simple.refresh
+import me.aartikov.sesame.property.PropertyHost
+import me.aartikov.sesame.property.autorun
+import me.aartikov.sesame.property.state
+import me.aartikov.sesame.property.stateFromFlow
 import javax.inject.Inject
 
 class ComponentsListViewModel @Inject constructor(
     private val deleteComponentUseCase: DeleteComponentItemUseCase,
-    private val getCarItemsListLDUseCase: GetCarItemsListLDUseCase,
+    private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
-    private val router: Router
-) : ViewModel() {
+    private val router: Router,
+    app: Application
+) : AndroidViewModel(app), PropertyHost {
 
-    fun goToComponentAddOrEdit() = router.navigateTo(Screens.ComponentEditOrAdd(carId))
-    fun goToComponentAddOrEdit(id: Int) = router.navigateTo(Screens.ComponentEditOrAdd(carId, id))
+    fun goToComponentAddOrEdit() = router.navigateTo(Screens.ComponentEditOrAdd(_carId))
+    fun goToComponentAddOrEdit(id: Int) = router.navigateTo(Screens.ComponentEditOrAdd(_carId, id))
 
-    private var _carId = 0
-    val carId get() = _carId
+    private var _carId = UNDEFINED_ID
+    private var _carItem: CarItem? by state(null)
+    var mileage by state(0)
 
-    private var _carMileage = 0
-    val carMileage get() = _carMileage
+    private val _carsListLoading = OrdinaryLoading(
+        viewModelScope,
+        load = { getCarItemsListUseCase.invoke() }
+    )
+    val carsListState by stateFromFlow(_carsListLoading.stateFlow)
 
-    private val _carsList = getCarItemsListLDUseCase()
-    val carsList get() = _carsList
-
-    private val _componentsList = getComponentItemsListUseCase()
-    val componentsList get() = _componentsList
-
-    private val carIdObserver: Observer<List<CarItem>> = Observer {
-        _carId = it.first().id
-    }
-
-    private val carMileageObserver: Observer<List<CarItem>> = Observer {
-        _carMileage = it.first().mileage
-    }
+    private val _componentsListLoading = OrdinaryLoading(
+        viewModelScope,
+        load = { getComponentItemsListUseCase.invoke() }
+    )
+    val componentsListState by stateFromFlow(_componentsListLoading.stateFlow)
 
     init {
-        with(_carsList) {
-            observeForever(carIdObserver)
-            observeForever(carMileageObserver)
+        _carsListLoading.refresh()
+
+        autorun(::carsListState) {
+            _componentsListLoading.refresh()
+            when (it) {
+                is Loading.State.Data -> {
+                    if (it.data.isNotEmpty()) {
+                        val car = it.data.first()
+                        _carItem = car
+                        _carId = car.id
+                    }
+                }
+                else -> {}
+            }
         }
 
+        autorun(::_carItem) {
+            it?.let {
+                mileage = it.mileage
+            }
+        }
     }
+
 
     fun deleteComponent(component: ComponentItem) {
         viewModelScope.launch {
@@ -57,11 +79,15 @@ class ComponentsListViewModel @Inject constructor(
         }
     }
 
-    override fun onCleared() {
-        with (_carsList) {
-            removeObserver(carIdObserver)
-            removeObserver(carMileageObserver)
-        }
-        super.onCleared()
+    fun refreshData() {
+        _componentsListLoading.refresh()
+        _carsListLoading.refresh()
+    }
+
+    override val propertyHostScope: CoroutineScope
+        get() = viewModelScope
+
+    companion object {
+        private const val UNDEFINED_ID = -1
     }
 }

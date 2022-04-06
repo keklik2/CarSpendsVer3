@@ -105,4 +105,12 @@ dependencies {
      * Validation - lib for validation
      */
     implementation 'com.github.anderscheow:validator:3.0.3'
+
+
+    /**
+     *
+     */
+    implementation 'com.github.aartikov:sesame-property:1.4.0-beta1'
+    implementation 'com.github.aartikov:sesame-loading:1.3.0-beta1'
+    implementation 'com.github.aartikov:sesame-localized-string:1.4.0-beta1'
 }

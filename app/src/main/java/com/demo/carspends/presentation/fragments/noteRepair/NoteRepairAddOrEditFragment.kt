@@ -3,7 +3,6 @@ package com.demo.carspends.presentation.fragments.noteRepair
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -11,9 +10,7 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFragment
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.ui.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -30,16 +27,16 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         setupTextChangeListeners()
         setupApplyButtonClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setupCanCloseScreenObserver()
-        setupNoteDateObserver()
+    override var setupObservers: (() -> Unit)? = {}
+    override var setupBinds: (() -> Unit)? = {
+        setupFieldsBind()
+        setupCanCloseScreenBind()
     }
 
-    private lateinit var launchMode: String
-    private var noteId = NoteItem.UNDEFINED_ID
-    private var carId = CarItem.UNDEFINED_ID
 
-
+    /**
+     * Validation
+     */
     private val titleValidation by lazy {
         validation(binding.nraefTilName) {
             rules {
@@ -66,21 +63,27 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getArgs()
+    /**
+     * Bind functions
+     */
+    private fun setupCanCloseScreenBind() =
+        viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+
+    private fun setupFieldsBind() {
+        with(viewModel) {
+            with(binding) {
+                ::nTitle bind { it?.let { it1 -> nraefTietName.setText(it1) } }
+                ::nPrice bind { it?.let { it1 -> nraefTietAmountValue.setText(it1) } }
+                ::nMileage bind { it?.let { it1 -> nraefTietMileageValue.setText(it1) } }
+                ::nDate bind { nraefTvDateValue.text = getFormattedDate(it) }
+            }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupCurrCarNote()
-        chooseMode()
-    }
 
-    private fun setupCurrCarNote() {
-        viewModel.setCarItem(carId)
-    }
-
+    /**
+     * Listener functions
+     */
     private fun setupDatePickerListener() {
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -89,15 +92,11 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                viewModel.setNoteDate(cal.time.time)
+                viewModel.nDate = cal.time.time
             }
 
         binding.nraefDateLayout.setOnClickListener {
-            val cCal = GregorianCalendar.getInstance().apply {
-                viewModel.noteDate.value?.let {
-                    timeInMillis = it
-                }
-            }
+            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.nDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
@@ -144,28 +143,14 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
-                        when (launchMode) {
-                            ADD_MODE -> {
-                                with(binding) {
-                                    viewModel.addNoteItem(
-                                        nraefTietName.text.toString(),
-                                        nraefTietAmountValue.text.toString(),
-                                        nraefTietMileageValue.text.toString()
-                                    )
-                                }
-                            }
-                            EDIT_MODE -> {
-                                with(binding) {
-                                    viewModel.editNoteItem(
-                                        nraefTietName.text.toString(),
-                                        nraefTietAmountValue.text.toString(),
-                                        nraefTietMileageValue.text.toString()
-                                    )
-                                }
-                            }
+                        with(binding) {
+                            viewModel.addOrEditNoteItem(
+                                nraefTietName.text.toString(),
+                                nraefTietAmountValue.text.toString(),
+                                nraefTietMileageValue.text.toString()
+                            )
                         }
                     }
-
                     override fun onValidateFailed(errors: List<String>) {}
                 }
                 validate(titleValidation, amountValidation, mileageValidation)
@@ -173,42 +158,10 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         }
     }
 
-    private fun setupNoteDateObserver() {
-        viewModel.noteDate.observe(viewLifecycleOwner) {
-            binding.nraefTvDateValue.text = getFormattedDate(it)
-        }
-    }
 
-    private fun setupCanCloseScreenObserver() {
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            viewModel.goBack()
-        }
-    }
-
-    private fun chooseMode() {
-        when (launchMode) {
-            ADD_MODE -> addNoteMode()
-            else -> editNoteMode()
-        }
-    }
-
-    private fun addNoteMode() {
-        viewModel.currCarItem.observe(viewLifecycleOwner) {
-            binding.nraefTietMileageValue.setText(it.mileage.toString())
-        }
-    }
-
-    private fun editNoteMode() {
-        viewModel.setItem(noteId)
-        viewModel.noteItem.observe(viewLifecycleOwner) {
-            with(binding) {
-                nraefTietName.setText(it.title)
-                nraefTietAmountValue.setText(getFormattedDoubleAsStr(it.totalPrice))
-                nraefTietMileageValue.setText(it.mileage.toString())
-            }
-        }
-    }
-
+    /**
+     * Additional functions
+     */
     private fun getArgs() {
         val args = requireArguments()
         if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for NoteRepairAddOrEditFragment")
@@ -216,11 +169,19 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         val type = args.getString(MODE_KEY)
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteRepairAddOrEditFragment: $type")
 
-        launchMode = type
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteRepairAddOrEditFragment")
-        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
-        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
-        noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        viewModel.cId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
+        viewModel.nId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+    }
+
+
+    /**
+     * Base functions to make class work as fragment
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getArgs()
     }
 
     override fun onAttach(context: Context) {
