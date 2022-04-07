@@ -28,7 +28,6 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         setupMileageTextChangeListener()
         setupOnAcceptButtonClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {}
     override var setupBinds: (() -> Unit)? = {
         setupCanCloseScreenBind()
         setupFieldsBind()

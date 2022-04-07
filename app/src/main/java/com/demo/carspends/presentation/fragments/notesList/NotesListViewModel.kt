@@ -46,7 +46,7 @@ class NotesListViewModel @Inject constructor(
     private var noteType: NoteType? by state(null)
     private var noteDate: Long by state(ALL_TIME)
 
-    private var _carId = UNDEFINED_ID
+    private var _carId = CarItem.UNDEFINED_ID
     private var _carItem: CarItem? by state(null)
 
     private fun goToCarAddFragment() = router.replaceScreen(Screens.CarEditOrAdd())

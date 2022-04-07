@@ -35,7 +35,6 @@ class NoteFillingAddOrEditFragment :
         setupMileageTextChangeListener()
         setupApplyButtonClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {}
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupNoteDateBind()

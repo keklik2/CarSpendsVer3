@@ -25,7 +25,6 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         setupTextChangeListeners()
         setupApplyButtonOnClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {}
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupCanCloseScreenBind()
@@ -204,40 +203,6 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         }
     }
 
-    private fun chooseMode() {
-        when (launchMode) {
-            ADD_MODE -> addNoteMode()
-            else -> editNoteMode()
-        }
-    }
-
-    private fun addNoteMode() {
-        with(binding) {
-            carefTvStatistics.visibility = View.INVISIBLE
-            carefAllFuelLayout.visibility = View.INVISIBLE
-            carefAllFuelPriceLayout.visibility = View.INVISIBLE
-            carefMomentFuelLayout.visibility = View.INVISIBLE
-            carefAvgFuelLayout.visibility = View.INVISIBLE
-            carefMileagePriceLayout.visibility = View.INVISIBLE
-            carefAllPriceLayout.visibility = View.INVISIBLE
-            carefAllMileageLayout.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun editNoteMode() {
-        with(viewModel) {
-            with(binding) {
-                ::cAvgFuel bind { it?.let { it1 -> carefTvAvgFuel.text = it1 } }
-                ::cMomentFuel bind { it?.let { it1 -> carefTvMomentFuel.text = it1 } }
-                ::cAllFuel bind { it?.let { it1 -> carefTvAllFuel.text = it1 } }
-                ::cAllFuelPrice bind { it?.let { it1 -> carefTvAllFuelPrice.text = it1 } }
-                ::cMileagePrice bind { it?.let { it1 -> carefTvMileagePrice.text = it1 } }
-                ::cAllPrice bind { it?.let { it1 -> carefTvAllPrice.text = it1 } }
-                ::cAllMileage bind { it?.let { it1 -> carefTvAllMileage.text = it1 } }
-            }
-        }
-    }
-
     private fun getArgs() {
         val args = requireArguments()
         if (!args.containsKey(MODE_KEY)) throw Exception("Empty mode argument for CarRepairAddOrEditFragment")
@@ -267,7 +232,6 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        chooseMode()
         setupBackPresser()
     }
 
