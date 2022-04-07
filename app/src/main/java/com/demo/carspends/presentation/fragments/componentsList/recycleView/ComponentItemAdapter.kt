@@ -2,8 +2,6 @@ package com.demo.carspends.presentation.fragments.componentsList.recycleView
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.util.Log
-import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import com.demo.carspends.R
 import com.demo.carspends.utils.getFormattedDate

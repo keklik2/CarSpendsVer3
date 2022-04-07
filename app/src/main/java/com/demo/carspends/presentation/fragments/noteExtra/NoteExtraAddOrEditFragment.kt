@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -148,8 +147,6 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
     /**
      * Base functions to make class work as fragment
      */
-
-
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
@@ -159,6 +156,7 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         super.onCreate(savedInstanceState)
         getArgs()
     }
+
 
     companion object {
         private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title

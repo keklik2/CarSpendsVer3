@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
@@ -50,9 +49,6 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                     binding.clfTvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
-                }
-                is Loading.State.Loading -> {
-                    // TODO("Make loading view Visible")
                 }
                 else -> {
                     binding.clfTvEmptyNotes.visibility = View.VISIBLE

@@ -1,12 +1,10 @@
 package com.demo.carspends.presentation.fragments.component
 
 import android.app.Application
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
-import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
@@ -82,12 +80,8 @@ class ComponentAddOrEditViewModel @Inject constructor(
                 cResourceMileage = it.resourceMileage.toString()
                 cStartMileage = it.startMileage.toString()
                 cDate = it.date
-            } else {
-                cTitle = null
-                cResourceMileage = null
-                cStartMileage = null
-                cDate = getCurrentDate()
             }
+            else cDate = getCurrentDate()
         }
     }
 

@@ -189,6 +189,7 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         super.onAttach(context)
     }
 
+
     companion object {
         private const val ERR_EMPTY_TITLE = R.string.inappropriate_empty_title
         private const val ERR_BLANK_TITLE = R.string.blank_validation
