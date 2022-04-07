@@ -1,5 +1,5 @@
 ## (EN) CarSpends (v3)
-__current version:__ Alpha v.3.10.6
+__current version:__ Alpha v.3.10.7
 __figma:__ [figma project](https://www.figma.com/proto/jrKO2S816EglwG4XI2uBin/Accounting-for-car-expenses?node-id=205%3A12&starting-point-node-id=205%3A12&scaling=scale-down)  
 __description:__ Android application to keep car expenses notes  
 - Add / delete / edit notes of 3 types: gas charge, repair & extras;
@@ -9,7 +9,11 @@ __description:__ Android application to keep car expenses notes
 - etc (developing)
 
 ## (EN) Update Notes
-### Alpha v.3.10.6 (30.03.22) - current
+### Alpha v.3.10.7 (07.04.22) - current
+- Sesame repository implementation (Property Observer, State container);
+- Code restructure.
+
+### Alpha v.3.10.6 (30.03.22)
 - Validation repository implementation;
 - Code restructure.
 
