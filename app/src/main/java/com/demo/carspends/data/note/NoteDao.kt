@@ -7,10 +7,10 @@ import com.demo.carspends.domain.note.NoteType
 @Dao
 interface NoteDao {
     @Query("SELECT * FROM notes_table WHERE date >= :date ORDER BY date DESC")
-    fun getNotesListLD(date: Long): LiveData<List<NoteItemDbModel>>
+    suspend fun getNotesList(date: Long): List<NoteItemDbModel>
 
     @Query("SELECT * FROM notes_table WHERE date >= :date AND type == :type ORDER BY date DESC")
-    fun getNotesListLD(type: NoteType, date: Long): LiveData<List<NoteItemDbModel>>
+    suspend fun getNotesList(type: NoteType, date: Long): List<NoteItemDbModel>
 
     @Query("SELECT * FROM notes_table ORDER BY mileage DESC")
     suspend fun getNotesListByMileage(): List<NoteItemDbModel>

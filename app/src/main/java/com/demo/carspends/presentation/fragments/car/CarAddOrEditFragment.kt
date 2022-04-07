@@ -11,9 +11,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.presentation.fragments.component.ComponentAddOrEditFragment
-import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
-import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -21,21 +18,25 @@ import io.github.anderscheow.validator.rules.common.NotEmptyRule
 import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 
-class CarAddOrEditFragment :
-    BaseFragment(R.layout.car_add_edit_fragment) {
+class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     override val binding: CarAddEditFragmentBinding by viewBinding()
     override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTextChangeListeners()
         setupApplyButtonOnClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {
-        setupCanCloseScreenObserver()
+    override var setupObservers: (() -> Unit)? = {}
+    override var setupBinds: (() -> Unit)? = {
+        setupFieldsBind()
+        setupCanCloseScreenBind()
     }
 
     private lateinit var launchMode: String
-    private var carId = CarItem.UNDEFINED_ID
 
+
+    /**
+     * Validation functions
+     */
     private val titleValidation by lazy {
         validation(binding.carefTilCarName) {
             rules {
@@ -70,17 +71,27 @@ class CarAddOrEditFragment :
     }
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        getArgs()
+    /**
+     * Binds functions
+     */
+    private fun setupCanCloseScreenBind() =
+        viewModel::canCloseScreen bind { if (it) viewModel.goToHomeScreen() }
+
+    private fun setupFieldsBind() {
+        with(viewModel) {
+            with(binding) {
+                ::cTitle bind { it?.let { it1 -> carefTietCarName.setText(it1) } }
+                ::cMileage bind { it?.let { it1 -> carefTietMileageValue.setText(it1) } }
+                ::cEngineCapacity bind { it?.let { it1 -> carefTietEngineCapacity.setText(it1) } }
+                ::cPower bind { it?.let { it1 -> carefTietPower.setText(it1) } }
+            }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        chooseMode()
-        setupBackPresser()
-    }
 
+    /**
+     * Listener functions
+     */
     private fun setupTextChangeListeners() {
         binding.carefTietCarName.addTextChangedListener {
             validator(requireActivity()) {
@@ -128,11 +139,9 @@ class CarAddOrEditFragment :
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
-                        when (launchMode) {
-                            ADD_MODE -> addCar()
-                            EDIT_MODE -> editCar()
-                        }
+                        addOrEditCar()
                     }
+
                     override fun onValidateFailed(errors: List<String>) {}
                 }
                 validate(
@@ -145,55 +154,53 @@ class CarAddOrEditFragment :
         }
     }
 
-    private fun addCar() {
-        with(binding) {
-            viewModel.addCar(
-                carefTietCarName.text.toString(),
-                carefTietMileageValue.text.toString(),
-                carefTietEngineCapacity.text.toString(),
-                carefTietPower.text.toString()
-            )
-        }
-    }
 
-    private fun editCar() {
-        with(binding) {
-            viewModel.editCar(
-                carefTietCarName.text.toString(),
-                carefTietMileageValue.text.toString(),
-                carefTietEngineCapacity.text.toString(),
-                carefTietPower.text.toString()
-            )
-        }
-    }
-
-    private fun setupCanCloseScreenObserver() {
-        viewModel.canCloseScreen.observe(viewLifecycleOwner) {
-            if (launchMode == ADD_MODE) viewModel.exit()
-            else viewModel.goToHomeScreen()
-        }
-    }
-
-
-    /** Additional functions */
+    /**
+     * Additional functions
+     */
     private fun setupBackPresser() {
         if (launchMode == ADD_MODE) {
             requireActivity().onBackPressedDispatcher.addCallback(object :
                 OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     AlertDialog.Builder(requireActivity())
+                        .setTitle(R.string.dialog_exit_title)
                         .setMessage(
                             getString(R.string.dialog_exit_car)
                         )
                         .setPositiveButton(R.string.button_apply) { _, _ ->
-                            addCar()
+                            validator(requireActivity()) {
+                                listener = object : Validator.OnValidateListener {
+                                    override fun onValidateSuccess(values: List<String>) {
+                                        addOrEditCar()
+                                    }
+
+                                    override fun onValidateFailed(errors: List<String>) {}
+                                }
+                                validate(
+                                    titleValidation,
+                                    mileageValidation,
+                                    powerValidation,
+                                    engineCapacityValidation
+                                )
+                            }
                             viewModel.exit()
                         }
-                        .setNegativeButton(R.string.button_deny) { _, _ ->
-                        }
+                        .setNegativeButton(R.string.button_deny) { _, _ -> }
                         .show()
                 }
             })
+        }
+    }
+
+    private fun addOrEditCar() {
+        with(binding) {
+            viewModel.addOrEditCar(
+                carefTietCarName.text.toString(),
+                carefTietMileageValue.text.toString(),
+                carefTietEngineCapacity.text.toString(),
+                carefTietPower.text.toString()
+            )
         }
     }
 
@@ -218,42 +225,15 @@ class CarAddOrEditFragment :
     }
 
     private fun editNoteMode() {
-
-        viewModel.setItem(carId)
-        viewModel.carrItem.observe(viewLifecycleOwner) {
+        with(viewModel) {
             with(binding) {
-                carefTietCarName.setText(it.title)
-                carefTietMileageValue.setText(it.mileage.toString())
-                carefTietEngineCapacity.setText(it.engineVolume.toString())
-                carefTietPower.setText(it.power.toString())
-                carefTvAvgFuel.text = String.format(
-                    getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.avgFuel)
-                )
-                carefTvMomentFuel.text = String.format(
-                    getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.momentFuel)
-                )
-                carefTvAllFuel.text = String.format(
-                    getString(R.string.text_measure_gas_volume_unit_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allFuel)
-                )
-                carefTvAllFuelPrice.text = String.format(
-                    getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.fuelPrice)
-                )
-                carefTvMileagePrice.text = String.format(
-                    getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.milPrice)
-                )
-                carefTvAllPrice.text = String.format(
-                    getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allPrice)
-                )
-                carefTvAllMileage.text = String.format(
-                    getString(R.string.text_measure_mileage_unit_for_formatting),
-                    getFormattedIntAsStrForDisplay(it.allMileage)
-                )
+                ::cAvgFuel bind { it?.let { it1 -> carefTvAvgFuel.text = it1 } }
+                ::cMomentFuel bind { it?.let { it1 -> carefTvMomentFuel.text = it1 } }
+                ::cAllFuel bind { it?.let { it1 -> carefTvAllFuel.text = it1 } }
+                ::cAllFuelPrice bind { it?.let { it1 -> carefTvAllFuelPrice.text = it1 } }
+                ::cMileagePrice bind { it?.let { it1 -> carefTvMileagePrice.text = it1 } }
+                ::cAllPrice bind { it?.let { it1 -> carefTvAllPrice.text = it1 } }
+                ::cAllMileage bind { it?.let { it1 -> carefTvAllMileage.text = it1 } }
             }
         }
     }
@@ -266,19 +246,31 @@ class CarAddOrEditFragment :
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for CarRepairAddOrEditFragment: $type")
 
         launchMode = type
-        if (launchMode == EDIT_MODE && !args.containsKey(
-                ID_KEY
-            )
-        ) throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
-        carId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
+        if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY))
+            throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
+        viewModel.cId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
 
 
-    /** Basic functions to make class work as Fragment */
+    /**
+     * Basic functions to make class work as Fragment
+     */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        getArgs()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        chooseMode()
+        setupBackPresser()
+    }
+
 
     companion object {
         // Text Fields error text

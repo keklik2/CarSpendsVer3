@@ -7,7 +7,7 @@ import androidx.room.*
 interface CarDao {
 
     @Query("SELECT * FROM cars ORDER BY id DESC")
-    fun getCarsListLD(): LiveData<List<CarItemDbModel>>
+    suspend fun getCarsList(): List<CarItemDbModel>
 
     @Query("SELECT * FROM cars WHERE id == :requestedId LIMIT 1")
     suspend fun getCarById(requestedId: Int): CarItemDbModel
