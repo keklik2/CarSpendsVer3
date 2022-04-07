@@ -110,11 +110,8 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
                 nTitle = it.title
                 nPrice = it.totalPrice.toString()
                 nDate = it.date
-            } else {
-                nTitle = null
-                nPrice = null
-                nDate = getCurrentDate()
             }
+            else nDate = getCurrentDate()
         }
     }
 

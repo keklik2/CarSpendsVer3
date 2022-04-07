@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
@@ -59,9 +58,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                     binding.nlfTvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
-                }
-                is Loading.State.Loading -> {
-//                    TODO("Make loading spinner on notes list recycler view")
                 }
                 else -> {
                     binding.nlfTvEmptyNotes.visibility = View.VISIBLE
@@ -158,7 +154,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-    /** Method for showing/hiding floating buttons for adding notes */
+
+    /**
+     * Method for showing/hiding floating buttons for adding notes
+     */
     private fun setupAddNoteClickListener() {
         binding.nlfFbAddNote.setOnClickListener {
             floatingButtonsChangeStatement()

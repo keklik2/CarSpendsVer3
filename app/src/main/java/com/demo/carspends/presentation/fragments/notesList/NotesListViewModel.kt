@@ -1,15 +1,12 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -19,12 +16,10 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
 import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.localizedstring.LocalizedString
 import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
@@ -97,9 +92,6 @@ class NotesListViewModel @Inject constructor(
                         _carItem = car
                         _carId = car.id
                     } else goToCarAddFragment()
-                }
-                is Loading.State.Loading -> {
-//                    TODO("Change carTitle to EMPTY_STRING & add listener on fragment adding loading spinner")
                 }
                 is Loading.State.Error -> goToCarAddFragment()
                 else -> {}

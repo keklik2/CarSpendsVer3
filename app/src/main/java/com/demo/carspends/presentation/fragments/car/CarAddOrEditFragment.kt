@@ -11,8 +11,6 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
-import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -76,7 +74,9 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     /**
      * Binds functions
      */
-    private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goToHomeScreen() }
+    private fun setupCanCloseScreenBind() =
+        viewModel::canCloseScreen bind { if (it) viewModel.goToHomeScreen() }
+
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
@@ -141,6 +141,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
                     override fun onValidateSuccess(values: List<String>) {
                         addOrEditCar()
                     }
+
                     override fun onValidateFailed(errors: List<String>) {}
                 }
                 validate(
@@ -173,6 +174,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
                                     override fun onValidateSuccess(values: List<String>) {
                                         addOrEditCar()
                                     }
+
                                     override fun onValidateFailed(errors: List<String>) {}
                                 }
                                 validate(
@@ -250,7 +252,9 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     }
 
 
-    /** Basic functions to make class work as Fragment */
+    /**
+     * Basic functions to make class work as Fragment
+     */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)

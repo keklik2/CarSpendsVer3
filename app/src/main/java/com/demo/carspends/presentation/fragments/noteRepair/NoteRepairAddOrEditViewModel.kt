@@ -1,24 +1,16 @@
 package com.demo.carspends.presentation.fragments.noteRepair
 
 import android.app.Application
-import android.os.Build
-import android.util.Log
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
-import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
-import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.refactorDouble
@@ -127,12 +119,8 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
                 nPrice = getFormattedDoubleAsStr(it.totalPrice)
                 nMileage = it.mileage.toString()
                 nDate = it.date
-            } else {
-                nTitle = null
-                nPrice = null
-                nMileage = null
-                nDate = getCurrentDate()
             }
+            else nDate = getCurrentDate()
         }
 
         autorun(::carItem) {

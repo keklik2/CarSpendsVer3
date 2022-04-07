@@ -60,6 +60,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         }
     }
 
+
     /**
      * Bind methods are to make fragment observe values from viewModel
      */

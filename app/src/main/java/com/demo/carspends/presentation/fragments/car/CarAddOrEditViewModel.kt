@@ -3,15 +3,11 @@ package com.demo.carspends.presentation.fragments.car
 import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
-import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -22,7 +18,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.loading.simple.dataOrNull
 import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun

@@ -46,8 +46,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     fun goBack() = router.exit()
 
-    private val noteFuelTypes = Fuel.values()
-    private val nTitle = app.getString(NOTE_TITLE_ID)
     var nTotalPrice: String? by state(null)
     var nPrice: String? by state(null)
     var nVolume: String? by state(null)
@@ -59,6 +57,8 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     private var noteItem: NoteItem? by state(null)
     private var carItem: CarItem? by state(null)
     private val noteType = NoteType.FUEL
+    private val noteFuelTypes = Fuel.values()
+    private val nTitle = app.getString(NOTE_TITLE_ID)
     var lastFuelType by state(Fuel.F92)
     var canCloseScreen by state(false)
 
@@ -133,13 +133,8 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
                 nPrice = getFormattedDoubleAsStr(it.price)
                 nMileage = it.mileage.toString()
                 nDate = it.date
-            } else {
-//                nVolume = null
-//                nPrice = null
-//                nTotalPrice = null
-//                nMileage = null
-                nDate = getCurrentDate()
             }
+            else nDate = getCurrentDate()
         }
 
         autorun(::carItem) {
@@ -213,15 +208,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         }
     }
 
-//    private suspend fun addAllFuelPrice(note: NoteItem) {
-//        val carItem = getCarItemUseCase(carId)
-//        editCarItemUseCase(
-//            carItem.copy(
-//                fuelPrice = carItem.fuelPrice + note.totalPrice
-//            )
-//        )
-//    }
-
     private fun calculateAllFuel() {
         carItem?.let { itCar ->
             val notes = getFuelNotes()
@@ -235,15 +221,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             )
         }
     }
-
-//    private suspend fun addAllFuel(note: NoteItem) {
-//        val carItem = getCarItemUseCase(carId)
-//        editCarItemUseCase(
-//            carItem.copy(
-//                allFuel = carItem.allFuel + note.liters
-//            )
-//        )
-//    }
 
     private fun calculateAvgPrice() {
         carItem?.let { itCar ->
@@ -293,15 +270,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             )
         }
     }
-
-//    private suspend fun addLastPrice(note: NoteItem) {
-//        val carItem = getCarItemUseCase(carId)
-//        editCarItemUseCase(
-//            carItem.copy(
-//                allPrice = carItem.allPrice + note.totalPrice
-//            )
-//        )
-//    }
 
     private fun addAllPrice() {
         carItem?.let { itCar ->
@@ -384,14 +352,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         }
         return 0
     }
-
-//    fun setLastRefillFuelType() {
-//        notesListForCalculation.firstOrNull { itNotes ->
-//            itNotes.type == NoteType.FUEL
-//        }?.let { itItem ->
-//            lastFuelType = itItem.fuelType
-//        }
-//    }
 
     fun calculateVolume(amount: String?, price: String?) {
         val rAmount = refactorDouble(amount)
