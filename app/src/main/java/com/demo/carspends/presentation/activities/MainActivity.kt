@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                 when (position) {
                     0 -> router.replaceScreen(Screens.NotesList())
                     1 -> router.replaceScreen(Screens.ComponentsList())
-//                    3 - > TODO("Statistics screen")
+                    2 -> router.replaceScreen(Screens.Statistics())
                 }
                 bottomNavigationBar.selectTab(position, false)
             }

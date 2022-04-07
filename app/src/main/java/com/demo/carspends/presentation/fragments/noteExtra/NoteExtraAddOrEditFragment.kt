@@ -30,7 +30,6 @@ class NoteExtraAddOrEditFragment : BaseFragment(R.layout.note_extra_add_edit_fra
         setupTitleTextChangeListener()
         setupPriceTextChangeListener()
     }
-    override var setupObservers: (() -> Unit)? = {}
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupNoteDateBind()

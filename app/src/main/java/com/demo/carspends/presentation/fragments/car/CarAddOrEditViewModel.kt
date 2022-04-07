@@ -44,14 +44,6 @@ class CarAddOrEditViewModel @Inject constructor(
     var cEngineCapacity: String? by state(null)
     var cPower: String? by state(null)
 
-    var cAvgFuel: String? by state(null)
-    var cMomentFuel: String? by state(null)
-    var cAllFuel: String? by state(null)
-    var cAllFuelPrice: String? by state(null)
-    var cMileagePrice: String? by state(null)
-    var cAllPrice: String? by state(null)
-    var cAllMileage: String? by state(null)
-
     var cId: Int? by state(null)
     var canCloseScreen by state(false)
     private var carItem: CarItem? by state(null)
@@ -101,45 +93,11 @@ class CarAddOrEditViewModel @Inject constructor(
         }
 
         autorun(::carItem) {
-            if (it != null) {
+            it?.let {
                 cTitle = it.title
                 cMileage = it.mileage.toString()
                 cEngineCapacity = getFormattedDoubleAsStr(it.engineVolume)
                 cPower = it.power.toString()
-
-                cAvgFuel = String.format(
-                    app.getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.avgFuel)
-                )
-                cMomentFuel = String.format(
-                    app.getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.momentFuel)
-                )
-                cAllFuel = String.format(
-                    app.getString(R.string.text_measure_gas_volume_unit_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allFuel)
-                )
-                cAllFuelPrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.fuelPrice)
-                )
-                cMileagePrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.milPrice)
-                )
-                cAllPrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allPrice)
-                )
-                cAllMileage = String.format(
-                    app.getString(R.string.text_measure_mileage_unit_for_formatting),
-                    getFormattedIntAsStrForDisplay(it.allMileage)
-                )
-            } else {
-                cTitle = null
-                cMileage = null
-                cEngineCapacity = null
-                cPower = null
             }
         }
     }

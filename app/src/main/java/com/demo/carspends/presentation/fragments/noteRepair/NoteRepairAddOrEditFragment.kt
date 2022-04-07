@@ -27,7 +27,6 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         setupTextChangeListeners()
         setupApplyButtonClickListener()
     }
-    override var setupObservers: (() -> Unit)? = {}
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupCanCloseScreenBind()

@@ -10,6 +10,7 @@ import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditFra
 import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditFragment
 import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditFragment
 import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
+import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
 import com.github.terrakok.cicerone.Router
 import dagger.BindsInstance
 import dagger.Component
@@ -34,6 +35,7 @@ interface ApplicationComponent {
     fun inject(fragment: NoteFillingAddOrEditFragment)
     fun inject(fragment: NoteRepairAddOrEditFragment)
     fun inject(fragment: NotesListFragment)
+    fun inject(fragment: StatisticsFragment)
 
     @Component.Factory
     interface Factory {

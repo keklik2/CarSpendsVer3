@@ -21,7 +21,6 @@ abstract class BaseFragment(layout: Int): Fragment(layout), PropertyObserver {
     abstract val binding: ViewBinding
     abstract val viewModel: ViewModel
     abstract var setupListeners: (() -> Unit)?
-    abstract var setupObservers: (() -> Unit)?
     abstract var setupBinds: (() -> Unit)?
 
 
@@ -38,7 +37,6 @@ abstract class BaseFragment(layout: Int): Fragment(layout), PropertyObserver {
         super.onResume()
 
         setupListeners?.invoke()
-        setupObservers?.invoke()
         setupBinds?.invoke()
     }
 }

@@ -24,7 +24,6 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
 
         setupAddComponentButtonListener()
     }
-    override var setupObservers: (() -> Unit)? = { }
     override var setupBinds: (() -> Unit)? = {
         setComponentsBind()
     }

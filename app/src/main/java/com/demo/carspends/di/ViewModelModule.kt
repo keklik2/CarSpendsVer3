@@ -8,6 +8,8 @@ import com.demo.carspends.presentation.fragments.noteExtra.NoteExtraAddOrEditVie
 import com.demo.carspends.presentation.fragments.noteFilling.NoteFillingAddOrEditViewModel
 import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditViewModel
 import com.demo.carspends.presentation.fragments.notesList.NotesListViewModel
+import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
+import com.demo.carspends.presentation.fragments.statistics.StatisticsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -49,5 +51,10 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(NotesListViewModel::class)
     fun bindNotesListViewModel(viewModel: NotesListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatisticsViewModel::class)
+    fun bindStatisticsViewModel(viewModel: StatisticsViewModel): ViewModel
 
 }
