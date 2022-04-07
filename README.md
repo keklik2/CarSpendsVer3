@@ -12,7 +12,7 @@ __description:__ Android application to keep car expenses notes
 ### Alpha v.4.01.1 (07.04.22) - current
 - Car statistic's replaced to main menu
 
-### Alpha v.3.10.7 (06.04.22) - current
+### Alpha v.3.10.7 (06.04.22)
 - Sesame repository implementation (Property Observer, State container);
 - Code restructure.
 
