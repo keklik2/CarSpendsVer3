@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_avg_fuel_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/sf_iv_avg_fuel"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_avg_fuel_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_avg_fuel"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_avg_fuel"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_avg_fuel"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_avg_fuel"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_avg_fuel_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="11.30 л/км" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_moment_fuel_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_avg_fuel_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_moment_fuel"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_moment_fuel_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_moment_fuel"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_moment_fuel"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_moment_fuel"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_moment_fuel"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_moment_fuel_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="10.70 л/км" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_all_fuel_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_moment_fuel_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_all_fuel"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_fuel_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_all_fuel"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_all_fuel"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_all_fuel"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_fuel"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_all_fuel_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="1 070.00 л" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_all_fuel_price_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_all_fuel_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_all_fuel_price"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+            app:layout_constraintDimensionRatio="1:1"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_fuel_price_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_all_fuel_price"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_all_fuel_price"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_all_fuel_price"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_fuel_price"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_all_fuel_price_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="110 250.33 p" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_mileage_price_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_all_fuel_price_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_mileage_price"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_mileage_price_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_mileage_price"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_mileage_price"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_mileage_price"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_mileage_price"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_mileage_price_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="8.10 р/км" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_all_price_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_mileage_price_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_all_price"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_price_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_all_price"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_all_price"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_all_price"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_price"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_all_price_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="1 670 338.39 р" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/sf_all_mileage_layout"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sf_all_price_layout">
+
+        <ImageView
+            android:id="@+id/sf_iv_all_mileage"
+
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingVertical="10dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+
+            app:srcCompat="@drawable/ic_baseline_location_on_24" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_mileage_title"
+
+            style="@style/extraInfoText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/text_all_mileage"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/sf_tv_all_mileage"
+            app:layout_constraintStart_toEndOf="@+id/sf_iv_all_mileage"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/sf_tv_all_mileage"
+
+            style="@style/entryUnitText.RoundedRectangleBackground"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/sf_tv_all_mileage_title"
+            app:layout_constraintTop_toTopOf="parent"
+
+            tools:text="37 093 км" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

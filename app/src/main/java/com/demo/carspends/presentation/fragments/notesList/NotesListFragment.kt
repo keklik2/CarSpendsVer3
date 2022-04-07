@@ -32,7 +32,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         setupAddNoteListeners()
         setupCarInfoListener()
     }
-    override var setupObservers: (() -> Unit)? = {  }
     override var setupBinds: (() -> Unit)? = {
         bindNotesList()
         bindCarFields()
