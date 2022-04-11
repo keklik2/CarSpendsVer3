@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,213 +7,230 @@
 
     <TextView
         android:id="@+id/nfaef_tv_title"
+        style="@style/entryTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/text_refill"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
 
-        style="@style/entryTitleText"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/nfaef_spinner_fuel_type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title"
-        android:entries="@array/fuel_values"
-        android:layout_margin="10dp"
-
-        android:background="@drawable/rounded_rectangle_light_light_vine"
-        android:paddingHorizontal="5dp"
-        />
-
-    <LinearLayout
-        android:id="@+id/nfaef_fuel_indicators_layout"
+    <ScrollView
+        android:id="@+id/nfaef_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/nfaef_spinner_fuel_type"
-        android:orientation="horizontal"
-        android:baselineAligned="false">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/nfaef_til_fuel_volume"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title"
-            android:layout_weight="1"
-
-            style="@style/inputTextLayout"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/nfaef_tiet_fuel_volume"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_fuel_volume"
-                android:inputType="numberDecimal"
-
-                style="@style/inputText"
-                tools:text="20.00"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/nfaef_til_fuel_amount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title"
-            android:layout_weight="1"
-
-            style="@style/inputTextLayout"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="10dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/nfaef_tiet_fuel_amount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_fuel_amount"
-                android:inputType="numberDecimal"
-
-                style="@style/inputText"
-                tools:text="1000.00"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/nfaef_til_fuel_price"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title"
-            android:layout_weight="1"
-
-            style="@style/inputTextLayout"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/nfaef_tiet_fuel_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_fuel_price"
-                android:inputType="numberDecimal"
-
-                style="@style/inputText"
-                tools:text="50.00"/>
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/nfaef_mileage_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/nfaef_button_apply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nfaef_fuel_indicators_layout"
+        app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title">
 
-        android:layout_margin="10dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/nfaef_til_mileage_value"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/nfaef_tv_mileage_unit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="8"
-            style="@style/inputTextLayout">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/nfaef_tiet_mileage_value"
+            <Spinner
+                android:id="@+id/nfaef_spinner_fuel_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_work_mileage"
-                android:inputType="number"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_rectangle_light_light_vine"
+                android:entries="@array/fuel_values"
 
-                style="@style/inputText"
-                tools:text="132.333"/>
+                android:paddingHorizontal="5dp"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <LinearLayout
+                android:id="@+id/nfaef_fuel_indicators_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@+id/nfaef_spinner_fuel_type">
 
-        <TextView
-            android:id="@+id/nfaef_tv_mileage_unit"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/nfaef_til_mileage_value"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nfaef_til_fuel_volume"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
 
-            android:text="@string/text_measure_mileage_unit"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title">
 
-            app:layout_constraintHorizontal_weight="1"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nfaef_tiet_fuel_volume"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_fuel_volume"
 
-            style="@style/entryUnitText" />
+                        android:inputType="numberDecimal"
+                        tools:text="20.00" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nfaef_til_fuel_amount"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/nfaef_cv_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title">
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nfaef_mileage_layout"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nfaef_tiet_fuel_amount"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_fuel_amount"
 
-        android:layout_margin="10dp"
-        app:cardCornerRadius="15dp"
-        android:background="@color/dark_vine"
-        android:backgroundTint="@color/dark_vine">
+                        android:inputType="numberDecimal"
+                        tools:text="1000.00" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/nfaef_date_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nfaef_til_fuel_price"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
 
-        <TextView
-            android:id="@+id/nfaef_tv_date_value"
-            style="@style/dateText.White"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="17.06.2021" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nfaef_tv_title">
 
-        <ImageView
-            android:id="@+id/nfaef_iv_calendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nfaef_tiet_fuel_price"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_fuel_price"
 
-            android:layout_margin="8dp"
-            app:srcCompat="@drawable/ic_baseline_edit_calendar_24"
-            android:contentDescription="@string/description_img_choose_date" />
+                        android:inputType="numberDecimal"
+                        tools:text="50.00" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/nfaef_mileage_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
 
-    </androidx.cardview.widget.CardView>
+                app:layout_constraintTop_toBottomOf="@+id/nfaef_fuel_indicators_layout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nfaef_til_mileage_value"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/nfaef_tv_mileage_unit"
+                    app:layout_constraintHorizontal_weight="8"
+
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/nfaef_tiet_mileage_value"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_work_mileage"
+
+                        android:inputType="number"
+                        tools:text="132.333" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/nfaef_tv_mileage_unit"
+                    style="@style/entryUnitText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_mileage_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintHorizontal_weight="1"
+
+                    app:layout_constraintStart_toEndOf="@+id/nfaef_til_mileage_value"
+
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/nfaef_cv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp"
+                android:background="@color/dark_vine"
+                android:backgroundTint="@color/dark_vine"
+
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nfaef_mileage_layout">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/nfaef_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/nfaef_tv_date_value"
+                        style="@style/dateText.White"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="17.06.2021" />
+
+                    <ImageView
+                        android:id="@+id/nfaef_iv_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:contentDescription="@string/description_img_choose_date"
+                        app:layout_constraintBottom_toBottomOf="parent"
+
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_baseline_edit_calendar_24" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/nfaef_button_apply"
+        style="@style/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/button_apply"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
 
-        style="@style/acceptButton"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

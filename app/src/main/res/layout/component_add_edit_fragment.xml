@@ -16,171 +16,189 @@
 
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/caef_til_name"
-        style="@style/inputTextLayout"
+    <ScrollView
+        android:id="@+id/caef_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="0dp"
 
+        app:layout_constraintBottom_toTopOf="@id/caef_button_apply"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/caef_tv_title">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/caef_tiet_name"
-            style="@style/inputText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:hint="@string/hint_name_detail"
-            android:inputType="textCapSentences"
-            tools:text="Свечи" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caef_resource_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/caef_til_name">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/caef_til_resource_value"
-            style="@style/inputTextLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/caef_tv_resource_unit"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="8">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caef_tiet_resource_value"
-                style="@style/inputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_detail_resource"
-
-                android:inputType="number"
-                tools:text="30.000" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/caef_tv_resource_unit"
-            style="@style/entryUnitText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/text_measure_mileage_unit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/caef_til_resource_value"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="1"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/caef_mileage_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/caef_resource_layout">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/caef_til_mileage_value"
-            style="@style/inputTextLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="@+id/caef_tv_mileage_unit"
-            app:layout_constraintStart_toStartOf="parent"
-
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="8">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caef_tiet_mileage_value"
-                style="@style/inputText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_replace_mileage"
-
-                android:inputType="number"
-                tools:text="132.333" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/caef_tv_mileage_unit"
-            style="@style/entryUnitText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/text_measure_mileage_unit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-
-            app:layout_constraintStart_toEndOf="@+id/caef_til_mileage_value"
-
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:layout_constraintHorizontal_weight="1"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/caef_cv_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:layout_margin="10dp"
-        android:background="@color/dark_vine"
-        android:backgroundTint="@color/dark_vine"
-
-        app:cardCornerRadius="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caef_mileage_layout">
-
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/caef_date_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp">
 
-            <TextView
-                android:id="@+id/caef_tv_date_value"
-                style="@style/dateText.White"
-                android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/caef_til_name"
+                style="@style/inputTextLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/caef_tiet_name"
+                    style="@style/inputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:hint="@string/hint_name_detail"
+                    android:inputType="textCapSentences"
+                    tools:text="Свечи" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caef_resource_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="17.06.2021" />
 
-            <ImageView
-                android:id="@+id/caef_iv_calendar"
-                android:layout_width="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/caef_til_name">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/caef_til_resource_value"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/caef_tv_resource_unit"
+                    app:layout_constraintHorizontal_weight="8"
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/caef_tiet_resource_value"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_detail_resource"
+
+                        android:inputType="number"
+                        tools:text="30.000" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/caef_tv_resource_unit"
+                    style="@style/entryUnitText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_mileage_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_weight="1"
+                    app:layout_constraintStart_toEndOf="@+id/caef_til_resource_value"
+
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/caef_mileage_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:contentDescription="@string/description_img_choose_date"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_edit_calendar_24" />
+                app:layout_constraintStart_toStartOf="parent"
+
+                app:layout_constraintTop_toBottomOf="@+id/caef_resource_layout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/caef_til_mileage_value"
+                    style="@style/inputTextLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toStartOf="@+id/caef_tv_mileage_unit"
+                    app:layout_constraintHorizontal_weight="8"
+
+                    app:layout_constraintStart_toStartOf="parent"
+
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/caef_tiet_mileage_value"
+                        style="@style/inputText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_replace_mileage"
+
+                        android:inputType="number"
+                        tools:text="132.333" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/caef_tv_mileage_unit"
+                    style="@style/entryUnitText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_measure_mileage_unit"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+
+                    app:layout_constraintHorizontal_weight="1"
+
+                    app:layout_constraintStart_toEndOf="@+id/caef_til_mileage_value"
+
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/caef_cv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="10dp"
+                android:background="@color/dark_vine"
+                android:backgroundTint="@color/dark_vine"
+
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/caef_mileage_layout">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/caef_date_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/caef_tv_date_value"
+                        style="@style/dateText.White"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="17.06.2021" />
+
+                    <ImageView
+                        android:id="@+id/caef_iv_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:contentDescription="@string/description_img_choose_date"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_baseline_edit_calendar_24" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </ScrollView>
 
     <Button
         android:id="@+id/caef_button_apply"
