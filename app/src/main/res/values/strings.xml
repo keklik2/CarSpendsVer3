@@ -5,13 +5,12 @@
 
     <!-- Layouts Visible Resources (textVies mainly) -->
     <string name="text_resource">Ресурс:</string>
-    <string name="button_apply">Принять</string>
-    <string name="button_deny">Отмена</string>
     <string name="text_detail_resource">Ресурс детали</string>
     <string name="text_extra">Прочее</string>
     <string name="text_repair">Ремонт, запчасти</string>
     <string name="text_refill">Заправка</string>
     <string name="text_main_info">Основная инфомрация</string>
+    <string name="text_settings">Настройки</string>
     <string name="text_statistics">Статистика</string>
     <string name="text_avg_fuel">Средний расход</string>
     <string name="text_moment_fuel">Моментальный расход</string>
@@ -21,6 +20,10 @@
     <string name="text_all_price">Потрачено всего</string>
     <string name="text_all_mileage">Общий пробег</string>
     <string name="text_empty_note_or_component">Здесь появятся записи, когда Вы их добавите (:</string>
+    <string name="text_font_size">Размер шрифта</string>
+    <string name="text_font_size_large">Увеличенный шрифт</string>
+    <string name="text_statistics_1">Поле статистики (1)</string>
+    <string name="text_statistics_2">Поле статистики (2)</string>
 
     <string name="text_measure_mileage_unit">км</string>
     <string name="text_measure_mileage_unit_for_formatting">%s км</string>
@@ -36,6 +39,10 @@
     <string name="text_measure_price_charge_for_formatting">%s ₽/км</string>
     <string name="text_measure_currency">₽</string>
     <string name="text_measure_currency_for_formatting">%s ₽</string>
+
+    <!-- Buttons -->
+    <string name="button_apply">Принять</string>
+    <string name="button_deny">Отмена</string>
 
     <!-- Dialog messages -->
     <string name="dialog_delete_title">Удалить</string>
@@ -125,4 +132,17 @@
         <item>Газ</item>
         <item>Электричество</item>
     </string-array>
+
+    <string-array name="statistic_values">
+        <item>Средний расход</item>
+        <item>Моментальный расход</item>
+        <item>Всего литров залито</item>
+        <item>Потрачено на бензин</item>
+        <item>Стоимость километра</item>
+        <item>Потрачено всего</item>
+        <item>Общий пробег</item>
+    </string-array>
+
+    <!-- Other -->
+    <string name="settings_file_name">inside_settings</string>
 </resources>

@@ -1,6 +1,5 @@
-package com.demo.carspends.data.note
+package com.demo.carspends.data.database.note
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.demo.carspends.domain.note.NoteType
 

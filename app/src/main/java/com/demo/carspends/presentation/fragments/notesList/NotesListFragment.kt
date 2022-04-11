@@ -31,9 +31,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         setupAddNoteClickListener()
         setupAddNoteListeners()
         setupCarInfoListener()
+        setupSettingsListener()
     }
     override var setupBinds: (() -> Unit)? = {
-        bindNotesList()
+        setupNotesBind()
         bindCarFields()
     }
 
@@ -48,7 +49,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         viewModel.refreshData()
     }
 
-    private fun bindNotesList() {
+    /**
+     * Binds
+     */
+    private fun setupNotesBind() {
         binding.nlfRvNotes.adapter = mainAdapter
         viewModel::notesListState bind {
             when (it) {
@@ -71,6 +75,22 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         viewModel::carTitle bind { binding.nlfTvCarTitle.text = it }
         viewModel::statisticsField1 bind { binding.nlfTvStatistics1.text = it }
         viewModel::statisticsField2 bind { binding.nlfTvStatistics2.text = it }
+    }
+
+
+    /**
+     * Listeners
+     */
+    private fun setupSettingsListener() {
+        binding.nlfIvSettings.setOnClickListener {
+            viewModel.goToSettingsFragment()
+        }
+    }
+
+    private fun setupCarInfoListener() {
+        binding.nlfCarInfoLayout.setOnClickListener {
+            viewModel.goToCarEditFragment()
+        }
     }
 
     private fun setupDateSpinnerListener() {
@@ -107,6 +127,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
             }
     }
 
+
+    /**
+     * Additional functions
+     */
     private fun getYearDate(): Long {
         val date = GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.YEAR, MINUS_ONE)
@@ -128,12 +152,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         return date
     }
 
-    private fun setupCarInfoListener() {
-        binding.nlfCarInfoLayout.setOnClickListener {
-            viewModel.goToCarEditFragment()
-        }
-    }
 
+    /**
+     * Method for showing/hiding floating buttons for adding notes
+     */
     private fun setupAddNoteListeners() {
         with(binding) {
             nlfFbAddFilling.setOnClickListener {
@@ -153,10 +175,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-
-    /**
-     * Method for showing/hiding floating buttons for adding notes
-     */
     private fun setupAddNoteClickListener() {
         binding.nlfFbAddNote.setOnClickListener {
             floatingButtonsChangeStatement()

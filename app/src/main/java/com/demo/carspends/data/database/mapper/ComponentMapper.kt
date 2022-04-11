@@ -1,6 +1,6 @@
-package com.demo.carspends.data.mapper
+package com.demo.carspends.data.database.mapper
 
-import com.demo.carspends.data.component.ComponentItemDbModel
+import com.demo.carspends.data.database.component.ComponentItemDbModel
 import com.demo.carspends.domain.component.ComponentItem
 import javax.inject.Inject
 

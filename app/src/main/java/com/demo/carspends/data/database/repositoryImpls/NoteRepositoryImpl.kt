@@ -1,8 +1,7 @@
-package com.demo.carspends.data.repositoryImpls
+package com.demo.carspends.data.database.repositoryImpls
 
-import android.util.Log
-import com.demo.carspends.data.mapper.NoteMapper
-import com.demo.carspends.data.note.NoteDao
+import com.demo.carspends.data.database.mapper.NoteMapper
+import com.demo.carspends.data.database.note.NoteDao
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType

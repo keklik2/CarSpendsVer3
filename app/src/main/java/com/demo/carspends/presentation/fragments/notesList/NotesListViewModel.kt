@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
 import me.aartikov.sesame.loading.simple.refresh
+import me.aartikov.sesame.loading.simple.state
 import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
@@ -51,6 +53,7 @@ class NotesListViewModel @Inject constructor(
 
     private fun goToCarAddFragment() = router.replaceScreen(Screens.CarEditOrAdd())
     fun goToCarEditFragment() = router.navigateTo(Screens.CarEditOrAdd(_carId))
+    fun goToSettingsFragment() = router.navigateTo(Screens.Settings())
     fun goToNoteAddOrEditFragment(noteType: NoteType) {
         when (noteType) {
             NoteType.FUEL -> router.navigateTo(Screens.NoteFilling(_carId))
@@ -93,7 +96,7 @@ class NotesListViewModel @Inject constructor(
                         _carId = car.id
                     } else goToCarAddFragment()
                 }
-                is Loading.State.Error -> goToCarAddFragment()
+                is Loading.State.Empty -> goToCarAddFragment()
                 else -> {}
             }
         }

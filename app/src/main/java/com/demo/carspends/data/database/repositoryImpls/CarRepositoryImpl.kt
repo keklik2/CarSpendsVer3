@@ -1,8 +1,7 @@
-package com.demo.carspends.data.repositoryImpls
+package com.demo.carspends.data.database.repositoryImpls
 
-import android.util.Log
-import com.demo.carspends.data.car.CarDao
-import com.demo.carspends.data.mapper.CarMapper
+import com.demo.carspends.data.database.car.CarDao
+import com.demo.carspends.data.database.mapper.CarMapper
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.CarRepository
 import kotlinx.coroutines.Dispatchers

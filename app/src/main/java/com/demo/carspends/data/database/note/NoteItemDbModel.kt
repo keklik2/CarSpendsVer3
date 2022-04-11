@@ -1,4 +1,4 @@
-package com.demo.carspends.data.note
+package com.demo.carspends.data.database.note
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

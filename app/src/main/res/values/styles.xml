@@ -99,6 +99,10 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="entryUnitMainMenuText.NotAllCaps">
+        <item name="textAllCaps">false</item>
+    </style>
+
     <!-- title of car in main menu fragment -->
     <style name="carTitleText">
         <item name="android:textSize">24sp</item>
