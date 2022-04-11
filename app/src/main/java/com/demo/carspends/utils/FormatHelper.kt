@@ -9,7 +9,7 @@ val doubleDf = DecimalFormat().apply {
     isGroupingUsed = true
     groupingSize = 3
 
-    decimalFormatSymbols.apply {
+    decimalFormatSymbols = decimalFormatSymbols.apply {
         decimalSeparator = '.'
         groupingSeparator = ' '
     }
@@ -19,9 +19,9 @@ val intDf = DecimalFormat().apply {
     isGroupingUsed = true
     groupingSize = 3
 
-    val dfs = decimalFormatSymbols
-    dfs.groupingSeparator = ' '
-    decimalFormatSymbols = dfs
+    decimalFormatSymbols = decimalFormatSymbols.apply {
+        groupingSeparator = ' '
+    }
 }
 
 fun getFormattedDoubleAsStrForDisplay(value: Double): String = doubleDf.format(value)
