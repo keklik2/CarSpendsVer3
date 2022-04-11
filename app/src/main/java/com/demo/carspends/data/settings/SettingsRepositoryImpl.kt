@@ -51,7 +51,7 @@ class SettingsRepositoryImpl @Inject constructor(
         return when (key) {
             SettingsRepository.SETTING_FONT_SIZE -> sp.getFloat(
                 key,
-                SettingsRepository.FONT_SIZE_LARGE
+                SettingsRepository.FONT_SIZE_NORMAL
             )
             SettingsRepository.SETTING_STATISTIC_ONE -> sp.getString(
                 key,
