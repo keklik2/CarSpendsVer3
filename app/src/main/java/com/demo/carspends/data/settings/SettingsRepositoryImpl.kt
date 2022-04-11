@@ -55,7 +55,7 @@ class SettingsRepositoryImpl @Inject constructor(
             )
             SettingsRepository.SETTING_STATISTIC_ONE -> sp.getString(
                 key,
-                SettingsRepository.STATISTIC_AVG_FUEL
+                SettingsRepository.STATISTIC_MOMENT_FUEL
             ).toString()
             SettingsRepository.SETTING_STATISTIC_TWO -> sp.getString(
                 key,

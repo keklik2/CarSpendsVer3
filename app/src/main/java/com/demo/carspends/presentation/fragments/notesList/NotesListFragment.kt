@@ -75,6 +75,8 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         viewModel::carTitle bind { binding.nlfTvCarTitle.text = it }
         viewModel::statisticsField1 bind { binding.nlfTvStatistics1.text = it }
         viewModel::statisticsField2 bind { binding.nlfTvStatistics2.text = it }
+        viewModel::statisticsField1Img bind { binding.nlfIvStatistics1.setImageResource(it) }
+        viewModel::statisticsField2Img bind { binding.nlfIvStatistics2.setImageResource(it) }
     }
 
 

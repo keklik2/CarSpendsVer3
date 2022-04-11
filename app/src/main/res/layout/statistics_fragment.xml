@@ -44,7 +44,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_avg_fuel"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_avg_fuel"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -102,7 +102,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_moment_fuel"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_moment_fuel"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -160,7 +160,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_all_fuel"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_all_fuel"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -218,7 +218,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_all_fuel_price"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_all_fuel_price"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -276,7 +276,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_mileage_price"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_mileage_price"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -334,7 +334,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_all_price"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_all_price"
 
             style="@style/entryUnitText.RoundedRectangleBackground"
@@ -392,7 +392,7 @@
             app:layout_constraintStart_toEndOf="@+id/sf_iv_all_mileage"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/sf_tv_all_mileage"
 
             style="@style/entryUnitText.RoundedRectangleBackground"

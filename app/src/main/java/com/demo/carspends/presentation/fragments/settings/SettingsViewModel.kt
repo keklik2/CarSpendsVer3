@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.settings
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.Screens
@@ -17,10 +18,19 @@ import javax.inject.Inject
 import com.demo.carspends.domain.settings.SettingsRepository.Companion.SETTING_FONT_SIZE
 import com.demo.carspends.domain.settings.SettingsRepository.Companion.SETTING_STATISTIC_ONE
 import com.demo.carspends.domain.settings.SettingsRepository.Companion.SETTING_STATISTIC_TWO
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_ALL_FUEL
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_ALL_MILEAGE
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_ALL_PRICE
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_AVG_FUEL
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_FUEL_PRICE
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_MILEAGE_PRICE
+import com.demo.carspends.domain.settings.SettingsRepository.Companion.STATISTIC_MOMENT_FUEL
 import me.aartikov.sesame.loading.simple.Loading
+import me.aartikov.sesame.loading.simple.dataOrNull
 import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.stateFromFlow
+import java.lang.Integer.max
 
 class SettingsViewModel @Inject constructor(
     private val setSettingUseCase: SetSettingUseCase,
@@ -28,8 +38,8 @@ class SettingsViewModel @Inject constructor(
     private val router: Router,
     private val app: Application
 ): AndroidViewModel(app), PropertyHost {
-    fun exit() = router.exit()
-    fun reload() = router.replaceScreen(Screens.Settings())
+    fun exit() = router.replaceScreen(Screens.HomePage())
+    private fun reload() = router.replaceScreen(Screens.Settings())
 
     var isExtendedFont by state(false)
     var statistics1Id by state(0)
@@ -45,24 +55,39 @@ class SettingsViewModel @Inject constructor(
         viewModelScope,
         load = { getSettingValueUseCase(SETTING_STATISTIC_ONE) }
     )
+    private val statistic1State by stateFromFlow(statistic1Loading.stateFlow)
 
     private val statistic2Loading = OrdinaryLoading(
         viewModelScope,
         load = { getSettingValueUseCase(SETTING_STATISTIC_TWO) }
     )
+    private val statistic2State by stateFromFlow(statistic2Loading.stateFlow)
 
 
     init {
         fontSettingLoading.refresh()
+        statistic1Loading.refresh()
+        statistic2Loading.refresh()
 
         autorun(::fontSettingState) {
-
             when(it) {
-                is Loading.State.Data -> {
+                is Loading.State.Data ->
                     isExtendedFont = isFontLarge(it.data.toString().toFloat())
-                }
             }
+        }
 
+        autorun(::statistic1State) {
+            when(it) {
+                is Loading.State.Data ->
+                    statistics1Id = getStatisticId(it.data.toString())
+            }
+        }
+
+        autorun(::statistic2State) {
+            when(it) {
+                is Loading.State.Data ->
+                    statistics2Id = getStatisticId(it.data.toString())
+            }
         }
     }
 
@@ -80,6 +105,46 @@ class SettingsViewModel @Inject constructor(
         }
         isExtendedFont = !isExtendedFont
         reload()
+    }
+
+    private fun getStatisticId(statistic: String): Int {
+        return when(statistic) {
+            STATISTIC_AVG_FUEL -> 0
+            STATISTIC_MOMENT_FUEL -> 1
+            STATISTIC_ALL_FUEL -> 2
+            STATISTIC_FUEL_PRICE -> 3
+            STATISTIC_MILEAGE_PRICE -> 4
+            STATISTIC_ALL_PRICE -> 5
+            else -> 6
+        }
+    }
+
+    fun changeStatistic1(position: Int) {
+        val newField = when(position) {
+            0 -> STATISTIC_AVG_FUEL
+            1 -> STATISTIC_MOMENT_FUEL
+            2 -> STATISTIC_ALL_FUEL
+            3 -> STATISTIC_FUEL_PRICE
+            4 -> STATISTIC_MILEAGE_PRICE
+            5 -> STATISTIC_ALL_PRICE
+            else -> STATISTIC_ALL_MILEAGE
+        }
+        setSettingUseCase(SETTING_STATISTIC_ONE, newField)
+        statistic1Loading.refresh()
+    }
+
+    fun changeStatistic2(position: Int) {
+        val newField = when(position) {
+            0 -> STATISTIC_AVG_FUEL
+            1 -> STATISTIC_MOMENT_FUEL
+            2 -> STATISTIC_ALL_FUEL
+            3 -> STATISTIC_FUEL_PRICE
+            4 -> STATISTIC_MILEAGE_PRICE
+            5 -> STATISTIC_ALL_PRICE
+            else -> STATISTIC_ALL_MILEAGE
+        }
+        setSettingUseCase(SETTING_STATISTIC_TWO, newField)
+        statistic2Loading.refresh()
     }
 
 

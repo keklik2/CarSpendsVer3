@@ -65,7 +65,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/sf_statistics_1_spinner"
                 app:layout_constraintBottom_toBottomOf="@id/sf_statistics_1_spinner"
-                android:visibility="invisible"
 
                 style="@style/entryUnitMainMenuText.NotAllCaps"
                 android:textAlignment="textStart"
@@ -80,7 +79,6 @@
 
                 android:entries="@array/statistic_values"
                 android:background="@drawable/rounded_rectangle_light_light_vine"
-                android:visibility="invisible"
 
                 app:layout_constraintTop_toBottomOf="@+id/sf_font_size_switch"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +89,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:visibility="invisible"
 
                 app:layout_constraintTop_toTopOf="@+id/sf_statistics_2_spinner"
                 app:layout_constraintStart_toStartOf="parent"
@@ -108,7 +105,6 @@
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_margin="16dp"
-                android:visibility="invisible"
 
                 android:entries="@array/statistic_values"
                 android:background="@drawable/rounded_rectangle_light_light_vine"
