@@ -1,16 +1,18 @@
 package com.demo.carspends.di
 
 import android.app.Application
-import com.demo.carspends.data.MainDataBase
-import com.demo.carspends.data.car.CarDao
-import com.demo.carspends.data.component.ComponentDao
-import com.demo.carspends.data.note.NoteDao
-import com.demo.carspends.data.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.ComponentRepositoryImpl
-import com.demo.carspends.data.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.data.database.MainDataBase
+import com.demo.carspends.data.database.car.CarDao
+import com.demo.carspends.data.database.component.ComponentDao
+import com.demo.carspends.data.database.note.NoteDao
+import com.demo.carspends.data.database.repositoryImpls.CarRepositoryImpl
+import com.demo.carspends.data.database.repositoryImpls.ComponentRepositoryImpl
+import com.demo.carspends.data.database.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.data.settings.SettingsRepositoryImpl
 import com.demo.carspends.domain.car.CarRepository
 import com.demo.carspends.domain.component.ComponentRepository
 import com.demo.carspends.domain.note.NoteRepository
+import com.demo.carspends.domain.settings.SettingsRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -26,6 +28,9 @@ interface DataModule {
 
     @Binds
     fun bindComponentRepository(impl: ComponentRepositoryImpl): ComponentRepository
+
+    @Binds
+    fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
 
     companion object {
 

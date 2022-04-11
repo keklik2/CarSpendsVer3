@@ -1,4 +1,4 @@
-package com.demo.carspends.data.mapper
+package com.demo.carspends.data.database.mapper
 
 import androidx.room.TypeConverter
 import com.demo.carspends.domain.others.Fuel

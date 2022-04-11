@@ -3,6 +3,7 @@ package com.demo.carspends
 import android.content.Intent
 import com.demo.carspends.presentation.activities.DetailElementsActivity
 import com.demo.carspends.presentation.activities.MainActivity
+import com.demo.carspends.presentation.activities.SettingsActivity
 import com.demo.carspends.presentation.fragments.componentsList.ComponentsListFragment
 import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
 import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
@@ -54,6 +55,10 @@ object Screens {
     fun NotesList() = FragmentScreen { NotesListFragment() }
     fun ComponentsList() = FragmentScreen { ComponentsListFragment() }
     fun Statistics() = FragmentScreen { StatisticsFragment() }
+
+    fun Settings() = ActivityScreen {
+        SettingsActivity.getInstance(it)
+    }
 
     fun HomePage() = ActivityScreen { Intent(it, MainActivity::class.java) }
 }
