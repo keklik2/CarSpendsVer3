@@ -9,6 +9,7 @@ import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.DeleteComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
+import com.demo.carspends.utils.NORMAL_LOADING_DELAY
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -44,7 +45,7 @@ class ComponentsListViewModel @Inject constructor(
 
     private val _componentsListLoading = OrdinaryLoading(
         viewModelScope,
-        load = { getComponentItemsListUseCase.invoke() }
+        load = { getComponentItemsListUseCase.invoke(NORMAL_LOADING_DELAY) }
     )
     val componentsListState by stateFromFlow(_componentsListLoading.stateFlow)
 

@@ -16,6 +16,7 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.domain.settings.GetSettingValueUseCase
 import com.demo.carspends.domain.settings.SettingsRepository
+import com.demo.carspends.utils.NORMAL_LOADING_DELAY
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.github.terrakok.cicerone.Router
@@ -85,7 +86,11 @@ class NotesListViewModel @Inject constructor(
     private val _notesListLoading = OrdinaryLoading(
         viewModelScope,
         load = {
-            getNoteItemsListUseCase.invoke(noteType, noteDate)
+            getNoteItemsListUseCase.invoke(
+                delay = NORMAL_LOADING_DELAY,
+                type = noteType,
+                date = noteDate
+            )
         }
     )
     val notesListState by stateFromFlow(_notesListLoading.stateFlow)

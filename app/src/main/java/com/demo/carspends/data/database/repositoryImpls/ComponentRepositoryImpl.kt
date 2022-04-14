@@ -4,7 +4,9 @@ import com.demo.carspends.data.database.component.ComponentDao
 import com.demo.carspends.data.database.mapper.ComponentMapper
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.ComponentRepository
+import com.demo.carspends.utils.MIN_LOADING_DELAY
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.lang.Exception
 import javax.inject.Inject
@@ -26,8 +28,9 @@ class ComponentRepositoryImpl @Inject constructor(
         componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
     }
 
-    override suspend fun getComponentItemsListUseCase(): List<ComponentItem> = withContext(Dispatchers.IO){
+    override suspend fun getComponentItemsListUseCase(delay: Long): List<ComponentItem> = withContext(Dispatchers.IO){
         try {
+            delay(delay)
             componentDao.getComponentsList().map {
                 mapper.mapComponentItemDbModelToEntity(it)
             }
