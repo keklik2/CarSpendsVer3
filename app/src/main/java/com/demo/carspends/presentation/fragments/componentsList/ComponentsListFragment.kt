@@ -13,6 +13,7 @@ import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.utils.ui.BaseFragment
+import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
@@ -25,7 +26,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         setupAddComponentButtonListener()
     }
     override var setupBinds: (() -> Unit)? = {
-        setComponentsBind()
+        setupComponentsBind()
     }
 
     private val mainAdapter = ComponentItemAdapter.get {
@@ -37,19 +38,27 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         viewModel.refreshData()
     }
 
-    private fun setComponentsBind() {
+    private fun setupComponentsBind() {
         binding.clfRvComponents.adapter = mainAdapter
+        val skeleton = binding.clfRvComponents.applySkeleton(R.layout.note_item_skeleton)
+        skeleton.showSkeleton()
+
         viewModel::componentsListState bind {
-            when(it) {
+            when (it) {
                 is Loading.State.Data -> {
+                    skeleton.showOriginal()
+
                     mainAdapter.submitList(it.data.map
-                        { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
+                    { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
                     )
                     binding.clfTvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
                 }
+                is Loading.State.Loading -> skeleton.showSkeleton()
                 else -> {
+                    skeleton.showOriginal()
+
                     binding.clfTvEmptyNotes.visibility = View.VISIBLE
                     mainAdapter.submitList(emptyList())
                 }
@@ -74,7 +83,8 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
+                val currItem =
+                    mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
                 binding.clfRvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.dialog_delete_title)
@@ -100,8 +110,8 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         binding.clfRvComponents.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if(dy > 0) if (isFLBAddComponentShown()) setFLBAddComponentVisibility(false)
-                if(dy < 0) if (!isFLBAddComponentShown()) setFLBAddComponentVisibility(true)
+                if (dy > 0) if (isFLBAddComponentShown()) setFLBAddComponentVisibility(false)
+                if (dy < 0) if (!isFLBAddComponentShown()) setFLBAddComponentVisibility(true)
             }
         })
     }
