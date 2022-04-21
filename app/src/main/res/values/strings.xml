@@ -24,6 +24,7 @@
     <string name="text_font_size_large">Увеличенный шрифт</string>
     <string name="text_statistics_1">Поле статистики (1)</string>
     <string name="text_statistics_2">Поле статистики (2)</string>
+    <string name="unnamed">- без названия -</string>
 
     <string name="text_measure_mileage_unit">км</string>
     <string name="text_measure_mileage_unit_for_formatting">%s км</string>
@@ -46,16 +47,20 @@
 
     <!-- Dialog messages -->
     <string name="dialog_delete_title">Удалить</string>
+    <string name="dialog_permission_title">Разрешение</string>
     <string name="dialog_exit_title">Выйти</string>
     <string name="dialog_delete_note">Точно хотите удалить запись «%s»?</string>
     <string name="dialog_delete_component">Точно хотите удалить ресурс «%s»?</string>
+    <string name="dialog_delete_picture">Точно хотите удалить изображение «%s»?</string>
     <string name="dialog_exit_car">Точно хотите выйти из приложения? Несохранённые данные будут потеряны.</string>
+    <string name="dialog_permission_denied">Без разрешения Вы не сможете пользоваться некоторым функционалом приложения.</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>
     <string name="toast_components_loading_error">Ошибка при загрузке компонентов</string>
     <string name="toast_cars_loading_error">Ошибка при загрузке автомобилей</string>
     <string name="toast_notes_loading_error">Ошибка при загрузке записей</string>
+    <string name="toast_pictures_max_size">Нельзя прикрепить более 4 изображений</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
@@ -98,6 +103,9 @@
     <string name="description_img_tools">Иконка "тип записи"</string>
     <string name="description_img_choose_date">Иконка выбора даты</string>
     <string name="description_img_currency">Иконка валюты</string>
+    <string name="description_internal_picture">Добавленное из галереи изображение</string>
+    <string name="description_internal_picture_delete">Кнопка удаления добавленного из галереи изображения</string>
+    <string name="description_internal_picture_add">Кнопка добавления изображений из галереи</string>
 
     <!-- String Arrays for using in Code -->
     <string name="F92">АИ-92</string>
@@ -145,4 +153,5 @@
 
     <!-- Other -->
     <string name="settings_file_name">inside_settings</string>
+    <string name="pick_images">Выбрать изображение</string>
 </resources>

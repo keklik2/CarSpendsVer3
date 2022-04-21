@@ -13,12 +13,10 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
-import java.lang.Thread.sleep
 import java.util.*
-import kotlin.concurrent.thread
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
@@ -63,9 +61,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         viewModel::notesListState bind {
             when (it) {
                 is Loading.State.Data -> {
-                    thread {
-                        sleep(500)
-                    }
                     skeleton.showOriginal()
 
                     mainAdapter.submitList(it.data)

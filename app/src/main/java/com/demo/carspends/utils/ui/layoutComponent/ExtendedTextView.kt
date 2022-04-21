@@ -1,4 +1,4 @@
-package com.demo.carspends.utils.ui
+package com.demo.carspends.utils.ui.layoutComponent
 
 import android.content.Context
 import android.util.AttributeSet

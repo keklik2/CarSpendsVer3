@@ -156,7 +156,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/nraef_cv_date"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
 
                 android:layout_margin="10dp"
@@ -164,7 +164,7 @@
                 android:backgroundTint="@color/dark_vine"
 
                 app:cardCornerRadius="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/add_img_button"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/nraef_mileage_layout">
 
@@ -202,6 +202,36 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <ImageButton
+                android:id="@+id/add_img_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintDimensionRatio="1:1"
+
+                android:background="@drawable/rounded_rectangle_light_black"
+                android:src="@drawable/ic_outline_photo_camera_24"
+                android:padding="8dp"
+                android:layout_marginEnd="10dp"
+
+                app:layout_constraintTop_toTopOf="@+id/nraef_cv_date"
+                app:layout_constraintStart_toEndOf="@+id/nraef_cv_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/nraef_cv_date"
+
+                android:contentDescription="@string/description_internal_picture_add"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/pictures_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+
+                app:layout_constraintTop_toBottomOf="@+id/add_img_button"
+                app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
+                app:spanCount="3"
+                tools:itemCount="4"
+                tools:listitem="@layout/picture_item"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

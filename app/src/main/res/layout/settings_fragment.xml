@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.demo.carspends.utils.ui.ExtendedTextView
+    <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
         android:id="@+id/sf_tv_title"
         style="@style/entryTitleText"
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <com.demo.carspends.utils.ui.ExtendedTextView
+            <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
                 android:id="@+id/sf_font_size_normal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
 
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
-            <com.demo.carspends.utils.ui.ExtendedTextView
+            <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
                 android:id="@+id/sf_tv_statistics_1_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sf_tv_statistics_1_title"/>
 
-            <com.demo.carspends.utils.ui.ExtendedTextView
+            <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
                 android:id="@+id/sf_tv_statistics_2_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,6 +112,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/sf_statistics_1_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sf_tv_statistics_2_title"/>
+
+            <Button
+                android:id="@+id/testED"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="TEST"
+                app:layout_constraintTop_toBottomOf="@+id/sf_tv_statistics_2_title"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

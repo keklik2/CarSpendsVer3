@@ -16,9 +16,11 @@ import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
+import com.demo.carspends.domain.picture.DeletePictureUseCase
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
+import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -36,94 +38,39 @@ import kotlin.math.max
 import kotlin.math.min
 
 class NoteFillingAddOrEditViewModel @Inject constructor(
-    private val addNoteItemUseCase: AddNoteItemUseCase,
-    private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
-    private val editCarItemUseCase: EditCarItemUseCase,
-    private val app: Application,
-    private val router: Router
-) : AndroidViewModel(app), PropertyHost {
-
-    fun goBack() = router.exit()
+    private val addNoteItemUseCase: AddNoteItemUseCase,
+    getNoteItemUseCase: GetNoteItemUseCase,
+    getCarItemUseCase: GetCarItemUseCase,
+    editCarItemUseCase: EditCarItemUseCase,
+    deletePictureUseCase: DeletePictureUseCase,
+    router: Router,
+    app: Application
+) : NoteAddOrEditViewModel(
+    getCarItemUseCase,
+    editCarItemUseCase,
+    getNoteItemUseCase,
+    deletePictureUseCase,
+    router,
+    app
+) {
 
     var nTotalPrice: String? by state(null)
     var nPrice: String? by state(null)
     var nVolume: String? by state(null)
     var nMileage: String? by state(null)
-    var nDate by state(getCurrentDate())
-    var nId: Int? by state(null)
-    var cId: Int? by state(null)
 
-    private var noteItem: NoteItem? by state(null)
-    private var carItem: CarItem? by state(null)
-    private val noteType = NoteType.FUEL
+    override val noteType = NoteType.FUEL
     private val noteFuelTypes = Fuel.values()
     private val nTitle = app.getString(NOTE_TITLE_ID)
-    var lastFuelType by state(Fuel.F92)
-    var canCloseScreen by state(false)
 
-    private val _notesListLoading = OrdinaryLoading(
-        viewModelScope,
-        load = { getNoteItemsListByMileageUseCase.invoke() }
-    )
-    private val notesListState by stateFromFlow(_notesListLoading.stateFlow)
+    var lastFuelType by state(Fuel.F92)
     private var notesListForCalculation = mutableListOf<NoteItem>()
 
-    private val _carsListLoading = OrdinaryLoading(
-        viewModelScope,
-        load = { getCarItemsListUseCase.invoke() }
-    )
-    private val carsListState by stateFromFlow(_carsListLoading.stateFlow)
-
     init {
-        autorun(::nId) {
-            if (it != null) _notesListLoading.refresh()
-            else {
-                noteItem = null
-                nDate = getCurrentDate()
-            }
-        }
-
-        autorun(::cId) {
-            if (it != null) _carsListLoading.refresh()
-            else carItem = null
-        }
-
-        autorun(::notesListState) { itState ->
-            when (itState) {
-                is Loading.State.Data -> {
-                    nId?.let { itId ->
-                        noteItem = itState.data.firstOrNull { itNote ->
-                            itNote.id == itId
-                        }
-                    }
-                    notesListForCalculation.clear()
-                    notesListForCalculation.addAll(itState.data)
-
-                    notesListForCalculation.firstOrNull { itNotes ->
-                        itNotes.type == NoteType.FUEL
-                    }?.let { itItem ->
-                        lastFuelType = itItem.fuelType
-                    }
-                }
-                is Loading.State.Error -> Toast.makeText(
-                    app.applicationContext,
-                    app.getString(R.string.toast_notes_loading_error),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        autorun(::carsListState) { itState ->
-            when (itState) {
-                is Loading.State.Data -> {
-                    cId?.let { itId ->
-                        carItem = itState.data.firstOrNull { itCar ->
-                            itCar.id == itId
-                        }
-                    }
-                }
-            }
+        withScope {
+            notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
+            lastFuelType = notesListForCalculation.last().fuelType
         }
 
         autorun(::noteItem) {
@@ -176,7 +123,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            addNoteItemUseCase(newNote)
+            addNoteItemUseCase(newNote, pictures)
             notesListForCalculation.clear()
             notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
@@ -391,11 +338,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         notesListForCalculation.filter { it.type == NoteType.FUEL }
     private fun getLastNotExtraNote(): NoteItem? =
         notesListForCalculation.firstOrNull { it.type != NoteType.EXTRA }
-    private suspend fun updateCarItem() = carItem?.let { editCarItemUseCase(it) }
-    private fun getCurrentDate(): Long = Date().time
-    private fun setCanCloseScreen() {
-        canCloseScreen = true
-    }
 
     companion object {
         private const val NOTE_TITLE_ID = R.string.text_refill

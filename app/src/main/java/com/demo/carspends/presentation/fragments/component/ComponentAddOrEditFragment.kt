@@ -10,7 +10,7 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule

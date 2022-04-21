@@ -1,33 +1,37 @@
 package com.demo.carspends.data.database.repositoryImpls
 
 import com.demo.carspends.data.database.mapper.NoteMapper
+import com.demo.carspends.data.database.mapper.PictureMapper
 import com.demo.carspends.data.database.note.NoteDao
+import com.demo.carspends.data.database.pictures.PictureDao
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.utils.MIN_LOADING_DELAY
+import com.demo.carspends.domain.picture.InternalPicture
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
-    private val mapper: NoteMapper
+    private val pictureDao: PictureDao,
+    private val mapper: NoteMapper,
+    private val picturesMapper: PictureMapper
 ) : NoteRepository {
 
-    override suspend fun addNoteItemUseCase(noteItem: NoteItem) {
-        noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
-    }
-
     override suspend fun deleteNoteItemUseCase(noteItem: NoteItem) {
-        noteDao.deleteNote(mapper.mapEntityToNoteDbModel(noteItem))
+        val pictures = noteDao.getNote(noteItem.id).picturesList
+        noteDao.delete(mapper.mapEntityToNoteDbModel(noteItem))
+        for (p in pictures) {
+            pictureDao.delete(p)
+        }
     }
 
     override suspend fun editNoteItemUseCase(noteItem: NoteItem) {
-        noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
+        noteDao.insert(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
     override suspend fun getNoteItemsListUseCase(delay: Long, date: Long): List<NoteItem> {
-        return noteDao.getNotesList(date).map {
+        return noteDao.getNotes(date).map {
             mapper.mapNoteDbModelToEntity(it)
         }
     }
@@ -41,11 +45,11 @@ class NoteRepositoryImpl @Inject constructor(
             try {
                 delay(delay)
                 if (type != null) {
-                    noteDao.getNotesList(type, date).map {
+                    noteDao.getNotes(type, date).map {
                         mapper.mapNoteDbModelToEntity(it)
                     }
                 } else {
-                    noteDao.getNotesList(date).map {
+                    noteDao.getNotes(date).map {
                         mapper.mapNoteDbModelToEntity(it)
                     }
                 }
@@ -55,12 +59,32 @@ class NoteRepositoryImpl @Inject constructor(
         }
 
     override suspend fun getNoteItemsListByMileageUseCase(): List<NoteItem> {
-        return noteDao.getNotesListByMileage().map {
+        return noteDao.getNotesForCounting().map {
             mapper.mapNoteDbModelToEntity(it)
         }
     }
 
-    override suspend fun getNoteItemUseCase(id: Int): NoteItem {
-        return mapper.mapNoteDbModelToEntity(noteDao.getNoteById(id))
+    override suspend fun getNoteItemUseCase(id: Int): Map<NoteItem, List<InternalPicture>> {
+        return mutableMapOf<NoteItem, List<InternalPicture>>().apply {
+            val note = noteDao.getNote(id)
+            put(mapper.mapNoteDbModelToEntity(note.note), note.picturesList.map { picturesMapper.mapDbModelToEntity(it) })
+        }
+    }
+
+    override suspend fun addNoteItemUseCase(
+        noteItem: NoteItem,
+        pictures: List<InternalPicture>
+    ) {
+        noteDao.insert(mapper.mapEntityToNoteDbModel(noteItem))
+        getNoteItemsListByMileageUseCase().firstOrNull {
+            it.title == noteItem.title &&
+            it.mileage == noteItem.mileage &&
+            it.date == noteItem.date &&
+            it.type == noteItem.type
+        }?.let {
+            for (p in pictures) {
+                pictureDao.insert(picturesMapper.mapEntityToDbModel(it.id, p))
+            }
+        }
     }
 }
