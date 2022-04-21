@@ -8,7 +8,8 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.SettingsFragmentBinding
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+
 
 class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     override val binding: SettingsFragmentBinding by viewBinding()
@@ -42,6 +43,7 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     /**
      * Listeners
      */
+
     private fun switchListener() {
         binding.sfFontSizeSwitch.setOnClickListener { viewModel.changeFontSize() }
     }
@@ -90,5 +92,9 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
+    }
+
+    companion object {
+        private const val IMAGE_TEST = 1
     }
 }

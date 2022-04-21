@@ -1,5 +1,8 @@
 package com.demo.carspends.utils
 
+import android.content.Context
+import android.net.Uri
+import android.provider.OpenableColumns
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -39,3 +42,15 @@ fun getFormattedDate(receivedDate: Long): String {
 fun getFormattedPercentsAsStr(value: Int): String = "$value%"
 
 fun getFormattedPercentsAsStr(value: Double): String = "${value.toInt()}%"
+
+fun Uri.getOriginalFileName(context: Context): String? {
+    return try {
+        context.contentResolver.query(this, null, null, null, null)?.use {
+            val nameColumnIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            it.moveToFirst()
+            it.getString(nameColumnIndex)
+        }
+    } catch (t: Throwable) {
+        path!!.substringAfterLast('/', "")
+    }
+}

@@ -11,7 +11,8 @@ import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.NoteAddOrEditFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule
@@ -19,13 +20,15 @@ import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 import java.util.*
 
-class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_fragment) {
+class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_add_edit_fragment) {
     override val binding: NoteRepairAddEditFragmentBinding by viewBinding()
     override val viewModel: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTextChangeListeners()
         setupApplyButtonClickListener()
+        setupPicturesPickerListener()
+        setupPicturesRecyclerViewBind()
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
@@ -78,11 +81,21 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
             }
         }
     }
+    override fun setupPicturesRecyclerViewBind() = viewModel::pictures bind {
+        binding.picturesRv.adapter = pictureAdapter
+        pictureAdapter.submitList(it)
+    }
 
 
     /**
-     * Listener functions
+     * Listeners
      */
+    private fun setupPicturesPickerListener() {
+        binding.addImgButton.setOnClickListener {
+            openPicturesPicker()
+        }
+    }
+
     private fun setupDatePickerListener() {
         val dateSetListener =
             DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
@@ -169,9 +182,9 @@ class NoteRepairAddOrEditFragment : BaseFragment(R.layout.note_repair_add_edit_f
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteRepairAddOrEditFragment: $type")
 
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteRepairAddOrEditFragment")
-        viewModel.cId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        viewModel.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
-        viewModel.nId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        viewModel.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
 

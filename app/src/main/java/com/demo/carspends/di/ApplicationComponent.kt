@@ -13,7 +13,6 @@ import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditF
 import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
 import com.demo.carspends.presentation.fragments.settings.SettingsFragment
 import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
-import com.demo.carspends.utils.ui.ExtendedTextView
 import com.github.terrakok.cicerone.Router
 import dagger.BindsInstance
 import dagger.Component

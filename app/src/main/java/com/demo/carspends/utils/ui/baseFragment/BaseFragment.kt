@@ -1,4 +1,4 @@
-package com.demo.carspends.utils.ui
+package com.demo.carspends.utils.ui.baseFragment
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
@@ -8,7 +8,6 @@ import com.demo.carspends.CarSpendsApp
 import com.demo.carspends.ViewModelFactory
 import me.aartikov.sesame.property.PropertyObserver
 import javax.inject.Inject
-import kotlin.properties.ObservableProperty
 
 abstract class BaseFragment(layout: Int): Fragment(layout), PropertyObserver {
 

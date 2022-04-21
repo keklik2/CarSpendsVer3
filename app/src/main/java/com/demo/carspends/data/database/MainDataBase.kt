@@ -14,8 +14,10 @@ import com.demo.carspends.data.database.component.ComponentItemDbModel
 import com.demo.carspends.data.database.mapper.DbConverters
 import com.demo.carspends.data.database.note.NoteDao
 import com.demo.carspends.data.database.note.NoteItemDbModel
+import com.demo.carspends.data.database.pictures.PictureDao
+import com.demo.carspends.data.database.pictures.PictureDbModel
 
-@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class, CarItemDbModel::class], version = 12, exportSchema = false)
+@Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class, CarItemDbModel::class, PictureDbModel::class], version = 14, exportSchema = false)
 @TypeConverters(DbConverters::class)
 abstract class MainDataBase: RoomDatabase() {
 
@@ -34,7 +36,7 @@ abstract class MainDataBase: RoomDatabase() {
                         MainDataBase::class.java,
                         DB_NAME
                     )
-                        .addMigrations(MIGRATION_9_10, MIGRATION_10_12)
+                        .addMigrations(MIGRATION_9_10, MIGRATION_10_12, MIGRATION_13_14)
                         .build()
                 db = instance
                 return instance
@@ -65,6 +67,14 @@ abstract class MainDataBase: RoomDatabase() {
                 };
             }
         }
+
+        private val MIGRATION_13_14: Migration = object : Migration(13, 14) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                with(database) {
+                    execSQL("ALTER TABLE pictures_table ADD COLUMN uri TEXT DEFAULT '' NOT NULL")
+                };
+            }
+        }
     }
 
     abstract fun noteDao(): NoteDao
@@ -72,4 +82,6 @@ abstract class MainDataBase: RoomDatabase() {
     abstract fun componentDao(): ComponentDao
 
     abstract fun carDao(): CarDao
+
+    abstract fun pictureDao(): PictureDao
 }

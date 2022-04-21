@@ -50,7 +50,7 @@
         app:layout_constraintStart_toEndOf="@+id/ni_iv_background"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.demo.carspends.utils.ui.ExtendedTextView
+        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
             android:id="@+id/ni_tv_title"
             style="@style/itemTitleText"
             android:layout_width="0dp"
@@ -67,7 +67,7 @@
             tools:text="Заправка" />
 
         <!--Добавить стиль для "цена"-->
-        <com.demo.carspends.utils.ui.ExtendedTextView
+        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
             android:id="@+id/ni_tv_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
             tools:text="2000.10P" />
 
         <!--Добавить стиль для "доп. информация"-->
-        <com.demo.carspends.utils.ui.ExtendedTextView
+        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
             android:id="@+id/ni_tv_extra_info"
             style="@style/extraInfoText"
             android:layout_width="0dp"

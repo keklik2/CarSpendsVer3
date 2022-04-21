@@ -6,14 +6,14 @@ import androidx.room.*
 interface CarDao {
 
     @Query("SELECT * FROM cars ORDER BY id DESC")
-    suspend fun getCarsList(): List<CarItemDbModel>
+    suspend fun getCars(): List<CarItemDbModel>
 
     @Query("SELECT * FROM cars WHERE id == :requestedId LIMIT 1")
-    suspend fun getCarById(requestedId: Int): CarItemDbModel
+    suspend fun getCar(requestedId: Int): CarItemDbModel
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCar(carItemDbModel: CarItemDbModel)
+    suspend fun insert(carItemDbModel: CarItemDbModel)
 
     @Delete
-    suspend fun deleteCar(carItemDbModel: CarItemDbModel)
+    suspend fun delete(carItemDbModel: CarItemDbModel)
 }

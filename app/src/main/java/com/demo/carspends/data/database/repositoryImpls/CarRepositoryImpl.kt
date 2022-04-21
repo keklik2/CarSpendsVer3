@@ -15,20 +15,20 @@ class CarRepositoryImpl @Inject constructor(
 ) : CarRepository {
 
     override suspend fun addCarItemUseCase(carItem: CarItem) {
-            carDao.insertCar(mapper.mapEntityToCarItemDbModel(carItem))
+            carDao.insert(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun deleteCarItemUseCase(carItem: CarItem) {
-            carDao.deleteCar(mapper.mapEntityToCarItemDbModel(carItem))
+            carDao.delete(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun editCarItemUseCase(carItem: CarItem) {
-            carDao.insertCar(mapper.mapEntityToCarItemDbModel(carItem))
+            carDao.insert(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun getCarItemsListUseCase(): List<CarItem> = withContext(Dispatchers.IO) {
         try {
-            val list = carDao.getCarsList()
+            val list = carDao.getCars()
             list.map {
                 mapper.mapCarItemDbModelToEntity(it)
             }
@@ -40,7 +40,7 @@ class CarRepositoryImpl @Inject constructor(
 
     override suspend fun getCarItemUseCase(id: Int): CarItem = withContext(Dispatchers.IO) {
         try {
-            mapper.mapCarItemDbModelToEntity(carDao.getCarById(id))
+            mapper.mapCarItemDbModelToEntity(carDao.getCar(id))
         } catch (e: Exception) {
             throw e
         }

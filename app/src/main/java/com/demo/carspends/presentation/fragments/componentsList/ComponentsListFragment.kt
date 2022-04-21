@@ -12,7 +12,7 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 
@@ -49,7 +49,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                     skeleton.showOriginal()
 
                     mainAdapter.submitList(it.data.map
-                    { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
+                        { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
                     )
                     binding.clfTvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE

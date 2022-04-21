@@ -11,7 +11,7 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule
