@@ -1,4 +1,4 @@
-package com.demo.carspends.data
+package com.demo.carspends.data.database
 
 import android.content.Context
 import androidx.room.Database
@@ -7,13 +7,13 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.demo.carspends.data.car.CarDao
-import com.demo.carspends.data.car.CarItemDbModel
-import com.demo.carspends.data.component.ComponentDao
-import com.demo.carspends.data.component.ComponentItemDbModel
-import com.demo.carspends.data.mapper.DbConverters
-import com.demo.carspends.data.note.NoteDao
-import com.demo.carspends.data.note.NoteItemDbModel
+import com.demo.carspends.data.database.car.CarDao
+import com.demo.carspends.data.database.car.CarItemDbModel
+import com.demo.carspends.data.database.component.ComponentDao
+import com.demo.carspends.data.database.component.ComponentItemDbModel
+import com.demo.carspends.data.database.mapper.DbConverters
+import com.demo.carspends.data.database.note.NoteDao
+import com.demo.carspends.data.database.note.NoteItemDbModel
 
 @Database(entities = [NoteItemDbModel::class, ComponentItemDbModel::class, CarItemDbModel::class], version = 12, exportSchema = false)
 @TypeConverters(DbConverters::class)

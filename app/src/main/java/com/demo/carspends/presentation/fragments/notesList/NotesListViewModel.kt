@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
@@ -13,13 +14,17 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.DeleteNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
+import com.demo.carspends.domain.settings.GetSettingValueUseCase
+import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
+import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
 import me.aartikov.sesame.loading.simple.refresh
+import me.aartikov.sesame.loading.simple.state
 import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
@@ -35,13 +40,16 @@ class NotesListViewModel @Inject constructor(
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val editCarItemUseCase: EditCarItemUseCase,
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
+    private val getSettingValueUseCase: GetSettingValueUseCase,
     private val router: Router,
-    app: Application
+    private val app: Application
 ) : AndroidViewModel(app), PropertyHost {
 
     var carTitle by state(EMPTY_STR)
     var statisticsField1 by state(EMPTY_STR)
     var statisticsField2 by state(EMPTY_STR)
+    var statisticsField1Img by state(R.drawable.ic_baseline_local_gas_station_24)
+    var statisticsField2Img by state(R.drawable.ic_baseline_currency_ruble_24)
 
     private var noteType: NoteType? by state(null)
     private var noteDate: Long by state(ALL_TIME)
@@ -51,6 +59,7 @@ class NotesListViewModel @Inject constructor(
 
     private fun goToCarAddFragment() = router.replaceScreen(Screens.CarEditOrAdd())
     fun goToCarEditFragment() = router.navigateTo(Screens.CarEditOrAdd(_carId))
+    fun goToSettingsFragment() = router.navigateTo(Screens.Settings())
     fun goToNoteAddOrEditFragment(noteType: NoteType) {
         when (noteType) {
             NoteType.FUEL -> router.navigateTo(Screens.NoteFilling(_carId))
@@ -75,7 +84,8 @@ class NotesListViewModel @Inject constructor(
 
     private val _notesListLoading = OrdinaryLoading(
         viewModelScope,
-        load = { getNoteItemsListUseCase.invoke(noteType, noteDate)
+        load = {
+            getNoteItemsListUseCase.invoke(noteType, noteDate)
         }
     )
     val notesListState by stateFromFlow(_notesListLoading.stateFlow)
@@ -93,21 +103,15 @@ class NotesListViewModel @Inject constructor(
                         _carId = car.id
                     } else goToCarAddFragment()
                 }
-                is Loading.State.Error -> goToCarAddFragment()
+                is Loading.State.Empty -> goToCarAddFragment()
                 else -> {}
             }
         }
 
         autorun(::_carItem) {
             it?.let {
-                statisticsField1 = String.format(
-                    app.getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.momentFuel)
-                )
-                statisticsField2 = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.milPrice)
-                )
+                statisticsField1 = getStatistic1Field(it)
+                statisticsField2 = getStatistic2Field(it)
                 carTitle = it.title
             }
         }
@@ -143,7 +147,7 @@ class NotesListViewModel @Inject constructor(
         }
     }
 
-    private  fun calculateAllFuelPrice(note: NoteItem) {
+    private fun calculateAllFuelPrice(note: NoteItem) {
         _carItem?.let {
             val price = it.fuelPrice - note.totalPrice
             val finalAllFuelPrice =
@@ -298,13 +302,127 @@ class NotesListViewModel @Inject constructor(
         }
     }
 
+    private fun getStatistic1Field(car: CarItem): String {
+        return when (getSettingValueUseCase(SettingsRepository.SETTING_STATISTIC_ONE)) {
+            SettingsRepository.STATISTIC_AVG_FUEL -> {
+                statisticsField1Img = IMG_FUEL_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.avgFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_MOMENT_FUEL -> {
+                statisticsField1Img = IMG_FUEL_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.momentFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_ALL_FUEL -> {
+                statisticsField1Img = IMG_FUEL_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_gas_volume_unit_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.allFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_FUEL_PRICE -> {
+                statisticsField1Img = IMG_FUEL_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.fuelPrice)
+                )
+            }
+            SettingsRepository.STATISTIC_MILEAGE_PRICE -> {
+                statisticsField1Img = IMG_RUBLE_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.milPrice)
+                )
+            }
+            SettingsRepository.STATISTIC_ALL_PRICE -> {
+                statisticsField1Img = IMG_RUBLE_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.allPrice)
+                )
+            }
+            else -> {
+                statisticsField1Img = IMG_GEO_LOCATION_WHITE
+                String.format(
+                    app.getString(R.string.text_measure_mileage_unit_for_formatting),
+                    getFormattedIntAsStrForDisplay(car.allMileage)
+                )
+            }
+        }
+    }
+
+    private fun getStatistic2Field(car: CarItem): String {
+        return when (getSettingValueUseCase(SettingsRepository.SETTING_STATISTIC_TWO)) {
+            SettingsRepository.STATISTIC_AVG_FUEL -> {
+                statisticsField2Img = IMG_FUEL
+                String.format(
+                    app.getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.avgFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_MOMENT_FUEL -> {
+                statisticsField2Img = IMG_FUEL
+                String.format(
+                    app.getString(R.string.text_measure_gas_charge_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.momentFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_ALL_FUEL -> {
+                statisticsField2Img = IMG_FUEL
+                String.format(
+                    app.getString(R.string.text_measure_gas_volume_unit_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.allFuel)
+                )
+            }
+            SettingsRepository.STATISTIC_FUEL_PRICE -> {
+                statisticsField2Img = IMG_FUEL
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.fuelPrice)
+                )
+            }
+            SettingsRepository.STATISTIC_MILEAGE_PRICE -> {
+                statisticsField2Img = IMG_RUBLE
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.milPrice)
+                )
+            }
+            SettingsRepository.STATISTIC_ALL_PRICE -> {
+                statisticsField2Img = IMG_RUBLE
+                String.format(
+                    app.getString(R.string.text_measure_currency_for_formatting),
+                    getFormattedDoubleAsStrForDisplay(car.allPrice)
+                )
+            }
+            else -> {
+                statisticsField2Img = IMG_GEO_LOCATION
+                String.format(
+                    app.getString(R.string.text_measure_mileage_unit_for_formatting),
+                    getFormattedIntAsStrForDisplay(car.allMileage)
+                )
+            }
+        }
+    }
+
     companion object {
+        private const val IMG_FUEL = R.drawable.ic_baseline_local_gas_station_24
+        private const val IMG_FUEL_WHITE = R.drawable.ic_baseline_local_gas_station_24_white
+        private const val IMG_RUBLE = R.drawable.ic_baseline_currency_ruble_24
+        private const val IMG_RUBLE_WHITE = R.drawable.ic_baseline_currency_ruble_white_24
+        private const val IMG_GEO_LOCATION = R.drawable.ic_baseline_location_on_24
+        private const val IMG_GEO_LOCATION_WHITE = R.drawable.ic_baseline_location_on_white_24
+
         private const val ALL_TIME = 0L
         private const val START_MIL = 0
         private const val START_AVG = 0.0
 
         private const val EMPTY_STR = ""
-        private const val UNDEFINED_ID = -1
     }
 
     override val propertyHostScope: CoroutineScope

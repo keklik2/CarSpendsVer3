@@ -50,7 +50,7 @@
         app:layout_constraintStart_toEndOf="@+id/ci_layout_left_mileage"
         app:layout_constraintEnd_toStartOf="@id/ci_tv_date">
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/ci_tv_title"
             style="@style/itemTitleText"
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
             app:layout_constraintBottom_toTopOf="@+id/ci_tv_resource"
             tools:text="Свечи" />
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/ci_tv_resource"
             style="@style/extraInfoText"
             android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ci_tv_resource_statement"/>
 
-        <TextView
+        <com.demo.carspends.utils.ui.ExtendedTextView
             android:id="@+id/ci_tv_resource_statement"
             style="@style/resourceStatementText"
             android:layout_width="0dp"

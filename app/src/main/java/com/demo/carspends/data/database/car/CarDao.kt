@@ -1,6 +1,5 @@
-package com.demo.carspends.data.car
+package com.demo.carspends.data.database.car
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao

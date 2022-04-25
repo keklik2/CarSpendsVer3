@@ -1,6 +1,6 @@
-package com.demo.carspends.data.mapper
+package com.demo.carspends.data.database.mapper
 
-import com.demo.carspends.data.note.NoteItemDbModel
+import com.demo.carspends.data.database.note.NoteItemDbModel
 import com.demo.carspends.domain.note.NoteItem
 import javax.inject.Inject
 
