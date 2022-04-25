@@ -27,6 +27,7 @@ object PictureAdapter {
                 vh.binding.ibDelete.setOnClickListener {
                     onItemDeleteFunc?.invoke(item)
                 }
+
                 val bmp: Bitmap = try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                         ImageDecoder.decodeBitmap(

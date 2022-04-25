@@ -3,6 +3,7 @@ package com.demo.carspends.utils
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.view.View
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -53,4 +54,10 @@ fun Uri.getOriginalFileName(context: Context): String? {
     } catch (t: Throwable) {
         path!!.substringAfterLast('/', "")
     }
+}
+
+fun View.setVisibility(isVisible: Boolean) {
+    this.visibility =
+        if (isVisible) View.VISIBLE
+        else View.INVISIBLE
 }

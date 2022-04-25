@@ -59,14 +59,13 @@ class NoteRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             try {
                 delay(delay)
-                if (type != null) {
-                    noteDao.getNotes(type, date).map {
-                        mapper.mapNoteDbModelToEntity(it)
-                    }
+                val notes = if (type != null) {
+                    noteDao.getNotes(type, date)
                 } else {
-                    noteDao.getNotes(date).map {
-                        mapper.mapNoteDbModelToEntity(it)
-                    }
+                    noteDao.getNotes(date)
+                }
+                notes.map {
+                    mapper.mapNoteDbModelToEntity(it, pictureDao.hasPicture(it.id).isNotEmpty())
                 }
             } catch (e: Exception) {
                 throw e
@@ -118,24 +117,27 @@ class NoteRepositoryImpl @Inject constructor(
         return try {
             imageFolder.mkdirs()
             val file = File(imageFolder, picture.name)
-            val stream = FileOutputStream(file)
-            val img = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                ImageDecoder.decodeBitmap(
-                    ImageDecoder.createSource(
+            if (file.exists()) true
+            else {
+                val stream = FileOutputStream(file)
+                val img = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            app.contentResolver,
+                            picture.uri
+                        )
+                    )
+                } else {
+                    MediaStore.Images.Media.getBitmap(
                         app.contentResolver,
                         picture.uri
                     )
-                )
-            } else {
-                MediaStore.Images.Media.getBitmap(
-                    app.contentResolver,
-                    picture.uri
-                )
+                }
+                img?.compress(Bitmap.CompressFormat.JPEG, 80, stream)
+                stream.flush()
+                stream.close()
+                true
             }
-            img?.compress(Bitmap.CompressFormat.JPEG, 80, stream)
-            stream.flush()
-            stream.close()
-            true
         } catch (e: IOException) { false }
     }
 

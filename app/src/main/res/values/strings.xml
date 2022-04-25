@@ -106,6 +106,7 @@
     <string name="description_internal_picture">Добавленное из галереи изображение</string>
     <string name="description_internal_picture_delete">Кнопка удаления добавленного из галереи изображения</string>
     <string name="description_internal_picture_add">Кнопка добавления изображений из галереи</string>
+    <string name="description_note_has_pictures">Note has saved images</string>
 
     <!-- String Arrays for using in Code -->
     <string name="F92">АИ-92</string>
