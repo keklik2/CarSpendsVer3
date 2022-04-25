@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -18,6 +19,10 @@ import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule
 import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
 class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add_edit_fragment) {
@@ -68,9 +73,11 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
             ::nPrice bind { it?.let { it1 -> binding.neaefTietAmountValue.setText(it1) }  }
         }
     }
-    override fun setupPicturesRecyclerViewBind() = viewModel::pictures bind {
+    override fun setupPicturesRecyclerViewBind() {
         binding.picturesRv.adapter = pictureAdapter
-        pictureAdapter.submitList(it)
+        viewModel::pictures bind {
+            pictureAdapter.submitList(it)
+        }
     }
 
 

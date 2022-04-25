@@ -1,6 +1,7 @@
 package com.demo.carspends.utils.ui.baseViewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -41,28 +42,32 @@ abstract class NoteAddOrEditViewModel(
 
     init {
         autorun(::noteId) {
-            if (it != null && it > 0) {
-                withScope {
-                    val map = getNoteItemUseCase(it)
-                    noteItem = map.keys.firstOrNull()
-                    pictures =
-                        if(noteItem != null) map[noteItem]?.toMutableList() ?: mutableListOf()
-                        else mutableListOf()
+            withScope {
+                if (it != null && it > 0) {
+                    withScope {
+                        val map = getNoteItemUseCase(it)
+                        noteItem = map.keys.firstOrNull()
+                        pictures =
+                            if(noteItem != null) map[noteItem]?.toMutableList() ?: mutableListOf()
+                            else mutableListOf()
+                    }
                 }
-            }
-            else {
-                noteItem = null
-                nDate = getCurrentDate()
+                else {
+                    noteItem = null
+                    nDate = getCurrentDate()
+                }
             }
         }
 
         autorun(::carId) {
-            if (it != null) {
-                withScope {
-                    carItem = getCarItemUseCase(it)
+            withScope {
+                if (it != null) {
+                    withScope {
+                        carItem = getCarItemUseCase(it)
+                    }
                 }
+                else carItem = null
             }
-            else carItem = null
         }
     }
 
