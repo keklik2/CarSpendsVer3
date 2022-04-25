@@ -5,8 +5,8 @@ import com.demo.carspends.data.database.note.NoteDao
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteRepository
 import com.demo.carspends.domain.note.NoteType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.demo.carspends.utils.MIN_LOADING_DELAY
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class NoteRepositoryImpl @Inject constructor(
@@ -26,27 +26,33 @@ class NoteRepositoryImpl @Inject constructor(
         noteDao.insertNote(mapper.mapEntityToNoteDbModel(noteItem))
     }
 
-    override suspend fun getNoteItemsListUseCase(date: Long): List<NoteItem> {
+    override suspend fun getNoteItemsListUseCase(delay: Long, date: Long): List<NoteItem> {
         return noteDao.getNotesList(date).map {
-                mapper.mapNoteDbModelToEntity(it)
-            }
-    }
-
-    override suspend fun getNoteItemsListUseCase(type: NoteType?, date: Long): List<NoteItem> = withContext(Dispatchers.IO) {
-        try {
-            if (type != null) {
-                noteDao.getNotesList(type, date).map {
-                    mapper.mapNoteDbModelToEntity(it)
-                }
-            } else {
-                noteDao.getNotesList(date).map {
-                    mapper.mapNoteDbModelToEntity(it)
-                }
-            }
-        } catch (e: Exception) {
-            throw e
+            mapper.mapNoteDbModelToEntity(it)
         }
     }
+
+    override suspend fun getNoteItemsListUseCase(
+        delay: Long,
+        type: NoteType?,
+        date: Long
+    ): List<NoteItem> =
+        withContext(Dispatchers.IO) {
+            try {
+                delay(delay)
+                if (type != null) {
+                    noteDao.getNotesList(type, date).map {
+                        mapper.mapNoteDbModelToEntity(it)
+                    }
+                } else {
+                    noteDao.getNotesList(date).map {
+                        mapper.mapNoteDbModelToEntity(it)
+                    }
+                }
+            } catch (e: Exception) {
+                throw e
+            }
+        }
 
     override suspend fun getNoteItemsListByMileageUseCase(): List<NoteItem> {
         return noteDao.getNotesListByMileage().map {
