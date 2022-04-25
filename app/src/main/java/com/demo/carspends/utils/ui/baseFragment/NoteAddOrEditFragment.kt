@@ -3,6 +3,7 @@ package com.demo.carspends.utils.ui.baseFragment
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -76,17 +77,16 @@ abstract class NoteAddOrEditFragment(layout: Int) :
 
     private val readStoragePermission =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { granted ->
-                val anyNotGranted = granted.values.contains(false)
-                if (!anyNotGranted) picturesPicker.launch(null)
-                else {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle(R.string.dialog_permission_title)
-                        .setMessage(getString(R.string.dialog_permission_denied))
-                        .setNeutralButton(R.string.button_apply) { _, _ -> }
-                        .show()
-                }
+            val anyNotGranted = granted.values.contains(false)
+            if (!anyNotGranted) picturesPicker.launch(null)
+            else {
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.dialog_permission_title)
+                    .setMessage(getString(R.string.dialog_permission_denied))
+                    .setNeutralButton(R.string.button_apply) { _, _ -> }
+                    .show()
             }
-
+        }
 
 
     override fun onFileSelected(uriList: List<Uri>?) {
@@ -112,10 +112,11 @@ abstract class NoteAddOrEditFragment(layout: Int) :
         return false
     }
 
-    private fun intentView(data: Uri): Intent = Intent(Intent.ACTION_VIEW).apply {
-        setDataAndType(data, "image/*")
-        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-    }
+    private fun intentView(data: Uri): Intent =
+        Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(data, "image/*")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
 
     companion object {
         private const val UNNAMED_FILE = R.string.unnamed

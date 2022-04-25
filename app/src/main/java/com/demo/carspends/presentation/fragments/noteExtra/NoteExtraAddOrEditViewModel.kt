@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.noteExtra
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
@@ -8,15 +9,17 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.*
 import com.demo.carspends.domain.picture.DeletePictureUseCase
-import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorString
+import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.max
+
 
 class NoteExtraAddOrEditViewModel @Inject constructor(
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
@@ -26,7 +29,7 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     editCarItemUseCase: EditCarItemUseCase,
     deletePictureUseCase: DeletePictureUseCase,
     router: Router,
-    app: Application
+    private val app: Application
 ) : NoteAddOrEditViewModel(
     getCarItemUseCase,
     editCarItemUseCase,
@@ -42,11 +45,13 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
 
     init {
         autorun(::noteItem) {
-            if (it != null) {
-                nTitle = it.title
-                nPrice = it.totalPrice.toString()
-                nDate = it.date
-            } else nDate = getCurrentDate()
+            withScope {
+                if (it != null) {
+                    nTitle = it.title
+                    nPrice = it.totalPrice.toString()
+                    nDate = it.date
+                } else nDate = getCurrentDate()
+            }
         }
     }
 
