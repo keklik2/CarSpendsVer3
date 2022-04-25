@@ -35,7 +35,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     }
 
     private val titleValidation by lazy {
-        validation(binding.caefTilName) {
+        validation(binding.tilName) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_TITLE)
                 +NotBlankRule(ERR_BLANK_TITLE)
@@ -43,7 +43,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         }
     }
     private val mileageValidation by lazy {
-        validation(binding.caefTilMileageValue) {
+        validation(binding.tilMileageValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_MILEAGE)
                 +NotBlankRule(ERR_BLANK_MILEAGE)
@@ -51,7 +51,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         }
     }
     private val resourceValidation by lazy {
-        validation(binding.caefTilResourceValue) {
+        validation(binding.tilResourceValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_RESOURCE)
                 +NotBlankRule(ERR_BLANK_RESOURCE)
@@ -63,13 +63,13 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     /**
      * Bind methods are to make fragment observe values from viewModel
      */
-    private fun setupDateBind() = viewModel::cDate bind { binding.caefTvDateValue.text = getFormattedDate(it) }
+    private fun setupDateBind() = viewModel::cDate bind { binding.dateIb.text = getFormattedDate(it) }
     private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
     private fun setupFieldsBind() {
         with(viewModel) {
-            ::cTitle bind { it?.let { binding.caefTietName.setText(it) } }
-            ::cResourceMileage bind { it?.let { binding.caefTietResourceValue.setText(it) } }
-            ::cStartMileage bind { it?.let { binding.caefTietMileageValue.setText(it) } }
+            ::cTitle bind { it?.let { binding.tietName.setText(it) } }
+            ::cResourceMileage bind { it?.let { binding.tietResourceValue.setText(it) } }
+            ::cStartMileage bind { it?.let { binding.tietMileageValue.setText(it) } }
         }
     }
 
@@ -88,7 +88,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
                 viewModel.cDate = cal.time.time
             }
 
-        binding.caefDateLayout.setOnClickListener {
+        binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
                 timeInMillis = viewModel.cDate
             }
@@ -102,7 +102,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.caefTietName.addTextChangedListener {
+        binding.tietName.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -114,7 +114,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     }
 
     private fun setupAmountTextChangeListener() {
-        binding.caefTietResourceValue.addTextChangedListener {
+        binding.tietResourceValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -126,7 +126,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.caefTietMileageValue.addTextChangedListener {
+        binding.tietMileageValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -138,15 +138,15 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     }
 
     private fun setupOnAcceptButtonClickListener() {
-        binding.caefButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
                             viewModel.addOrEditComponentItem(
-                                caefTietName.text.toString(),
-                                caefTietResourceValue.text.toString(),
-                                caefTietMileageValue.text.toString()
+                                tietName.text.toString(),
+                                tietResourceValue.text.toString(),
+                                tietMileageValue.text.toString()
                             )
                         }
                     }

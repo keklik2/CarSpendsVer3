@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/nis_iv_tool"
+        android:id="@+id/iv_tool"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
@@ -21,38 +21,38 @@
         app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
     <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-        android:id="@+id/nis_tv_title"
+        android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="15dp"
         android:layout_margin="8dp"
 
-        app:layout_constraintBottom_toTopOf="@+id/nis_tv_amount"
-        app:layout_constraintEnd_toStartOf="@+id/nis_tv_date"
-        app:layout_constraintStart_toEndOf="@+id/nis_iv_tool"
+        app:layout_constraintBottom_toTopOf="@+id/tv_amount"
+        app:layout_constraintEnd_toStartOf="@+id/tv_date"
+        app:layout_constraintStart_toEndOf="@+id/iv_tool"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--Добавить стиль для "цена"-->
     <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-        android:id="@+id/nis_tv_amount"
+        android:id="@+id/tv_amount"
         android:layout_width="100dp"
         android:layout_height="5dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nis_iv_tool"
-        app:layout_constraintTop_toBottomOf="@+id/nis_tv_title" />
+        app:layout_constraintStart_toEndOf="@+id/iv_tool"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <!--Добавить стиль для "дата"-->
     <TextView
-        android:id="@+id/nis_tv_date"
+        android:id="@+id/tv_date"
         android:layout_width="40dp"
         android:layout_height="5dp"
         android:layout_margin="8dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/nis_tv_title"
+        app:layout_constraintStart_toEndOf="@+id/tv_title"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/nlf_cv_car_name"
+        android:id="@+id/cv_car_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/nlf_car_info_layout"
+            android:id="@+id/car_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -29,169 +29,88 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5" />
 
-            <RelativeLayout
-                android:id="@+id/nlf_car_title"
+            <TextView
+                android:id="@+id/tv_car_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@+id/nlf_car_info_layout"
-                app:layout_constraintStart_toStartOf="@+id/nlf_car_info_layout"
-                app:layout_constraintTop_toTopOf="@+id/nlf_car_info_layout">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                android:layout_margin="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="center"
 
-                    <TextView
-                        android:id="@+id/nlf_tv_car_title"
-                        style="@style/carTitleText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="8dp"
-                        android:maxLines="1"
-                        android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
 
-                        android:textAlignment="center"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Chevrolet Lacetti" />
+                style="@style/carTitleText"
+                tools:text="Chevrolet Lacetti" />
 
-                    <ImageView
-                        android:id="@+id/nlf_iv_settings"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
+            <ImageView
+                android:id="@+id/iv_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
 
-                        android:contentDescription="@string/description_img_car_menu"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_car_title"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_car_title"
+                app:layout_constraintEnd_toEndOf="@+id/tv_car_title"
 
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_round_settings_24" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </RelativeLayout>
+                android:contentDescription="@string/description_img_car_menu"
+                app:srcCompat="@drawable/ic_round_settings_24" />
 
             <View
-                android:id="@+id/nlf_statistics_background"
+                android:id="@+id/statistics_background"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
 
-                app:layout_constraintTop_toTopOf="@+id/nlf_layout_fuel_statistics"
-                app:layout_constraintBottom_toBottomOf="@+id/nlf_layout_fuel_statistics"
-                app:layout_constraintStart_toStartOf="@+id/nlf_layout_fuel_statistics"
-                app:layout_constraintEnd_toEndOf="@+id/nlf_layout_cost_statistics"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_statistics_1"
+                app:layout_constraintEnd_toEndOf="@+id/tv_statistics_2"
+                app:layout_constraintStart_toStartOf="@+id/tv_statistics_1"
+                app:layout_constraintTop_toTopOf="@+id/tv_statistics_1"
 
-                android:background="@drawable/rounded_rectangle_white"
-                />
+                android:background="@drawable/rounded_rectangle_white">
 
-            <RelativeLayout
-                android:id="@+id/nlf_layout_fuel_statistics"
+            </View>
+
+            <TextView
+                android:id="@+id/tv_statistics_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+
                 android:background="@drawable/rounded_rectangle_dark_vine"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-
-                app:layout_constraintEnd_toStartOf="@+id/cv_guide_line"
+                app:layout_constraintTop_toBottomOf="@+id/tv_car_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/nlf_car_title"
-                app:layout_constraintBottom_toBottomOf="parent">
+                app:layout_constraintEnd_toStartOf="@+id/cv_guide_line"
+                app:layout_constraintBottom_toBottomOf="parent"
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp">
+                tools:text="10.3/100км"
 
-                    <ImageView
-                        android:id="@+id/nlf_iv_statistics_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_margin="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/entryUnitMainMenuText.White"
+                app:drawableStartCompat="@drawable/ic_baseline_local_gas_station_24_white" />
 
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintEnd_toStartOf="@+id/nlf_tv_statistics_1"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        app:srcCompat="@drawable/ic_baseline_local_gas_station_24_white" />
-
-                    <TextView
-                        android:id="@+id/nlf_tv_statistics_1"
-                        style="@style/entryUnitMainMenuText.White"
-                        android:layout_width="0dp"
-
-                        android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:ellipsize="end"
-                        android:maxLines="1"
-
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/nlf_iv_statistics_1"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        tools:text="10.3/100км" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/nlf_layout_cost_statistics"
+            <TextView
+                android:id="@+id/tv_statistics_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:padding="10dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+
+                app:layout_constraintTop_toBottomOf="@+id/tv_car_title"
                 app:layout_constraintStart_toEndOf="@+id/cv_guide_line"
-                app:layout_constraintTop_toBottomOf="@+id/nlf_car_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
 
-                android:layout_margin="8dp">
+                tools:text="29p"
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                style="@style/entryUnitMainMenuText"
+                app:drawableStartCompat="@drawable/ic_baseline_currency_ruble_24" />
 
-                    android:layout_marginStart="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginBottom="4dp">
-
-                    <ImageView
-                        android:id="@+id/nlf_iv_statistics_2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_margin="4dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-
-                        app:layout_constraintDimensionRatio="1:1"
-                        app:layout_constraintEnd_toStartOf="@+id/nlf_tv_statistics_2"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
-
-                    <TextView
-                        android:id="@+id/nlf_tv_statistics_2"
-                        style="@style/entryUnitMainMenuText"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_margin="4dp"
-
-                        android:ellipsize="end"
-                        android:maxLines="1"
-
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/nlf_iv_statistics_2"
-                        app:layout_constraintTop_toTopOf="parent"
-
-                        tools:text="6.3/км" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -203,64 +122,49 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <View
-        android:id="@+id/nlf_horizontal_div_line_1"
+        android:id="@+id/horizontal_div_line_1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="10dp"
         android:background="@color/light_light_vine"
-        app:layout_constraintTop_toBottomOf="@+id/nlf_cv_car_name" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_car_name" />
 
-    <RelativeLayout
-        android:id="@+id/nlf_layout_choose_note_type"
-        android:layout_width="0dp"
+    <Spinner
+        android:id="@+id/spinner_note_type"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+
+        android:entries="@array/note_type_values"
+        android:gravity="center"
+
         app:layout_constraintEnd_toStartOf="@+id/guide_line"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_1" />
 
-        app:layout_constraintTop_toBottomOf="@+id/nlf_horizontal_div_line_1">
-
-        <Spinner
-            android:id="@+id/nlf_spinner_note_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-
-            android:entries="@array/note_type_values" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/nlf_layout_choose_date"
-        android:layout_width="0dp"
+    <Spinner
+        android:id="@+id/spinner_date"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+
+        android:entries="@array/date_values"
+        android:gravity="center"
+
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/guide_line"
-
-        app:layout_constraintTop_toBottomOf="@+id/nlf_horizontal_div_line_1">
-
-        <Spinner
-            android:id="@+id/nlf_spinner_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-
-            android:entries="@array/date_values" />
-
-    </RelativeLayout>
+        app:layout_constraintStart_toEndOf="@id/guide_line"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_1"
+        />
 
     <View
-        android:id="@+id/nlf_horizontal_div_line_2"
+        android:id="@+id/horizontal_div_line_2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="3dp"
         android:background="@color/light_light_vine"
-        app:layout_constraintTop_toBottomOf="@+id/nlf_layout_choose_note_type" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_note_type" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/nlf_rv_notes"
+        android:id="@+id/rv_notes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
 
@@ -269,12 +173,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nlf_horizontal_div_line_2"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_2"
 
         tools:listitem="@layout/note_item" />
 
     <TextView
-        android:id="@+id/nlf_tv_empty_notes"
+        android:id="@+id/tv_empty_notes"
         style="@style/entryUnitMainMenuText"
         android:layout_width="match_parent"
 
@@ -283,10 +187,10 @@
 
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nlf_horizontal_div_line_2" />
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_2" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/nlf_fb_add_note"
+        android:id="@+id/fb_add_note"
         style="@style/floatingButton.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -298,7 +202,7 @@
         app:srcCompat="@drawable/ic_baseline_add_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/nlf_fb_add_extra"
+        android:id="@+id/fb_add_extra"
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -306,12 +210,12 @@
         android:contentDescription="@string/description_add_new_note_extra"
 
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_note"
+        app:layout_constraintBottom_toTopOf="@+id/fb_add_note"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_more_horiz_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/nlf_fb_add_repair"
+        android:id="@+id/fb_add_repair"
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -319,12 +223,12 @@
         android:contentDescription="@string/description_add_new_note_repair"
 
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_extra"
+        app:layout_constraintBottom_toTopOf="@+id/fb_add_extra"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_build_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/nlf_fb_add_filling"
+        android:id="@+id/fb_add_filling"
         style="@style/floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -332,7 +236,7 @@
         android:contentDescription="@string/description_add_new_note_filling"
 
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/nlf_fb_add_repair"
+        app:layout_constraintBottom_toTopOf="@+id/fb_add_repair"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

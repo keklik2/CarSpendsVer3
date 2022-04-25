@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/clf_rv_components"
+        android:id="@+id/rv_components"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -19,7 +19,7 @@
         />
 
     <TextView
-        android:id="@+id/clf_tv_empty_notes"
+        android:id="@+id/tv_empty_notes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
@@ -31,7 +31,7 @@
         android:text="@string/text_empty_note_or_component"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/clf_fb_add_component"
+        android:id="@+id/fb_add_component"
         style="@style/floatingButton.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

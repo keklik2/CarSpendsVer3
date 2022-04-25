@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="5dp"
-    android:paddingRight="10dp">
+    android:paddingEnd="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ni_iv_background"
+        android:id="@+id/iv_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -21,12 +21,12 @@
         android:layout_marginVertical="5dp"
         android:elevation="4dp"
 
-        app:layout_constraintEnd_toStartOf="@+id/ni_main_info_layout"
+        app:layout_constraintEnd_toStartOf="@+id/main_info_layout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/ni_iv_tool"
+            android:id="@+id/iv_tool"
             android:layout_width="20dp"
             android:layout_height="0dp"
             android:contentDescription="@string/description_img_tools"
@@ -41,34 +41,33 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ni_main_info_layout"
+        android:id="@+id/main_info_layout"
         android:layout_width="0dp"
         android:layout_height="0dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/has_pictures_image"
-        app:layout_constraintStart_toEndOf="@+id/ni_iv_background"
+        app:layout_constraintStart_toEndOf="@+id/iv_background"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ni_tv_title"
+            android:id="@+id/tv_title"
             style="@style/itemTitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
             android:ellipsize="end"
 
             android:maxLines="1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/ni_tv_amount"
+            app:layout_constraintBottom_toTopOf="@+id/tv_amount"
 
             tools:text="Заправка" />
 
         <!--Добавить стиль для "цена"-->
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ni_tv_amount"
+            android:id="@+id/tv_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -76,16 +75,16 @@
             android:ellipsize="end"
             android:maxLines="1"
 
-            app:layout_constraintTop_toBottomOf="@+id/ni_tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ni_tv_extra_info"
+            app:layout_constraintEnd_toStartOf="@+id/tv_extra_info"
             app:layout_constraintBottom_toBottomOf="parent"
 
             tools:text="2000.10P" />
 
         <!--Добавить стиль для "доп. информация"-->
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ni_tv_extra_info"
+            android:id="@+id/tv_extra_info"
             style="@style/extraInfoText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -96,8 +95,8 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ni_tv_amount"
-            app:layout_constraintTop_toBottomOf="@+id/ni_tv_title"
+            app:layout_constraintStart_toEndOf="@+id/tv_amount"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
 
             tools:text="(95й, 41.6л)" />
         <!--Добавить стиль для "заголовков"-->
@@ -114,10 +113,10 @@
         android:layout_marginEnd="8dp"
         android:scaleType="centerCrop"
 
-        app:layout_constraintStart_toEndOf="@+id/ni_main_info_layout"
-        app:layout_constraintTop_toTopOf="@+id/ni_tv_date"
-        app:layout_constraintEnd_toStartOf="@+id/ni_tv_date"
-        app:layout_constraintBottom_toBottomOf="@+id/ni_tv_date"
+        app:layout_constraintStart_toEndOf="@+id/main_info_layout"
+        app:layout_constraintTop_toTopOf="@+id/tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/tv_date"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_date"
 
 
         android:src="@drawable/ic_outline_photo_camera_24"
@@ -125,7 +124,7 @@
         android:contentDescription="@string/description_note_has_pictures" />
 
     <TextView
-        android:id="@+id/ni_tv_date"
+        android:id="@+id/tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 

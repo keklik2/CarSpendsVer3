@@ -30,23 +30,23 @@ object ComponentItemAdapter {
                     viewHolder.binding.apply {
                         with(item.componentItem) {
                             with(item) {
-                                ciPbLeftMileage.progress = leftResourcePercent
-                                ciTvLeftMileage.text =
+                                pbLeftMileage.progress = leftResourcePercent
+                                tvLeftMileage.text =
                                     getFormattedPercentsAsStr(leftResourcePercent)
-                                ciTvTitle.text = title
+                                tvTitle.text = title
 
                                 // Setting resource statement value & color
-                                ciTvResourceStatement.text = String.format(
+                                tvResourceStatement.text = String.format(
                                     root.context.getString(R.string.text_measure_mileage_unit_for_formatting),
                                     getFormattedIntAsStrForDisplay(leftResourceValue)
                                 )
-                                ciTvResourceStatement.setTextColor(
+                                tvResourceStatement.setTextColor(
                                     getColor(
                                         root.context,
                                         resourceColorId
                                     )
                                 )
-                                ciTvDate.text = getFormattedDate(date)
+                                tvDate.text = getFormattedDate(date)
                             }
                         }
                     }

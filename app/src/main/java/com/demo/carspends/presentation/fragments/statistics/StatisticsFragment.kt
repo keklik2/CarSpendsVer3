@@ -22,13 +22,13 @@ class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
-                ::sAvgFuel bind { sfTvAvgFuel.text = it }
-                ::sMomentFuel bind { sfTvMomentFuel.text = it }
-                ::sAllFuel bind { sfTvAllFuel.text = it }
-                ::sFuelPrice bind { sfTvAllFuelPrice.text = it }
-                ::sMileagePrice bind { sfTvMileagePrice.text = it }
-                ::sAllPrice bind { sfTvAllPrice.text = it }
-                ::sAllMileage bind { sfTvAllMileage.text = it }
+                ::sAvgFuel bind { tvAvgFuel.text = it }
+                ::sMomentFuel bind { tvMomentFuel.text = it }
+                ::sAllFuel bind { tvAllFuel.text = it }
+                ::sFuelPrice bind { tvAllFuelPrice.text = it }
+                ::sMileagePrice bind { tvMileagePrice.text = it }
+                ::sAllPrice bind { tvAllPrice.text = it }
+                ::sAllMileage bind { tvAllMileage.text = it }
             }
         }
     }

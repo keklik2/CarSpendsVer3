@@ -39,8 +39,8 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
 
     private fun setupComponentsBind() {
-        binding.clfRvComponents.adapter = mainAdapter
-        val skeleton = binding.clfRvComponents.applySkeleton(R.layout.note_item_skeleton)
+        binding.rvComponents.adapter = mainAdapter
+        val skeleton = binding.rvComponents.applySkeleton(R.layout.note_item_skeleton)
         skeleton.showSkeleton()
 
         viewModel::componentsListState bind {
@@ -51,7 +51,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                     mainAdapter.submitList(it.data.map
                         { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
                     )
-                    binding.clfTvEmptyNotes.visibility =
+                    binding.tvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
                 }
@@ -59,7 +59,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                 else -> {
                     skeleton.showOriginal()
 
-                    binding.clfTvEmptyNotes.visibility = View.VISIBLE
+                    binding.tvEmptyNotes.visibility = View.VISIBLE
                     mainAdapter.submitList(emptyList())
                 }
             }
@@ -67,7 +67,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
 
     private fun setupAddComponentButtonListener() {
-        binding.clfFbAddComponent.setOnClickListener {
+        binding.fbAddComponent.setOnClickListener {
             viewModel.goToComponentAddOrEdit()
         }
     }
@@ -85,7 +85,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem =
                     mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
-                binding.clfRvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
+                binding.rvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.dialog_delete_title)
                     .setMessage(
@@ -103,11 +103,11 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         }
 
         val itemTouchHelper = ItemTouchHelper(callback)
-        itemTouchHelper.attachToRecyclerView(binding.clfRvComponents)
+        itemTouchHelper.attachToRecyclerView(binding.rvComponents)
     }
 
     private fun setupRecyclerScrollListener() {
-        binding.clfRvComponents.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.rvComponents.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) if (isFLBAddComponentShown()) setFLBAddComponentVisibility(false)
@@ -116,11 +116,11 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         })
     }
 
-    private fun isFLBAddComponentShown(): Boolean = binding.clfFbAddComponent.isVisible
+    private fun isFLBAddComponentShown(): Boolean = binding.fbAddComponent.isVisible
 
     private fun setFLBAddComponentVisibility(visible: Boolean) {
-        if (visible) binding.clfFbAddComponent.show()
-        else binding.clfFbAddComponent.hide()
+        if (visible) binding.fbAddComponent.show()
+        else binding.fbAddComponent.hide()
     }
 
     override fun onAttach(context: Context) {
