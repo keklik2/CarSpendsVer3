@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class NoteMapper @Inject constructor(){
 
-    fun mapNoteDbModelToEntity(noteItemDbModel: NoteItemDbModel): NoteItem = NoteItem(
+    fun mapNoteDbModelToEntity(noteItemDbModel: NoteItemDbModel, hasPictures: Boolean = false): NoteItem = NoteItem(
         noteItemDbModel.id,
         noteItemDbModel.title,
         noteItemDbModel.totalPrice,
@@ -15,7 +15,8 @@ class NoteMapper @Inject constructor(){
         noteItemDbModel.mileage,
         noteItemDbModel.date,
         noteItemDbModel.type,
-        noteItemDbModel.fuelType
+        noteItemDbModel.fuelType,
+        hasPictures
     )
 
     fun mapEntityToNoteDbModel(entity: NoteItem): NoteItemDbModel {
