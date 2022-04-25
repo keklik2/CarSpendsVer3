@@ -14,7 +14,8 @@ data class NoteItem (
     val mileage: Int = UNDEFINED_INT,
     val date: Long,
     val type: NoteType,
-    val fuelType: Fuel = UNDEFINED_FUEL_TYPE
+    val fuelType: Fuel = UNDEFINED_FUEL_TYPE,
+    val hasPictures: Boolean = false
 ) : Parcelable {
 
     companion object {

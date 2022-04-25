@@ -46,7 +46,7 @@
         android:layout_height="0dp"
 
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/ni_tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/has_pictures_image"
         app:layout_constraintStart_toEndOf="@+id/ni_iv_background"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -104,6 +104,26 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!--Добавить стиль для "дата"-->
+
+    <ImageView
+        android:id="@+id/has_pictures_image"
+        android:layout_width="15dp"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="1:1"
+        android:paddingTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintStart_toEndOf="@+id/ni_main_info_layout"
+        app:layout_constraintTop_toTopOf="@+id/ni_tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/ni_tv_date"
+        app:layout_constraintBottom_toBottomOf="@+id/ni_tv_date"
+
+
+        android:src="@drawable/ic_outline_photo_camera_24"
+        app:tint="@color/light_vine"
+        android:contentDescription="@string/description_note_has_pictures" />
+
     <TextView
         android:id="@+id/ni_tv_date"
         android:layout_width="wrap_content"
@@ -112,7 +132,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ni_main_info_layout"
+        app:layout_constraintStart_toEndOf="@+id/has_pictures_image"
 
         style="@style/dateText"
 

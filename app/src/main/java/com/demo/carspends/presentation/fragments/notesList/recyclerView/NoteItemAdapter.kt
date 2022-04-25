@@ -1,10 +1,12 @@
 package com.demo.carspends.presentation.fragments.notesList.recyclerView
 
+import android.view.View
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
+import com.demo.carspends.utils.setVisibility
 import me.ibrahimyilmaz.kiel.adapterOf
 
 object NoteItemAdapter {
@@ -35,6 +37,7 @@ object NoteItemAdapter {
                         )
                     }
                     niTvDate.text = getFormattedDate(item.date)
+                    hasPicturesImage.setVisibility(item.hasPictures)
                 }
             }
         )
