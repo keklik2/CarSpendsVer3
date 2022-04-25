@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
 
-    <com.demo.carspends.utils.ui.ExtendedTextView
+    <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
         android:id="@+id/nis_tv_title"
         android:layout_width="0dp"
         android:layout_height="15dp"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--Добавить стиль для "цена"-->
-    <com.demo.carspends.utils.ui.ExtendedTextView
+    <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
         android:id="@+id/nis_tv_amount"
         android:layout_width="100dp"
         android:layout_height="5dp"

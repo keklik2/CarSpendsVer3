@@ -4,7 +4,6 @@ import com.demo.carspends.data.database.component.ComponentDao
 import com.demo.carspends.data.database.mapper.ComponentMapper
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.ComponentRepository
-import com.demo.carspends.utils.MIN_LOADING_DELAY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -17,28 +16,28 @@ class ComponentRepositoryImpl @Inject constructor(
 ) : ComponentRepository {
 
     override suspend fun addComponentItemUseCase(component: ComponentItem) {
-        componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
+        componentDao.insert(mapper.mapEntityToComponentItemDbModel(component))
     }
 
     override suspend fun deleteComponentItemUseCase(component: ComponentItem) {
-        componentDao.deleteComponent(mapper.mapEntityToComponentItemDbModel(component))
+        componentDao.delete(mapper.mapEntityToComponentItemDbModel(component))
     }
 
     override suspend fun editComponentItemUseCase(component: ComponentItem) {
-        componentDao.insertComponent(mapper.mapEntityToComponentItemDbModel(component))
+        componentDao.insert(mapper.mapEntityToComponentItemDbModel(component))
     }
 
     override suspend fun getComponentItemsListUseCase(delay: Long): List<ComponentItem> = withContext(Dispatchers.IO){
         try {
             delay(delay)
-            componentDao.getComponentsList().map {
+            componentDao.getComponents().map {
                 mapper.mapComponentItemDbModelToEntity(it)
             }
         } catch (e: Exception) { throw e }
     }
 
     override suspend fun getComponentItemUseCase(id: Int): ComponentItem = withContext(Dispatchers.IO){
-        try { mapper.mapComponentItemDbModelToEntity(componentDao.getComponentById(id)) }
+        try { mapper.mapComponentItemDbModelToEntity(componentDao.getComponent(id)) }
         catch (e: Exception) { throw e }
     }
 }

@@ -5,7 +5,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.StatisticsFragmentBinding
-import com.demo.carspends.utils.ui.BaseFragment
+import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
 class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
     override val binding: StatisticsFragmentBinding by viewBinding()
@@ -32,7 +32,6 @@ class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
             }
         }
     }
-
 
     /**
      * Base functions to make class work as fragment

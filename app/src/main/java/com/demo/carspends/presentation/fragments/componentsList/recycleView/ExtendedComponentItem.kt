@@ -25,7 +25,6 @@ data class ExtendedComponentItem(
 
     val leftResourcePercent: Int get() {
         val res = ((leftResourceValue.toDouble() * 100) / componentItem.resourceMileage).toInt()
-        Log.d("vmtest", "RES: $res")
         return when {
             res in 0..100 -> res
             res > 100 -> 100

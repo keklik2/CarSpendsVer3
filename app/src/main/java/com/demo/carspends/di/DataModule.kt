@@ -5,13 +5,13 @@ import com.demo.carspends.data.database.MainDataBase
 import com.demo.carspends.data.database.car.CarDao
 import com.demo.carspends.data.database.component.ComponentDao
 import com.demo.carspends.data.database.note.NoteDao
-import com.demo.carspends.data.database.repositoryImpls.CarRepositoryImpl
-import com.demo.carspends.data.database.repositoryImpls.ComponentRepositoryImpl
-import com.demo.carspends.data.database.repositoryImpls.NoteRepositoryImpl
+import com.demo.carspends.data.database.pictures.PictureDao
+import com.demo.carspends.data.database.repositoryImpls.*
 import com.demo.carspends.data.settings.SettingsRepositoryImpl
 import com.demo.carspends.domain.car.CarRepository
 import com.demo.carspends.domain.component.ComponentRepository
 import com.demo.carspends.domain.note.NoteRepository
+import com.demo.carspends.domain.picture.PictureRepository
 import com.demo.carspends.domain.settings.SettingsRepository
 import dagger.Binds
 import dagger.Module
@@ -32,6 +32,9 @@ interface DataModule {
     @Binds
     fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
 
+    @Binds
+    fun bindPicturesRepository(impl: PictureRepositoryImpl): PictureRepository
+
     companion object {
 
         @Provides
@@ -47,6 +50,11 @@ interface DataModule {
         @Provides
         fun provideNoteDao(application: Application): NoteDao {
             return MainDataBase.getInstance(application).noteDao()
+        }
+
+        @Provides
+        fun providePictureDao(application: Application): PictureDao {
+            return MainDataBase.getInstance(application).pictureDao()
         }
 
     }

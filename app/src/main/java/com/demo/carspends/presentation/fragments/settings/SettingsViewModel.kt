@@ -1,6 +1,8 @@
 package com.demo.carspends.presentation.fragments.settings
 
 import android.app.Application
+import android.content.Context.MODE_PRIVATE
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +32,7 @@ import me.aartikov.sesame.loading.simple.dataOrNull
 import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.stateFromFlow
+import java.io.IOException
 import java.lang.Integer.max
 
 class SettingsViewModel @Inject constructor(
@@ -146,7 +149,6 @@ class SettingsViewModel @Inject constructor(
         setSettingUseCase(SETTING_STATISTIC_TWO, newField)
         statistic2Loading.refresh()
     }
-
 
     override val propertyHostScope: CoroutineScope
         get() = viewModelScope

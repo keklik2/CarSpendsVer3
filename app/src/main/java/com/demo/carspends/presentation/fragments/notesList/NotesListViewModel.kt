@@ -108,7 +108,11 @@ class NotesListViewModel @Inject constructor(
                         _carId = car.id
                     } else goToCarAddFragment()
                 }
-                is Loading.State.Empty -> goToCarAddFragment()
+                is Loading.State.Empty -> {
+                    goToCarAddFragment()
+                }
+                is Loading.State.Error -> {
+                }
                 else -> {}
             }
         }

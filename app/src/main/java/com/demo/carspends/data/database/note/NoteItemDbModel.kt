@@ -20,7 +20,6 @@ data class NoteItemDbModel(
 ) {
 
     companion object {
-        const val UNDEFINED_STRING = "none"
         const val UNDEFINED_ID = 0
         const val UNDEFINED_INT = -1
         const val UNDEFINED_DOUBLE = -1.0

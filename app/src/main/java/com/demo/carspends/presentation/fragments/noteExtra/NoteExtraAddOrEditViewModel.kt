@@ -1,117 +1,57 @@
 package com.demo.carspends.presentation.fragments.noteExtra
 
 import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.R
-import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
+import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
-import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
-import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.domain.note.usecases.*
+import com.demo.carspends.domain.picture.DeletePictureUseCase
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorString
+import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import me.aartikov.sesame.loading.simple.Loading
-import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
-import me.aartikov.sesame.property.stateFromFlow
-import java.util.*
+import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.max
 
+
 class NoteExtraAddOrEditViewModel @Inject constructor(
-    private val addNoteItemUseCase: AddNoteItemUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
-    private val getCarsListUseCase: GetCarItemsListUseCase,
-    private val editCarItemUseCase: EditCarItemUseCase,
-    private val router: Router,
+    private val addNoteItemUseCase: AddNoteItemUseCase,
+    getNoteItemUseCase: GetNoteItemUseCase,
+    getCarItemUseCase: GetCarItemUseCase,
+    editCarItemUseCase: EditCarItemUseCase,
+    deletePictureUseCase: DeletePictureUseCase,
+    router: Router,
     private val app: Application
-) : AndroidViewModel(app), PropertyHost {
-
-    fun goBack() = router.exit()
-
+) : NoteAddOrEditViewModel(
+    getCarItemUseCase,
+    editCarItemUseCase,
+    getNoteItemUseCase,
+    deletePictureUseCase,
+    router,
+    app
+) {
     var nTitle: String? by state(null)
     var nPrice: String? by state(null)
-    var nDate by state(getCurrentDate())
-    var nId: Int? by state(null)
-    var cId: Int? by state(null)
 
-    private var noteItem: NoteItem? by state(null)
-    private var carItem: CarItem? by state(null)
-    private val noteType = NoteType.EXTRA
-    var canCloseScreen by state(false)
-
-    private val _notesListLoading = OrdinaryLoading(
-        viewModelScope,
-        load = { getNoteItemsListByMileageUseCase.invoke() }
-    )
-    private val notesListState by stateFromFlow(_notesListLoading.stateFlow)
-
-    private val _carsListLoading = OrdinaryLoading(
-        viewModelScope,
-        load = { getCarsListUseCase.invoke() }
-    )
-    private val carsListState by stateFromFlow(_carsListLoading.stateFlow)
+    override val noteType = NoteType.EXTRA
 
     init {
-        autorun(::nId) {
-            if (it != null) _notesListLoading.refresh()
-            else {
-                noteItem = null
-                nDate = getCurrentDate()
-            }
-        }
-
-        autorun(::cId) {
-            if (it != null) _carsListLoading.refresh()
-            else carItem = null
-        }
-
-        autorun(::notesListState) { itState ->
-            when (itState) {
-                is Loading.State.Data -> {
-                    nId?.let { itId ->
-                        noteItem = itState.data.firstOrNull { itNote ->
-                            itNote.id == itId
-                        }
-                    }
-                }
-                is Loading.State.Error -> Toast.makeText(
-                    app.applicationContext,
-                    app.getString(R.string.toast_notes_loading_error),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        autorun(::carsListState) { itState ->
-            when (itState) {
-                is Loading.State.Data -> {
-                    cId?.let { itId ->
-                        carItem = itState.data.firstOrNull { itCar ->
-                            itCar.id == itId
-                        }
-                    }
-                }
-            }
-        }
-
         autorun(::noteItem) {
-            if (it != null) {
-                nTitle = it.title
-                nPrice = it.totalPrice.toString()
-                nDate = it.date
+            withScope {
+                if (it != null) {
+                    nTitle = it.title
+                    nPrice = it.totalPrice.toString()
+                    nDate = it.date
+                } else nDate = getCurrentDate()
             }
-            else nDate = getCurrentDate()
         }
     }
 
@@ -130,9 +70,8 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
             type = noteType
         )
 
-        viewModelScope.launch {
-            addNoteItemUseCase(newNote)
-            _notesListLoading.refresh()
+        withScope {
+            addNoteItemUseCase(newNote, pictures)
 
             addAllPrice()
             calculateAvgPrice()
@@ -160,7 +99,7 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
         carItem?.let { itCar ->
             getNoteItemsListByMileageUseCase().let { itList ->
                 val newAllPrice = max(
-                    itList.sumOf { it1 -> it1.totalPrice},
+                    itList.sumOf { it1 -> it1.totalPrice },
                     0.0
                 )
                 carItem = itCar.copy(
@@ -169,10 +108,6 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun updateCarItem() = carItem?.let { editCarItemUseCase(it) }
-    private fun getCurrentDate(): Long = Date().time
-    private fun setCanCloseScreen() { canCloseScreen = true }
 
     override val propertyHostScope: CoroutineScope
         get() = viewModelScope
