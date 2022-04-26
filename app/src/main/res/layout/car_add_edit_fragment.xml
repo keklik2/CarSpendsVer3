@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/caref_tv_title"
+        android:id="@+id/tv_title"
         style="@style/entryTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,17 +19,17 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/caref_button_apply"
+        app:layout_constraintBottom_toTopOf="@+id/button_apply"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caref_tv_title">
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/caref_til_car_name"
+                android:id="@+id/til_car_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -40,7 +40,7 @@
                 style="@style/inputTextLayout">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/caref_tiet_car_name"
+                    android:id="@+id/tiet_car_name"
                     style="@style/inputText"
                     android:inputType="textCapSentences"
                     android:layout_width="match_parent"
@@ -52,20 +52,20 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/caref_mileage_layout"
+                android:id="@+id/mileage_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
 
-                app:layout_constraintTop_toBottomOf="@+id/caref_til_car_name">
+                app:layout_constraintTop_toBottomOf="@+id/til_car_name">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/caref_til_mileage_value"
+                    android:id="@+id/til_mileage_value"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_mileage_unit"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_mileage_unit"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
 
@@ -73,7 +73,7 @@
                     style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/caref_tiet_mileage_value"
+                        android:id="@+id/tiet_mileage_value"
                         style="@style/inputText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -85,14 +85,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/caref_tv_mileage_unit"
+                    android:id="@+id/tv_mileage_unit"
                     style="@style/entryUnitText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/text_measure_mileage_unit"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/caref_til_mileage_value"
+                    app:layout_constraintStart_toEndOf="@+id/til_mileage_value"
                     app:layout_constraintTop_toTopOf="parent"
 
                     app:layout_constraintHorizontal_weight="1"/>
@@ -100,20 +100,20 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/caref_engine_capacity_layout"
+                android:id="@+id/engine_volume_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
 
-                app:layout_constraintTop_toBottomOf="@+id/caref_mileage_layout">
+                app:layout_constraintTop_toBottomOf="@+id/mileage_layout">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/caref_til_engine_capacity"
+                    android:id="@+id/til_engine_volume"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_engine_capacity"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_engine_volume"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
 
@@ -121,11 +121,11 @@
                     style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/caref_tiet_engine_capacity"
+                        android:id="@+id/tiet_engine_volume"
                         style="@style/inputText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_car_engine_capacity"
+                        android:hint="@string/hint_car_engine_volume"
 
                         android:inputType="numberDecimal"
                         tools:text="1.6" />
@@ -133,14 +133,14 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/caref_tv_engine_capacity"
+                    android:id="@+id/tv_engine_volume"
                     style="@style/entryUnitText"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/text_measure_engine_capacity_unit"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/caref_til_engine_capacity"
+                    app:layout_constraintStart_toEndOf="@+id/til_engine_volume"
 
                     app:layout_constraintTop_toTopOf="parent"
 
@@ -149,20 +149,20 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/caref_power_layout"
+                android:id="@+id/power_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
 
-                app:layout_constraintTop_toBottomOf="@+id/caref_engine_capacity_layout">
+                app:layout_constraintTop_toBottomOf="@+id/engine_volume_layout">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/caref_til_power"
+                    android:id="@+id/til_power"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintEnd_toStartOf="@+id/caref_tv_power"
+                    app:layout_constraintEnd_toStartOf="@+id/tv_power"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
 
@@ -170,7 +170,7 @@
                     style="@style/inputTextLayout">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/caref_tiet_power"
+                        android:id="@+id/tiet_power"
                         style="@style/inputText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
-                    android:id="@+id/caref_tv_power"
+                    android:id="@+id/tv_power"
 
                     style="@style/entryUnitText"
                     android:layout_width="0dp"
@@ -191,7 +191,7 @@
 
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/caref_til_power"
+                    app:layout_constraintStart_toEndOf="@+id/til_power"
 
                     app:layout_constraintTop_toTopOf="parent"
 
@@ -202,7 +202,7 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/caref_button_apply"
+        android:id="@+id/button_apply"
         style="@style/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

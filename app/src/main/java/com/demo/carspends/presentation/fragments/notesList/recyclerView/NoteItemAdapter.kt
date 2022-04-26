@@ -1,6 +1,5 @@
 package com.demo.carspends.presentation.fragments.notesList.recyclerView
 
-import android.view.View
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -24,19 +23,19 @@ object NoteItemAdapter {
                 }
 
                 viewHolder.binding.apply {
-                    niIvTool.setImageResource(getImageID(item.type))
-                    niTvTitle.text = item.title
-                    niTvAmount.text = String.format(
+                    ivTool.setImageResource(getImageID(item.type))
+                    tvTitle.text = item.title
+                    tvAmount.text = String.format(
                         root.context.getString(R.string.text_measure_currency_for_formatting),
                         getFormattedDoubleAsStrForDisplay(item.totalPrice)
                     )
                     if (item.type == NoteType.FUEL) {
-                        niTvExtraInfo.text = String.format(
+                        tvExtraInfo.text = String.format(
                             "- ${item.fuelType.toString(root.context)}",
                             item.fuelType.toString(root.context)
                         )
                     }
-                    niTvDate.text = getFormattedDate(item.date)
+                    tvDate.text = getFormattedDate(item.date)
                     hasPicturesImage.setVisibility(item.hasPictures)
                 }
             }

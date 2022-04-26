@@ -54,7 +54,7 @@ class NoteFillingAddOrEditFragment :
      * Validation
      */
     private val fuelVolumeValidation by lazy {
-        validation(binding.nfaefTilFuelVolume) {
+        validation(binding.tilFuelLiters) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_VOLUME)
                 +NotBlankRule(ERR_BLANK_VOLUME)
@@ -62,7 +62,7 @@ class NoteFillingAddOrEditFragment :
         }
     }
     private val fuelAmountValidation by lazy {
-        validation(binding.nfaefTilFuelAmount) {
+        validation(binding.tilFuelTotalPrice) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_AMOUNT)
                 +NotBlankRule(ERR_BLANK_AMOUNT)
@@ -70,7 +70,7 @@ class NoteFillingAddOrEditFragment :
         }
     }
     private val fuelPriceValidation by lazy {
-        validation(binding.nfaefTilFuelPrice) {
+        validation(binding.tilFuelPrice) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_PRICE)
                 +NotBlankRule(ERR_BLANK_PRICE)
@@ -78,7 +78,7 @@ class NoteFillingAddOrEditFragment :
         }
     }
     private val mileageValidation by lazy {
-        validation(binding.nfaefTilMileageValue) {
+        validation(binding.tilMileageValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_MILEAGE)
                 +NotBlankRule(ERR_BLANK_MILEAGE)
@@ -116,7 +116,7 @@ class NoteFillingAddOrEditFragment :
                 viewModel.nDate = cal.time.time
             }
 
-        binding.nfaefDateLayout.setOnClickListener {
+        binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.nDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -128,7 +128,7 @@ class NoteFillingAddOrEditFragment :
     }
 
     private fun setupVolumeTextChangeListener() {
-        binding.nfaefTietFuelVolume.onFocusChangeListener =
+        binding.tietFuelLiters.onFocusChangeListener =
             View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     preLastChanged = lastChanged
@@ -136,7 +136,7 @@ class NoteFillingAddOrEditFragment :
                 }
             }
 
-        binding.nfaefTietFuelVolume.addTextChangedListener {
+        binding.tietFuelLiters.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -151,12 +151,12 @@ class NoteFillingAddOrEditFragment :
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
                     if (preLastChanged == CHANGED_AMOUNT) viewModel.calculatePrice(
-                        binding.nfaefTietFuelAmount.text.toString(),
-                        binding.nfaefTietFuelVolume.text.toString()
+                        binding.tietFuelTotalPrice.text.toString(),
+                        binding.tietFuelLiters.text.toString()
                     )
                     else if (preLastChanged == CHANGED_PRICE) viewModel.calculateTotalPrice(
-                        binding.nfaefTietFuelVolume.text.toString(),
-                        binding.nfaefTietFuelPrice.text.toString()
+                        binding.tietFuelLiters.text.toString(),
+                        binding.tietFuelPrice.text.toString()
                     )
                 }
             }
@@ -165,7 +165,7 @@ class NoteFillingAddOrEditFragment :
     }
 
     private fun setupAmountTextChangeListener() {
-        binding.nfaefTietFuelAmount.onFocusChangeListener =
+        binding.tietFuelTotalPrice.onFocusChangeListener =
             View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     preLastChanged = lastChanged
@@ -173,7 +173,7 @@ class NoteFillingAddOrEditFragment :
                 }
             }
 
-        binding.nfaefTietFuelAmount.addTextChangedListener {
+        binding.tietFuelTotalPrice.addTextChangedListener {
 
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
@@ -188,12 +188,12 @@ class NoteFillingAddOrEditFragment :
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
                     if (preLastChanged == CHANGED_VOLUME) viewModel.calculatePrice(
-                        binding.nfaefTietFuelAmount.text.toString(),
-                        binding.nfaefTietFuelVolume.text.toString()
+                        binding.tietFuelTotalPrice.text.toString(),
+                        binding.tietFuelLiters.text.toString()
                     )
                     else if (preLastChanged == CHANGED_PRICE) viewModel.calculateVolume(
-                        binding.nfaefTietFuelAmount.text.toString(),
-                        binding.nfaefTietFuelPrice.text.toString()
+                        binding.tietFuelTotalPrice.text.toString(),
+                        binding.tietFuelPrice.text.toString()
                     )
                 }
             }
@@ -202,7 +202,7 @@ class NoteFillingAddOrEditFragment :
     }
 
     private fun setupPriceTextChangeListener() {
-        binding.nfaefTietFuelPrice.onFocusChangeListener =
+        binding.tietFuelPrice.onFocusChangeListener =
             View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     preLastChanged = lastChanged
@@ -210,7 +210,7 @@ class NoteFillingAddOrEditFragment :
                 }
             }
 
-        binding.nfaefTietFuelPrice.addTextChangedListener {
+        binding.tietFuelPrice.addTextChangedListener {
 
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
@@ -225,12 +225,12 @@ class NoteFillingAddOrEditFragment :
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
                     if (preLastChanged == CHANGED_VOLUME) viewModel.calculateTotalPrice(
-                        binding.nfaefTietFuelVolume.text.toString(),
-                        binding.nfaefTietFuelPrice.text.toString()
+                        binding.tietFuelLiters.text.toString(),
+                        binding.tietFuelPrice.text.toString()
                     )
                     else if (preLastChanged == CHANGED_AMOUNT) viewModel.calculateVolume(
-                        binding.nfaefTietFuelAmount.text.toString(),
-                        binding.nfaefTietFuelPrice.text.toString()
+                        binding.tietFuelTotalPrice.text.toString(),
+                        binding.tietFuelPrice.text.toString()
                     )
                 }
             }
@@ -239,7 +239,7 @@ class NoteFillingAddOrEditFragment :
     }
 
     private fun setupMileageTextChangeListener() {
-        binding.nfaefTietMileageValue.addTextChangedListener {
+        binding.tietMileageValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -251,17 +251,17 @@ class NoteFillingAddOrEditFragment :
     }
 
     private fun setupApplyButtonClickListener() {
-        binding.nfaefButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
                             viewModel.addOrEditNoteItem(
-                                nfaefSpinnerFuelType.selectedItemPosition,
-                                nfaefTietFuelVolume.text.toString(),
-                                nfaefTietFuelAmount.text.toString(),
-                                nfaefTietFuelPrice.text.toString(),
-                                nfaefTietMileageValue.text.toString()
+                                spinnerFuelType.selectedItemPosition,
+                                tietFuelLiters.text.toString(),
+                                tietFuelTotalPrice.text.toString(),
+                                tietFuelPrice.text.toString(),
+                                tietMileageValue.text.toString()
                             )
                         }
                     }
@@ -275,26 +275,26 @@ class NoteFillingAddOrEditFragment :
 
     private fun setupLastFuelTypeBind() =
         viewModel::lastFuelType bind {
-            binding.nfaefSpinnerFuelType.setSelection(viewModel.getFuelId(it))
+            binding.spinnerFuelType.setSelection(viewModel.getFuelId(it))
         }
     private fun setupNoteDateBind() =
-        viewModel::nDate bind { binding.nfaefTvDateValue.text = getFormattedDate(it) }
+        viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
     private fun setupCanCloseScreenBind() =
         viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
-                ::nVolume bind { it?.let { nfaefTietFuelVolume.setText(it) } }
-                ::nPrice bind { it?.let { nfaefTietFuelPrice.setText(it) } }
-                ::nTotalPrice bind { it?.let { nfaefTietFuelAmount.setText(it) } }
-                ::nMileage bind { it?.let { nfaefTietMileageValue.setText(it) } }
+                ::nVolume bind { it?.let { tietFuelLiters.setText(it) } }
+                ::nPrice bind { it?.let { tietFuelPrice.setText(it) } }
+                ::nTotalPrice bind { it?.let { tietFuelTotalPrice.setText(it) } }
+                ::nMileage bind { it?.let { tietMileageValue.setText(it) } }
             }
         }
     }
 
     private fun setupFuelSpinnerAdapter() {
         // Setting Fuel enum values for spinner
-        binding.nfaefSpinnerFuelType.adapter = ArrayAdapter(
+        binding.spinnerFuelType.adapter = ArrayAdapter(
             requireActivity(),
             R.layout.support_simple_spinner_dropdown_item,
             Fuel.values().map { it.toString(requireContext()) }

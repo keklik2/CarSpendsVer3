@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-        android:id="@+id/sf_tv_title"
+        android:id="@+id/tv_title"
         style="@style/entryTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,14 +22,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sf_tv_title">
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
             <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-                android:id="@+id/sf_font_size_normal"
+                android:id="@+id/font_size_normal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -37,15 +37,15 @@
                 style="@style/entryUnitMainMenuText.NotAllCaps"
                 android:textAlignment="textStart"
 
-                app:layout_constraintTop_toTopOf="@id/sf_font_size_switch"
+                app:layout_constraintTop_toTopOf="@id/font_size_switch"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sf_font_size_switch"
-                app:layout_constraintBottom_toBottomOf="@+id/sf_font_size_switch"
+                app:layout_constraintEnd_toStartOf="@+id/font_size_switch"
+                app:layout_constraintBottom_toBottomOf="@+id/font_size_switch"
 
                 android:text="@string/text_font_size_large"/>
 
             <Switch
-                android:id="@+id/sf_font_size_switch"
+                android:id="@+id/font_size_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
@@ -56,15 +56,15 @@
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-                android:id="@+id/sf_tv_statistics_1_title"
+                android:id="@+id/tv_statistics_1_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
 
-                app:layout_constraintTop_toTopOf="@+id/sf_statistics_1_spinner"
+                app:layout_constraintTop_toTopOf="@+id/statistics_1_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sf_statistics_1_spinner"
-                app:layout_constraintBottom_toBottomOf="@id/sf_statistics_1_spinner"
+                app:layout_constraintEnd_toStartOf="@+id/statistics_1_spinner"
+                app:layout_constraintBottom_toBottomOf="@id/statistics_1_spinner"
 
                 style="@style/entryUnitMainMenuText.NotAllCaps"
                 android:textAlignment="textStart"
@@ -72,7 +72,7 @@
                 android:text="@string/text_statistics_1"/>
 
             <Spinner
-                android:id="@+id/sf_statistics_1_spinner"
+                android:id="@+id/statistics_1_spinner"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_margin="16dp"
@@ -80,20 +80,20 @@
                 android:entries="@array/statistic_values"
                 android:background="@drawable/rounded_rectangle_light_light_vine"
 
-                app:layout_constraintTop_toBottomOf="@+id/sf_font_size_switch"
+                app:layout_constraintTop_toBottomOf="@+id/font_size_switch"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sf_tv_statistics_1_title"/>
+                app:layout_constraintStart_toEndOf="@id/tv_statistics_1_title"/>
 
             <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-                android:id="@+id/sf_tv_statistics_2_title"
+                android:id="@+id/tv_statistics_2_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
 
-                app:layout_constraintTop_toTopOf="@+id/sf_statistics_2_spinner"
+                app:layout_constraintTop_toTopOf="@+id/statistics_2_spinner"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/sf_statistics_2_spinner"
-                app:layout_constraintBottom_toBottomOf="@id/sf_statistics_2_spinner"
+                app:layout_constraintEnd_toStartOf="@+id/statistics_2_spinner"
+                app:layout_constraintBottom_toBottomOf="@id/statistics_2_spinner"
 
                 style="@style/entryUnitMainMenuText.NotAllCaps"
                 android:textAlignment="textStart"
@@ -101,7 +101,7 @@
                 android:text="@string/text_statistics_2"/>
 
             <Spinner
-                android:id="@+id/sf_statistics_2_spinner"
+                android:id="@+id/statistics_2_spinner"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_margin="16dp"
@@ -109,15 +109,15 @@
                 android:entries="@array/statistic_values"
                 android:background="@drawable/rounded_rectangle_light_light_vine"
 
-                app:layout_constraintTop_toBottomOf="@+id/sf_statistics_1_spinner"
+                app:layout_constraintTop_toBottomOf="@+id/statistics_1_spinner"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/sf_tv_statistics_2_title"/>
+                app:layout_constraintStart_toEndOf="@id/tv_statistics_2_title"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <Button
-        android:id="@+id/sf_button_apply"
+        android:id="@+id/button_apply"
         style="@style/acceptButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

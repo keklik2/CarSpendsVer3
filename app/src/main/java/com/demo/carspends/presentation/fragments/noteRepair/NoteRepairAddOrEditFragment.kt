@@ -40,7 +40,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
      * Validation
      */
     private val titleValidation by lazy {
-        validation(binding.nraefTilName) {
+        validation(binding.tilName) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_TITLE)
                 +NotBlankRule(ERR_BLANK_TITLE)
@@ -48,7 +48,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
         }
     }
     private val amountValidation by lazy {
-        validation(binding.nraefTilAmountValue) {
+        validation(binding.tilTotalPriceValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_AMOUNT)
                 +NotBlankRule(ERR_BLANK_AMOUNT)
@@ -56,7 +56,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
         }
     }
     private val mileageValidation by lazy {
-        validation(binding.nraefTilMileageValue) {
+        validation(binding.tilMileageValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_MILEAGE)
                 +NotBlankRule(ERR_BLANK_MILEAGE)
@@ -74,10 +74,10 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
-                ::nTitle bind { it?.let { it1 -> nraefTietName.setText(it1) } }
-                ::nPrice bind { it?.let { it1 -> nraefTietAmountValue.setText(it1) } }
-                ::nMileage bind { it?.let { it1 -> nraefTietMileageValue.setText(it1) } }
-                ::nDate bind { nraefTvDateValue.text = getFormattedDate(it) }
+                ::nTitle bind { it?.let { it1 -> tietName.setText(it1) } }
+                ::nPrice bind { it?.let { it1 -> tietTotalPriceValue.setText(it1) } }
+                ::nMileage bind { it?.let { it1 -> tietMileageValue.setText(it1) } }
+                ::nDate bind { dateIb.text = getFormattedDate(it) }
             }
         }
     }
@@ -107,7 +107,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
                 viewModel.nDate = cal.time.time
             }
 
-        binding.nraefDateLayout.setOnClickListener {
+        binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.nDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -119,7 +119,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
     }
 
     private fun setupTextChangeListeners() {
-        binding.nraefTietName.addTextChangedListener {
+        binding.tietName.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -129,7 +129,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
             }
         }
 
-        binding.nraefTietAmountValue.addTextChangedListener {
+        binding.tietTotalPriceValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -139,7 +139,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
             }
         }
 
-        binding.nraefTietMileageValue.addTextChangedListener {
+        binding.tietMileageValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -151,15 +151,15 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
     }
 
     private fun setupApplyButtonClickListener() {
-        binding.nraefButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
                             viewModel.addOrEditNoteItem(
-                                nraefTietName.text.toString(),
-                                nraefTietAmountValue.text.toString(),
-                                nraefTietMileageValue.text.toString()
+                                tietName.text.toString(),
+                                tietTotalPriceValue.text.toString(),
+                                tietMileageValue.text.toString()
                             )
                         }
                     }

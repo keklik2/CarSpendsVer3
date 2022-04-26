@@ -64,18 +64,18 @@
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
-    <string name="hint_amount">Сумма</string>
+    <string name="hint_total_price">Сумма</string>
     <string name="hint_name_detail">Название детали</string>
     <string name="hint_name_repair">Наименование работ</string>
     <string name="hint_detail_resource">Ресурс детали</string>
     <string name="hint_replace_mileage">Заменён на пробеге</string>
     <string name="hint_work_mileage">Произведено на пробеге</string>
-    <string name="hint_fuel_volume">Количество</string>
-    <string name="hint_fuel_amount">Сумма</string>
+    <string name="hint_fuel_liters">Количество</string>
+    <string name="hint_fuel_total_price">Сумма</string>
     <string name="hint_fuel_price">р/л</string>
     <string name="hint_car_name">Название автомобиля</string>
     <string name="hint_car_mileage">Текущий пробег</string>
-    <string name="hint_car_engine_capacity">Объём двигателя</string>
+    <string name="hint_car_engine_volume">Объём двигателя</string>
     <string name="hint_car_power">Мощность</string>
 
     <!-- Input Test Layout errors -->

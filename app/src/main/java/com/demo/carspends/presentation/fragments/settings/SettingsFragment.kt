@@ -32,9 +32,9 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
-                ::isExtendedFont bind { sfFontSizeSwitch.isChecked = it }
-                ::statistics1Id bind { sfStatistics1Spinner.setSelection(it) }
-                ::statistics2Id bind { sfStatistics2Spinner.setSelection(it) }
+                ::isExtendedFont bind { fontSizeSwitch.isChecked = it }
+                ::statistics1Id bind { statistics1Spinner.setSelection(it) }
+                ::statistics2Id bind { statistics2Spinner.setSelection(it) }
             }
         }
     }
@@ -45,17 +45,17 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
      */
 
     private fun switchListener() {
-        binding.sfFontSizeSwitch.setOnClickListener { viewModel.changeFontSize() }
+        binding.fontSizeSwitch.setOnClickListener { viewModel.changeFontSize() }
     }
 
     private fun acceptClickListener() {
-        binding.sfButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             viewModel.exit()
         }
     }
 
     private fun statisticSpinnersListener() {
-        binding.sfStatistics1Spinner.onItemSelectedListener =
+        binding.statistics1Spinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                     viewModel.changeStatistic1(pos)
@@ -65,7 +65,7 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
                 }
         }
 
-        binding.sfStatistics2Spinner.onItemSelectedListener =
+        binding.statistics2Spinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
                     viewModel.changeStatistic2(pos)

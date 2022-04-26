@@ -45,7 +45,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     }
 
     private val titleValidation by lazy {
-        validation(binding.neaefTilName) {
+        validation(binding.tilName) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_TITLE)
                 +NotBlankRule(ERR_BLANK_TITLE)
@@ -53,7 +53,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
         }
     }
     private val amountValidation by lazy {
-        validation(binding.neaefTilAmountValue) {
+        validation(binding.tilTotalPriceValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_AMOUNT)
                 +NotBlankRule(ERR_BLANK_AMOUNT)
@@ -65,12 +65,12 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     /**
      * Binds
      */
-    private fun setupNoteDateBind() = viewModel::nDate bind { binding.neaefTvDateValue.text = getFormattedDate(it) }
+    private fun setupNoteDateBind() = viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
     private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
     private fun setupFieldsBind() {
         with(viewModel) {
-            ::nTitle bind { it?.let { it1 -> binding.neaefTietName.setText(it1) }  }
-            ::nPrice bind { it?.let { it1 -> binding.neaefTietAmountValue.setText(it1) }  }
+            ::nTitle bind { it?.let { it1 -> binding.tietName.setText(it1) }  }
+            ::nPrice bind { it?.let { it1 -> binding.tietTotalPriceValue.setText(it1) }  }
         }
     }
     override fun setupPicturesRecyclerViewBind() {
@@ -100,7 +100,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
             viewModel.nDate = cal.time.time
         }
 
-        binding.neaefDateLayout.setOnClickListener {
+        binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
                 timeInMillis = viewModel.nDate
             }
@@ -114,14 +114,14 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     }
 
     private fun setupOnAcceptButtonClickListener() {
-        binding.neaefButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
                             viewModel.addOrEditNoteItem(
-                                neaefTietName.text.toString(),
-                                neaefTietAmountValue.text.toString()
+                                tietName.text.toString(),
+                                tietTotalPriceValue.text.toString()
                             )
                         }
                     }
@@ -133,7 +133,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     }
 
     private fun setupTitleTextChangeListener() {
-        binding.neaefTietName.addTextChangedListener {
+        binding.tietName.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {  }
@@ -145,7 +145,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     }
 
     private fun setupPriceTextChangeListener() {
-        binding.neaefTietAmountValue.addTextChangedListener {
+        binding.tietTotalPriceValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {  }
