@@ -37,7 +37,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
      * Validation functions
      */
     private val titleValidation by lazy {
-        validation(binding.carefTilCarName) {
+        validation(binding.tilCarName) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_TITLE)
                 +NotBlankRule(ERR_BLANK_TITLE)
@@ -45,7 +45,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         }
     }
     private val mileageValidation by lazy {
-        validation(binding.carefTilMileageValue) {
+        validation(binding.tilMileageValue) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_MILEAGE)
                 +NotBlankRule(ERR_BLANK_MILEAGE)
@@ -53,7 +53,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         }
     }
     private val engineCapacityValidation by lazy {
-        validation(binding.carefTilEngineCapacity) {
+        validation(binding.tilEngineVolume) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_ENGINE_CAPACITY)
                 +NotBlankRule(ERR_BLANK_ENGINE_CAPACITY)
@@ -61,7 +61,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         }
     }
     private val powerValidation by lazy {
-        validation(binding.carefTilPower) {
+        validation(binding.tilPower) {
             rules {
                 +NotEmptyRule(ERR_EMPTY_POWER)
                 +NotBlankRule(ERR_BLANK_POWER)
@@ -79,10 +79,10 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
-                ::cTitle bind { it?.let { it1 -> carefTietCarName.setText(it1) } }
-                ::cMileage bind { it?.let { it1 -> carefTietMileageValue.setText(it1) } }
-                ::cEngineCapacity bind { it?.let { it1 -> carefTietEngineCapacity.setText(it1) } }
-                ::cPower bind { it?.let { it1 -> carefTietPower.setText(it1) } }
+                ::cTitle bind { it?.let { it1 -> tietCarName.setText(it1) } }
+                ::cMileage bind { it?.let { it1 -> tietMileageValue.setText(it1) } }
+                ::cEngineCapacity bind { it?.let { it1 -> tietEngineVolume.setText(it1) } }
+                ::cPower bind { it?.let { it1 -> tietPower.setText(it1) } }
             }
         }
     }
@@ -92,7 +92,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
      * Listener functions
      */
     private fun setupTextChangeListeners() {
-        binding.carefTietCarName.addTextChangedListener {
+        binding.tietCarName.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -102,7 +102,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
             }
         }
 
-        binding.carefTietMileageValue.addTextChangedListener {
+        binding.tietMileageValue.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -112,7 +112,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
             }
         }
 
-        binding.carefTietEngineCapacity.addTextChangedListener {
+        binding.tietEngineVolume.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -122,7 +122,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
             }
         }
 
-        binding.carefTietPower.addTextChangedListener {
+        binding.tietPower.addTextChangedListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateFailed(errors: List<String>) {}
@@ -134,7 +134,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     }
 
     private fun setupApplyButtonOnClickListener() {
-        binding.carefButtonApply.setOnClickListener {
+        binding.buttonApply.setOnClickListener {
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
@@ -195,10 +195,10 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     private fun addOrEditCar() {
         with(binding) {
             viewModel.addOrEditCar(
-                carefTietCarName.text.toString(),
-                carefTietMileageValue.text.toString(),
-                carefTietEngineCapacity.text.toString(),
-                carefTietPower.text.toString()
+                tietCarName.text.toString(),
+                tietMileageValue.text.toString(),
+                tietEngineVolume.text.toString(),
+                tietPower.text.toString()
             )
         }
     }

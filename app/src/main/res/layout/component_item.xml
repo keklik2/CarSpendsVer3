@@ -9,7 +9,7 @@
     android:paddingEnd="10dp">
 
     <RelativeLayout
-        android:id="@+id/ci_layout_left_mileage"
+        android:id="@+id/layout_left_mileage"
         android:layout_width="60dp"
         android:layout_height="0dp"
         app:layout_constraintDimensionRatio="1:1"
@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ProgressBar
-            android:id="@+id/ci_pb_left_mileage"
+            android:id="@+id/pb_left_mileage"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -30,7 +30,7 @@
 
         <!-- Добавить стиль текста для "внутренний прогресс" -->
         <TextView
-            android:id="@+id/ci_tv_left_mileage"
+            android:id="@+id/tv_left_mileage"
             style="@style/progressBarText"
             android:layout_width="wrap_content"
 
@@ -42,16 +42,16 @@
 
     <!--Добавить стиль для "заголовков"-->
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/ci_main_layout"
+        android:id="@+id/main_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/ci_layout_left_mileage"
-        app:layout_constraintEnd_toStartOf="@id/ci_tv_date">
+        app:layout_constraintStart_toEndOf="@+id/layout_left_mileage"
+        app:layout_constraintEnd_toStartOf="@id/tv_date">
 
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ci_tv_title"
+            android:id="@+id/tv_title"
             style="@style/itemTitleText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -61,23 +61,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/ci_tv_resource"
+            app:layout_constraintBottom_toTopOf="@+id/tv_resource"
             tools:text="Свечи" />
 
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ci_tv_resource"
+            android:id="@+id/tv_resource"
             style="@style/extraInfoText"
             android:layout_width="wrap_content"
 
             android:layout_height="wrap_content"
             android:text="@string/text_resource"
-            app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/ci_tv_resource_statement"/>
+            app:layout_constraintEnd_toStartOf="@+id/tv_resource_statement"/>
 
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/ci_tv_resource_statement"
+            android:id="@+id/tv_resource_statement"
             style="@style/resourceStatementText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -87,8 +87,8 @@
 
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ci_tv_resource"
-            app:layout_constraintTop_toBottomOf="@+id/ci_tv_title"
+            app:layout_constraintStart_toEndOf="@+id/tv_resource"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
 
             app:layout_constraintVertical_bias="0.0"
             tools:text="73.000км" />
@@ -97,11 +97,11 @@
 
     <!--Добавить стиль для "дата"-->
     <TextView
-        android:id="@+id/ci_tv_date"
+        android:id="@+id/tv_date"
         style="@style/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/ci_main_layout"
+        app:layout_constraintStart_toEndOf="@+id/main_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

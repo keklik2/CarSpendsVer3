@@ -70,7 +70,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     init {
         withScope {
             notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
-            lastFuelType = notesListForCalculation.last().fuelType
+            lastFuelType = notesListForCalculation.lastOrNull()?.fuelType ?: Fuel.F95
         }
 
         autorun(::noteItem) {
