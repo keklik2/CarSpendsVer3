@@ -1,7 +1,10 @@
 package com.demo.carspends.presentation.fragments.car
 
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -11,6 +14,10 @@ import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
+import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.utils.DOWNLOAD_CHANNEL_ID
+import com.demo.carspends.utils.files.fileSaver.DbSaver
+import com.demo.carspends.utils.genericType
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -18,12 +25,26 @@ import io.github.anderscheow.validator.rules.common.NotEmptyRule
 import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 
+
 class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
+    private val dbNotesSaver = DbSaver<List<NoteItem>>(
+        this,
+        genericType<List<NoteItem>>()
+    ) { viewModel.applyNotes(it) }
+
     override val binding: CarAddEditFragmentBinding by viewBinding()
     override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTextChangeListeners()
         setupApplyButtonOnClickListener()
+
+        binding.downloadButton.setOnClickListener {
+            viewModel.saveNotes(dbNotesSaver)
+        }
+
+        binding.uploadButton.setOnClickListener {
+            viewModel.downloadNotes(dbNotesSaver)
+        }
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
@@ -216,6 +237,25 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         viewModel.cId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
 
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(DOWNLOAD_CHANNEL_ID, getString(R.string.notification_channel_download), importance).apply {
+                description = getString(R.string.notification_channel_download_description)
+            }
+            val notificationManager: NotificationManager =
+                requireActivity().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun hideDbButtons() {
+        if (launchMode == ADD_MODE) {
+            binding.downloadButton.visibility = View.INVISIBLE
+            binding.uploadButton.visibility = View.INVISIBLE
+        }
+    }
+
 
     /**
      * Basic functions to make class work as Fragment
@@ -233,6 +273,8 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBackPresser()
+        createNotificationChannel()
+        hideDbButtons()
     }
 
 
