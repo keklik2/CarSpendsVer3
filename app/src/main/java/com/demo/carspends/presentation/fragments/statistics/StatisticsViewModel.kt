@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.presentation.fragments.notesList.NotesListViewModel
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
+import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
@@ -22,8 +24,12 @@ import javax.inject.Inject
 
 class StatisticsViewModel @Inject constructor(
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
+    private val getNoteItemsListUseCase: GetNoteItemsListUseCase,
     private val app: Application
-) : AndroidViewModel(app), PropertyHost {
+) : BaseViewModel(app) {
+
+    var startDate by state(0L)
+    var endDate by state(getCurrentDate())
 
     var sAvgFuel by state("-")
     var sMomentFuel by state("-")
@@ -83,6 +89,20 @@ class StatisticsViewModel @Inject constructor(
             }
         }
     }
+
+    fun calculateAvgFuel() { }
+
+    fun calculateMomentFuel() { }
+
+    fun calculateAllFuel() { }
+
+    fun calculateFuelPrice() { }
+
+    fun calculateMileagePrice() { }
+
+    fun calculateAllPrice() { }
+
+    fun calculateAllMileage() { }
 
     override val propertyHostScope: CoroutineScope
         get() = viewModelScope
