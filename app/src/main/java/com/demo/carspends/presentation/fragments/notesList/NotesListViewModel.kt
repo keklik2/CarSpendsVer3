@@ -19,17 +19,16 @@ import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.NORMAL_LOADING_DELAY
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
+import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import me.aartikov.sesame.loading.simple.Loading
-import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.loading.simple.state
+import me.aartikov.sesame.loading.simple.*
 import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
+import java.lang.Error
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -44,7 +43,7 @@ class NotesListViewModel @Inject constructor(
     private val getSettingValueUseCase: GetSettingValueUseCase,
     private val router: Router,
     private val app: Application
-) : AndroidViewModel(app), PropertyHost {
+) : BaseViewModel(app) {
 
     var carTitle by state(EMPTY_STR)
     var statisticsField1 by state(EMPTY_STR)
