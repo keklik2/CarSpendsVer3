@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -76,6 +77,7 @@ class DbSaver<T> @Inject constructor(
         } catch (e: Exception) {
             makeAlert(ERROR)
             makeToast("${fragment.getString(TOAST_ERROR_SAVE)}: $e")
+            throw e
         }
     }
 
@@ -148,7 +150,7 @@ class DbSaver<T> @Inject constructor(
         val builder = when (condition) {
             START_DOWNLOAD -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_PROCESSING))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -157,7 +159,7 @@ class DbSaver<T> @Inject constructor(
             }
             ENDED_DOWNLOAD -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_SUCCESS))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -168,14 +170,14 @@ class DbSaver<T> @Inject constructor(
                             fragment.requireContext(),
                             0,
                             Intent(DownloadManager.ACTION_VIEW_DOWNLOADS),
-                            0
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
                         )
                     )
                     .build()
             }
             else -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_ERROR))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
