@@ -69,6 +69,7 @@
     <string name="toast_db_saver_load_error">Ошибка при загрузке файла</string>
     <string name="toast_db_saver_save_error">Ошибка при сохранении файла</string>
     <string name="toast_db_saver_load_completed">Загрузка завершена</string>
+    <string name="toast_db_saver_load_start">Загрузка началась\nПодробнее в оповещении</string>
 
     <!-- Notifications -->
     <string name="notification_download_title">Загрузка</string>

@@ -74,10 +74,10 @@ class DbSaver<T> @Inject constructor(
             stream.write(json?.toByteArray())
             stream.close()
             makeAlert(ENDED_DOWNLOAD)
+            makeToast(TOAST_START_LOAD)
         } catch (e: Exception) {
             makeAlert(ERROR)
             makeToast("${fragment.getString(TOAST_ERROR_SAVE)}: $e")
-            throw e
         }
     }
 
@@ -217,6 +217,7 @@ class DbSaver<T> @Inject constructor(
         private const val TOAST_ERROR_LOAD = R.string.toast_db_saver_load_error
         private const val TOAST_ERROR_SAVE = R.string.toast_db_saver_save_error
         private const val TOAST_COMPLETED_LOAD = R.string.toast_db_saver_load_completed
+        private const val TOAST_START_LOAD = R.string.toast_db_saver_load_start
 
         private const val NOTIFICATION_DOWNLOAD_TITLE = R.string.notification_download_title
         private const val NOTIFICATION_DOWNLOAD_SUCCESS = R.string.notification_download_success

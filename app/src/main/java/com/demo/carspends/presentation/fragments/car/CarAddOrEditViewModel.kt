@@ -218,6 +218,21 @@ class CarAddOrEditViewModel @Inject constructor(
             calculateAvgFuel()
             calculateAllMileage()
             calculateAvgPrice()
+
+            setStartAndCurrentMileage()
+        }
+    }
+
+    private fun setStartAndCurrentMileage() {
+        carItem?.let {
+            max(getNotExtraNotes()?.firstOrNull()?.mileage ?: 0, it.mileage).apply {
+                carItem = it.copy(
+                    mileage = this
+                )
+
+                cMileage = this.toString()
+            }
+
         }
     }
 
@@ -310,6 +325,9 @@ class CarAddOrEditViewModel @Inject constructor(
     private fun getFuelNotes(): List<NoteItem> =
         notesListForCalculation.filter { it.type == NoteType.FUEL }
     private fun getLastNotExtraNote(): NoteItem? = notesListForCalculation.lastOrNull {
+        it.type != NoteType.EXTRA
+    }
+    private fun getNotExtraNotes() : List<NoteItem>? = notesListForCalculation.filter {
         it.type != NoteType.EXTRA
     }
 

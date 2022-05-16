@@ -47,11 +47,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshData()
-    }
-
     /**
      * Binds
      */
@@ -282,9 +277,18 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         else binding.fbAddNote.hide()
     }
 
+
+    /**
+     * Basic functions to make class work as fragment
+     */
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshData()
     }
 
     companion object {
