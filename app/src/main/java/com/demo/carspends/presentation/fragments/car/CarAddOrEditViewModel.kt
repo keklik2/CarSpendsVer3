@@ -1,9 +1,6 @@
 package com.demo.carspends.presentation.fragments.car
 
 import android.app.Application
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
@@ -11,7 +8,6 @@ import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
-import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -21,8 +17,6 @@ import com.demo.carspends.utils.*
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.github.terrakok.cicerone.Router
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
@@ -31,9 +25,6 @@ import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
-import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -219,11 +210,11 @@ class CarAddOrEditViewModel @Inject constructor(
             calculateAllMileage()
             calculateAvgPrice()
 
-            setStartAndCurrentMileage()
+            setCurrentMileage()
         }
     }
 
-    private fun setStartAndCurrentMileage() {
+    private fun setCurrentMileage() {
         carItem?.let {
             max(getNotExtraNotes()?.firstOrNull()?.mileage ?: 0, it.mileage).apply {
                 carItem = it.copy(
