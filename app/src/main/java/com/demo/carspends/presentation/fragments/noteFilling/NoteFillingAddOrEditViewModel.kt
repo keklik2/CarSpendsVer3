@@ -70,11 +70,12 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     init {
         withScope {
             notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
-            lastFuelType = notesListForCalculation.lastOrNull()?.fuelType ?: Fuel.F95
+            if (noteItem == null) lastFuelType = getFuelNotes().firstOrNull()?.fuelType ?: Fuel.F95
         }
 
         autorun(::noteItem) {
             if (it != null) {
+                lastFuelType = it.fuelType
                 nVolume = getFormattedDoubleAsStr(it.liters)
                 nTotalPrice = getFormattedDoubleAsStr(it.totalPrice)
                 nPrice = getFormattedDoubleAsStr(it.price)
@@ -128,7 +129,10 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
             if (noteItem == null) updateMileage(rMileage)
-            else rollbackCarMileage()
+            else {
+                noteItem = newNote
+                rollbackCarMileage()
+            }
             calculateAllMileage()
             addAllPrice()
             calculateAvgFuel()
@@ -206,11 +210,13 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun rollbackCarMileage() {
         carItem?.let { itCar ->
-            val newMileage = notesListForCalculation.lastOrNull {
+            val newMileage: Int = when (val item = notesListForCalculation.firstOrNull {
                 it.type != NoteType.EXTRA
                         && it.mileage > itCar.startMileage
-            }?.mileage ?: itCar.startMileage
-
+            }) {
+                null -> itCar.startMileage
+                else -> item.mileage
+            }
 
             carItem = itCar.copy(
                 mileage = newMileage

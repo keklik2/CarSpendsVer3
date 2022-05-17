@@ -12,8 +12,8 @@ android {
         applicationId "com.demo.carspends"
         minSdk 23
         targetSdk 31
-        versionCode 4011
-        versionName "Beta-4.01.1"
+        versionCode 4022
+        versionName "Beta-4.02.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

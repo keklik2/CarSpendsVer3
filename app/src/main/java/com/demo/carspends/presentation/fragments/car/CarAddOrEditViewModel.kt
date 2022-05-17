@@ -1,9 +1,6 @@
 package com.demo.carspends.presentation.fragments.car
 
 import android.app.Application
-import android.os.Environment
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
@@ -11,7 +8,6 @@ import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
-import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
@@ -21,8 +17,6 @@ import com.demo.carspends.utils.*
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.github.terrakok.cicerone.Router
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
@@ -31,9 +25,6 @@ import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
-import java.io.File
-import java.io.FileOutputStream
-import java.lang.Exception
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -210,10 +201,124 @@ class CarAddOrEditViewModel @Inject constructor(
             for (n in notes) {
                 addNoteItemUseCase(n, listOf())
             }
+            notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
+
+            calculateAllFuel()
+            calculateAllFuelPrice()
+            addAllPrice()
+            calculateAvgFuel()
+            calculateAllMileage()
+            calculateAvgPrice()
+
+            setCurrentMileage()
         }
     }
 
+    private fun setCurrentMileage() {
+        carItem?.let {
+            max(getNotExtraNotes()?.firstOrNull()?.mileage ?: 0, it.mileage).apply {
+                carItem = it.copy(
+                    mileage = this
+                )
+
+                cMileage = this.toString()
+            }
+
+        }
+    }
+
+    private fun calculateAllFuelPrice() {
+        carItem?.let { itCar ->
+            val notes = getFuelNotes()
+            val totalFuelPrice = max(
+                notes.sumOf { it.totalPrice },
+                0.0
+            )
+
+            carItem = itCar.copy(
+                fuelPrice = totalFuelPrice
+            )
+        }
+    }
+
+    private fun calculateAllFuel() {
+        carItem?.let { itCar ->
+            val notes = getFuelNotes()
+            val totalFuel = max(
+                notes.sumOf { it.liters },
+                0.0
+            )
+
+            carItem = itCar.copy(
+                allFuel = totalFuel
+            )
+        }
+    }
+
+    private fun addAllPrice() {
+        carItem?.let { itCar ->
+            val allPrice = max(
+                notesListForCalculation.sumOf { it.totalPrice },
+                0.0
+            )
+
+            carItem = itCar.copy(
+                allPrice = allPrice
+            )
+        }
+    }
+
+    private fun calculateAvgFuel() {
+        carItem?.let { itCar ->
+            if (notesListForCalculation.size > 1) {
+                val listOfFuel = getFuelNotes()
+                if (listOfFuel.size > 1) {
+                    val note1 = listOfFuel[0]
+                    val note2 = listOfFuel[1]
+                    if (note2 != note1) {
+                        val newMomentFuel = calculatedAvgFuelOfTwoNotes(note1, note2)
+                        carItem = itCar.copy(
+                            momentFuel = newMomentFuel,
+                            avgFuel = calculateAvgFuelOfAll(listOfFuel)
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun calculatedAvgFuelOfTwoNotes(n1: NoteItem, n2: NoteItem): Double {
+        val distance = maxOf(n1.mileage, n2.mileage) - minOf(n1.mileage, n2.mileage)
+        val res = (n1.liters / distance) * 100
+        return if (res > 0) {
+            if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
+            else res
+        } else 0.0
+    }
+
+    private fun calculateAvgFuelOfAll(listOfFuel: List<NoteItem>): Double {
+        if (listOfFuel.size > 1) {
+            val allMileage = listOfFuel.first().mileage - listOfFuel.last().mileage
+            val allFuel = max(
+                listOfFuel.sumOf { it.liters },
+                0.0
+            )
+
+            val res = (allFuel / allMileage.toDouble()) * 100
+            return if (res > 0) {
+                if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
+                else res
+            } else 0.0
+        }
+        return 0.0
+    }
+
+    private fun getFuelNotes(): List<NoteItem> =
+        notesListForCalculation.filter { it.type == NoteType.FUEL }
     private fun getLastNotExtraNote(): NoteItem? = notesListForCalculation.lastOrNull {
+        it.type != NoteType.EXTRA
+    }
+    private fun getNotExtraNotes() : List<NoteItem>? = notesListForCalculation.filter {
         it.type != NoteType.EXTRA
     }
 

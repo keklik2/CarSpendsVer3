@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -73,6 +74,7 @@ class DbSaver<T> @Inject constructor(
             stream.write(json?.toByteArray())
             stream.close()
             makeAlert(ENDED_DOWNLOAD)
+            makeToast(TOAST_START_LOAD)
         } catch (e: Exception) {
             makeAlert(ERROR)
             makeToast("${fragment.getString(TOAST_ERROR_SAVE)}: $e")
@@ -148,7 +150,7 @@ class DbSaver<T> @Inject constructor(
         val builder = when (condition) {
             START_DOWNLOAD -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_PROCESSING))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -157,7 +159,7 @@ class DbSaver<T> @Inject constructor(
             }
             ENDED_DOWNLOAD -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_SUCCESS))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -168,14 +170,14 @@ class DbSaver<T> @Inject constructor(
                             fragment.requireContext(),
                             0,
                             Intent(DownloadManager.ACTION_VIEW_DOWNLOADS),
-                            0
+                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) PendingIntent.FLAG_MUTABLE else 0
                         )
                     )
                     .build()
             }
             else -> {
                 NotificationCompat.Builder(fragment.requireContext(), DOWNLOAD_CHANNEL_ID)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.drawable.ic_launcher_icon)
                     .setContentTitle(fragment.getString(NOTIFICATION_DOWNLOAD_TITLE))
                     .setContentText(fragment.getString(NOTIFICATION_DOWNLOAD_ERROR))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -215,6 +217,7 @@ class DbSaver<T> @Inject constructor(
         private const val TOAST_ERROR_LOAD = R.string.toast_db_saver_load_error
         private const val TOAST_ERROR_SAVE = R.string.toast_db_saver_save_error
         private const val TOAST_COMPLETED_LOAD = R.string.toast_db_saver_load_completed
+        private const val TOAST_START_LOAD = R.string.toast_db_saver_load_start
 
         private const val NOTIFICATION_DOWNLOAD_TITLE = R.string.notification_download_title
         private const val NOTIFICATION_DOWNLOAD_SUCCESS = R.string.notification_download_success
