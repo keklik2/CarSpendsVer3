@@ -91,8 +91,25 @@ class NoteFillingAddOrEditFragment :
      * Binds
      */
     override fun setupPicturesRecyclerViewBind() = viewModel::pictures bind {
-        binding.picturesRv.adapter = pictureAdapter
         pictureAdapter.submitList(it)
+    }
+    private fun setupLastFuelTypeBind() =
+        viewModel::lastFuelType bind {
+            binding.spinnerFuelType.setSelection(viewModel.getFuelId(it))
+        }
+    private fun setupNoteDateBind() =
+        viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
+    private fun setupCanCloseScreenBind() =
+        viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+    private fun setupFieldsBind() {
+        with(viewModel) {
+            with(binding) {
+                ::nVolume bind { it?.let { tietFuelLiters.setText(it) } }
+                ::nPrice bind { it?.let { tietFuelPrice.setText(it) } }
+                ::nTotalPrice bind { it?.let { tietFuelTotalPrice.setText(it) } }
+                ::nMileage bind { it?.let { tietMileageValue.setText(it) } }
+            }
+        }
     }
 
 
@@ -273,25 +290,6 @@ class NoteFillingAddOrEditFragment :
         }
     }
 
-    private fun setupLastFuelTypeBind() =
-        viewModel::lastFuelType bind {
-            binding.spinnerFuelType.setSelection(viewModel.getFuelId(it))
-        }
-    private fun setupNoteDateBind() =
-        viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
-    private fun setupCanCloseScreenBind() =
-        viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
-    private fun setupFieldsBind() {
-        with(viewModel) {
-            with(binding) {
-                ::nVolume bind { it?.let { tietFuelLiters.setText(it) } }
-                ::nPrice bind { it?.let { tietFuelPrice.setText(it) } }
-                ::nTotalPrice bind { it?.let { tietFuelTotalPrice.setText(it) } }
-                ::nMileage bind { it?.let { tietMileageValue.setText(it) } }
-            }
-        }
-    }
-
     private fun setupFuelSpinnerAdapter() {
         // Setting Fuel enum values for spinner
         binding.spinnerFuelType.adapter = ArrayAdapter(
@@ -330,6 +328,7 @@ class NoteFillingAddOrEditFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.picturesRv.adapter = pictureAdapter
         setupFuelSpinnerAdapter()
     }
 

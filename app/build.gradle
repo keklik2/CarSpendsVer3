@@ -12,8 +12,8 @@ android {
         applicationId "com.demo.carspends"
         minSdk 23
         targetSdk 31
-        versionCode 4011
-        versionName "Beta-4.01.1"
+        versionCode 4022
+        versionName "Beta-4.02.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -119,4 +119,10 @@ dependencies {
      * Skeleton - lib for loading animations
      */
     implementation 'com.faltenreich:skeletonlayout:4.0.0'
+
+
+    /**
+     * Gson - lib for work with JSon
+     */
+    implementation 'com.google.code.gson:gson:2.9.0'
 }

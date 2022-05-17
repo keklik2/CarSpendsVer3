@@ -2,6 +2,9 @@
     <!-- App Resources -->
     <string name="app_name">CarSpends</string>
     <string name="title_activity_bottom_nav_menu">BottomNavMenuActivity</string>
+    <string name="settings_file_name">inside_settings</string>
+    <string name="notification_channel_download">Download notifications</string>
+    <string name="notification_channel_download_description">Channel for download notifications</string>
 
     <!-- Layouts Visible Resources (textVies mainly) -->
     <string name="text_resource">Ресурс:</string>
@@ -44,6 +47,8 @@
     <!-- Buttons -->
     <string name="button_apply">Принять</string>
     <string name="button_deny">Отмена</string>
+    <string name="button_download_db">Сохранить записи</string>
+
 
     <!-- Dialog messages -->
     <string name="dialog_delete_title">Удалить</string>
@@ -61,6 +66,16 @@
     <string name="toast_cars_loading_error">Ошибка при загрузке автомобилей</string>
     <string name="toast_notes_loading_error">Ошибка при загрузке записей</string>
     <string name="toast_pictures_max_size">Нельзя прикрепить более 4 изображений</string>
+    <string name="toast_db_saver_load_error">Ошибка при загрузке файла</string>
+    <string name="toast_db_saver_save_error">Ошибка при сохранении файла</string>
+    <string name="toast_db_saver_load_completed">Загрузка завершена</string>
+    <string name="toast_db_saver_load_start">Загрузка началась\nПодробнее в оповещении</string>
+
+    <!-- Notifications -->
+    <string name="notification_download_title">Загрузка</string>
+    <string name="notification_download_success">Файл загружен (нажмите для просмотра)</string>
+    <string name="notification_download_in_process">Файл загружается</string>
+    <string name="notification_download_error">Ошибка при загрузке</string>
 
     <!-- Hints -->
     <string name="hint_works_name">Название работы</string>
@@ -153,6 +168,5 @@
     </string-array>
 
     <!-- Other -->
-    <string name="settings_file_name">inside_settings</string>
     <string name="pick_images">Выбрать изображение</string>
 </resources>

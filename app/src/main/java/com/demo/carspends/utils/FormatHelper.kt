@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.view.View
+import com.google.gson.reflect.TypeToken
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,3 +62,5 @@ fun View.setVisibility(isVisible: Boolean) {
         if (isVisible) View.VISIBLE
         else View.INVISIBLE
 }
+
+inline fun <reified T> genericType() = object: TypeToken<T>() {}.type

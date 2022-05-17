@@ -36,7 +36,7 @@ abstract class MainDataBase: RoomDatabase() {
                         MainDataBase::class.java,
                         DB_NAME
                     )
-                        .addMigrations(MIGRATION_9_10, MIGRATION_10_12, MIGRATION_13_14)
+                        .addMigrations(MIGRATION_9_10, MIGRATION_10_12, MIGRATION_12_14)
                         .build()
                 db = instance
                 return instance
@@ -68,10 +68,10 @@ abstract class MainDataBase: RoomDatabase() {
             }
         }
 
-        private val MIGRATION_13_14: Migration = object : Migration(13, 14) {
+        private val MIGRATION_12_14: Migration = object : Migration(12, 14) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 with(database) {
-                    execSQL("ALTER TABLE pictures_table ADD COLUMN uri TEXT DEFAULT '' NOT NULL")
+                    execSQL("CREATE TABLE pictures_table (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, uri TEXT NOT NULL, noteId INTEGER NOT NULL)")
                 };
             }
         }
