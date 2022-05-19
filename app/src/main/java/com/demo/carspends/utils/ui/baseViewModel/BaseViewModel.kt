@@ -1,6 +1,7 @@
 package com.demo.carspends.utils.ui.baseViewModel
 
 import android.app.Application
+import android.graphics.drawable.Drawable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
@@ -18,4 +19,5 @@ abstract class BaseViewModel(
     fun getCurrentDate(): Long = Date().time
 
     fun getString(resource: Int): String = app.getString(resource)
+    fun getDrawable(resource: Int): Drawable? = app.getDrawable(resource)
 }

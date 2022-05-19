@@ -11,6 +11,7 @@ import com.demo.carspends.presentation.fragments.notesList.NotesListViewModel
 import com.demo.carspends.presentation.fragments.settings.SettingsViewModel
 import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
 import com.demo.carspends.presentation.fragments.statistics.StatisticsViewModel
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -62,5 +63,10 @@ interface ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     fun bindSettingsViewModel(viewModel: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(GraphicsViewModel::class)
+    fun bindGraphicsViewModel(viewModel: GraphicsViewModel): ViewModel
 
 }

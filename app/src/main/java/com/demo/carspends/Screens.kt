@@ -7,6 +7,7 @@ import com.demo.carspends.presentation.activities.SettingsActivity
 import com.demo.carspends.presentation.fragments.componentsList.ComponentsListFragment
 import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
 import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsFragment
 import com.github.terrakok.cicerone.androidx.ActivityScreen
 import com.github.terrakok.cicerone.androidx.FragmentScreen
 
@@ -55,6 +56,7 @@ object Screens {
     fun NotesList() = FragmentScreen { NotesListFragment() }
     fun ComponentsList() = FragmentScreen { ComponentsListFragment() }
     fun Statistics() = FragmentScreen { StatisticsFragment() }
+    fun Graphics() = FragmentScreen { GraphicsFragment() }
 
     fun Settings() = ActivityScreen {
         SettingsActivity.getInstance(it)

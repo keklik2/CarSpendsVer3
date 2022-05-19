@@ -21,13 +21,14 @@
     <string name="text_all_fuel_price">Потрачено на бензин</string>
     <string name="text_mileage_price">Стоимость километра</string>
     <string name="text_all_price">Потрачено всего</string>
+    <string name="text_all_price_without_fuel">Потрачено всего (без топлива)</string>
     <string name="text_all_mileage">Общий пробег</string>
     <string name="text_empty_note_or_component">Здесь появятся записи, когда Вы их добавите (:</string>
     <string name="text_font_size">Размер шрифта</string>
     <string name="text_font_size_large">Увеличенный шрифт</string>
     <string name="text_statistics_1">Поле статистики (1)</string>
     <string name="text_statistics_2">Поле статистики (2)</string>
-    <string name="unnamed">- без названия -</string>
+    <string name="text_unnamed">- без названия -</string>
 
     <string name="text_measure_mileage_unit">км</string>
     <string name="text_measure_mileage_unit_for_formatting">%s км</string>
@@ -111,6 +112,7 @@
 
     <!-- Description labels -->
     <string name="description_add_new_note">Добавить новую запись</string>
+    <string name="description_set_date">Установить временные рамки</string>
     <string name="description_add_new_note_extra">Добавить новую запись, категория "прочее"</string>
     <string name="description_add_new_note_repair">Добавить новую запись, категория "ремонт"</string>
     <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
@@ -169,4 +171,14 @@
 
     <!-- Other -->
     <string name="pick_images">Выбрать изображение</string>
+    <string name="graph_title">%s\n(%s)</string>
+
+    <!-- Days of weeks -->
+    <string name="monday">ПН</string>
+    <string name="tuesday">ВТ</string>
+    <string name="wednesday">СР</string>
+    <string name="thursday">ЧТ</string>
+    <string name="friday">ПТ</string>
+    <string name="saturday">СБ</string>
+    <string name="sunday">ВС</string>
 </resources>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+
+    android:background="@drawable/rounded_rectangle_light_light_vine">
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:background="@drawable/rounded_rectangle_white"
+
+        app:layout_constraintTop_toTopOf="@+id/tv_graph_title"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_graph_title"
+        app:layout_constraintStart_toStartOf="@+id/tv_graph_title"
+        app:layout_constraintEnd_toEndOf="@+id/tv_graph_measure"/>
+
+    <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
+        android:id="@+id/tv_graph_title"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_graph_measure"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_graph_measure"
+        app:layout_constraintEnd_toStartOf="@+id/tv_graph_measure"
+
+        android:background="@drawable/rounded_rectangle_white"
+        android:maxLines="1"
+        android:ellipsize="end"
+
+        android:fontFamily="@font/gotham_pro_narrow"
+        android:textSize="16sp"
+        android:gravity="center_vertical"
+        android:textColor="@color/light_black"
+        tools:text="Средний расход топлива"/>
+
+    <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
+        android:id="@+id/tv_graph_measure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_graph_title"
+
+        app:drawableStartCompat="@drawable/ic_baseline_local_gas_station_24_white"
+        android:drawablePadding="10dp"
+        android:background="@drawable/rounded_rectangle_light_black"
+
+        android:fontFamily="@font/gotham_pro_narrow"
+        android:textSize="16sp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        tools:text="0 л/км"/>
+
+    <HorizontalScrollView
+        android:id="@+id/chart_sv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+
+        app:layout_constraintTop_toBottomOf="@+id/tv_graph_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <view
+            android:id="@+id/chart"
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+
+            class="im.dacer.androidcharts.BarView"/>
+
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

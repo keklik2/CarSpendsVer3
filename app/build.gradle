@@ -125,4 +125,9 @@ dependencies {
      * Gson - lib for work with JSon
      */
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    /**
+     * Graph lib
+     */
+    implementation 'im.dacer:AndroidCharts:1.0.4'
 }

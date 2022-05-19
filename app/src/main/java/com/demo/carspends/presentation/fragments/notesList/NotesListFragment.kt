@@ -1,8 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesList
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
@@ -46,6 +44,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
             viewModel.goToNoteAddOrEditFragment(it.type, it.id)
         }
     }
+
 
     /**
      * Binds

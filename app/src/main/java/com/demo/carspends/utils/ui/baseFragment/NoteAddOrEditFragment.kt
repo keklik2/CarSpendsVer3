@@ -3,7 +3,6 @@ package com.demo.carspends.utils.ui.baseFragment
 import android.Manifest
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -119,6 +118,6 @@ abstract class NoteAddOrEditFragment(layout: Int) :
         }
 
     companion object {
-        private const val UNNAMED_FILE = R.string.unnamed
+        private const val UNNAMED_FILE = R.string.text_unnamed
     }
 }

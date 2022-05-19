@@ -1,6 +1,7 @@
 package com.demo.carspends.presentation.fragments.statistics
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
@@ -20,6 +21,7 @@ import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
+import java.util.*
 import javax.inject.Inject
 
 class StatisticsViewModel @Inject constructor(
@@ -28,7 +30,7 @@ class StatisticsViewModel @Inject constructor(
     private val app: Application
 ) : BaseViewModel(app) {
 
-    var startDate by state(0L)
+    var startDate by state(Calendar.getInstance().apply{ add(Calendar.YEAR, -1) }.timeInMillis)
     var endDate by state(getCurrentDate())
 
     var sAvgFuel by state("-")
@@ -88,21 +90,39 @@ class StatisticsViewModel @Inject constructor(
                 )
             }
         }
+
+        autorun(::startDate, ::endDate) { sDate, eDate ->
+            withScope {  }
+        }
     }
 
-    fun calculateAvgFuel() { }
+    fun calculateAvgFuel() {
 
-    fun calculateMomentFuel() { }
+    }
 
-    fun calculateAllFuel() { }
+    fun calculateMomentFuel() {
 
-    fun calculateFuelPrice() { }
+    }
 
-    fun calculateMileagePrice() { }
+    fun calculateAllFuel() {
 
-    fun calculateAllPrice() { }
+    }
 
-    fun calculateAllMileage() { }
+    fun calculateFuelPrice() {
+
+    }
+
+    fun calculateMileagePrice() {
+
+    }
+
+    fun calculateAllPrice() {
+
+    }
+
+    fun calculateAllMileage() {
+
+    }
 
     override val propertyHostScope: CoroutineScope
         get() = viewModelScope

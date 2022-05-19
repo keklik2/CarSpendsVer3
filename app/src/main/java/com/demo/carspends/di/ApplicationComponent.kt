@@ -13,6 +13,7 @@ import com.demo.carspends.presentation.fragments.noteRepair.NoteRepairAddOrEditF
 import com.demo.carspends.presentation.fragments.notesList.NotesListFragment
 import com.demo.carspends.presentation.fragments.settings.SettingsFragment
 import com.demo.carspends.presentation.fragments.statistics.StatisticsFragment
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsFragment
 import com.github.terrakok.cicerone.Router
 import dagger.BindsInstance
 import dagger.Component
@@ -40,6 +41,7 @@ interface ApplicationComponent {
     fun inject(fragment: NotesListFragment)
     fun inject(fragment: StatisticsFragment)
     fun inject(fragment: SettingsFragment)
+    fun inject(fragment: GraphicsFragment)
 
     @Component.Factory
     interface Factory {
