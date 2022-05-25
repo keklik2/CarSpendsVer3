@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import com.demo.carspends.R
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
-import com.demo.carspends.utils.getFormattedPercentsAsStr
+import com.demo.carspends.utils.getFormattedPercentAsStr
 import me.ibrahimyilmaz.kiel.adapterOf
 
 object ComponentItemAdapter {
@@ -32,7 +32,7 @@ object ComponentItemAdapter {
                             with(item) {
                                 pbLeftMileage.progress = leftResourcePercent
                                 tvLeftMileage.text =
-                                    getFormattedPercentsAsStr(leftResourcePercent)
+                                    getFormattedPercentAsStr(leftResourcePercent)
                                 tvTitle.text = title
 
                                 // Setting resource statement value & color

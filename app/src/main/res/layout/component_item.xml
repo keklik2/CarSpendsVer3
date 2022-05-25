@@ -24,7 +24,7 @@
 
             android:layout_centerInParent="true"
             android:indeterminateOnly="false"
-            android:progressDrawable="@drawable/circle_progress_bar"
+            android:progressDrawable="@drawable/progress_bar_circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -152,24 +152,21 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
      * Additional functions
      */
     private fun getYearDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.YEAR, MINUS_ONE)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
     private fun getMonthDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.MONTH, MINUS_ONE)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
     private fun getWeekDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.DATE, MINUS_WEEK)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
 

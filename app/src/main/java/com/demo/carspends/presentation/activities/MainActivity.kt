@@ -3,6 +3,7 @@ package com.demo.carspends.presentation.activities
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.ashokvarma.bottomnavigation.BottomNavigationBar
 import com.ashokvarma.bottomnavigation.BottomNavigationItem
 import com.demo.carspends.CarSpendsApp
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity() {
         (application as CarSpendsApp).component.inject(this)
         super.onCreate(savedInstanceState)
 
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         bottomNavigationBar = findViewById<View>(R.id.ab_bottom_navigation_bar) as BottomNavigationBar
@@ -38,17 +41,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun initViews() {
         bottomNavigationBar
-            .addItem(BottomNavigationItem(R.drawable.ic_home_black_24dp, R.string.menu_home))
-            .addItem(BottomNavigationItem(R.drawable.ic_baseline_av_timer_24, R.string.menu_resources))
-            .addItem(BottomNavigationItem(R.drawable.ic_baseline_bar_chart_24, R.string.menu_statistics))
+            .addItem(BottomNavigationItem(R.drawable.ic_home_black, R.string.menu_home))
+            .addItem(BottomNavigationItem(R.drawable.ic_timer, R.string.menu_resources))
+            .addItem(BottomNavigationItem(R.drawable.ic_chart, R.string.menu_statistics))
             .initialise()
         bottomNavigationBar.setTabSelectedListener(object : BottomNavigationBar.OnTabSelectedListener {
             override fun onTabSelected(position: Int) {
                 when (position) {
                     0 -> router.replaceScreen(Screens.NotesList())
                     1 -> router.replaceScreen(Screens.ComponentsList())
-//                    2 -> router.replaceScreen(Screens.Statistics())
-                    2 -> router.replaceScreen(Screens.Graphics())
+                    2 -> router.replaceScreen(Screens.Statistics())
                 }
                 bottomNavigationBar.selectTab(position, false)
             }

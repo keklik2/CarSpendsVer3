@@ -1,4 +1,4 @@
-package com.demo.carspends.presentation.fragments.statistics.graphics
+package com.demo.carspends.presentation.fragments.statistics.graphics.adapter
 
 data class GraphItem(
     var title: String,

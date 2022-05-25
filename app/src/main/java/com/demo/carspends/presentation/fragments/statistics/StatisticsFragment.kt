@@ -1,96 +1,44 @@
 package com.demo.carspends.presentation.fragments.statistics
 
-import android.app.DatePickerDialog
 import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.StatisticsFragmentBinding
-import com.demo.carspends.utils.getFormattedDate
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsFragment
+import com.demo.carspends.presentation.fragments.statistics.numerous.NumerousFragment
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
-import im.dacer.androidcharts.BarView
-import java.util.*
 
 class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
     override val binding: StatisticsFragmentBinding by viewBinding()
     override val viewModel: StatisticsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
-        setupDatesClickListener()
+        setupRadioGroupClickListener()
     }
     override var setupBinds: (() -> Unit)? = {
-        setupFieldsBind()
+
     }
 
 
     /**
-     * Binds
+     * Listener functions
      */
-    private fun setupFieldsBind() {
-        with(viewModel) {
-            with(binding) {
-                ::sAvgFuel bind { tvAvgFuel.text = it }
-                ::sMomentFuel bind { tvMomentFuel.text = it }
-                ::sAllFuel bind { tvAllFuel.text = it }
-                ::sFuelPrice bind { tvAllFuelPrice.text = it }
-                ::sMileagePrice bind { tvMileagePrice.text = it }
-                ::sAllPrice bind { tvAllPrice.text = it }
-                ::sAllMileage bind { tvAllMileage.text = it }
-                ::startDate bind { startDateIb.text = getFormattedDate(it) }
-                ::endDate bind { endDateIb.text = getFormattedDate(it) }
-            }
+    private fun setupRadioGroupClickListener() {
+        binding.rgTopMenu.setOnCheckedChangeListener { _, i ->
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(
+                    R.id.fragment_container,
+                    when (i) {
+                        NUMEROUS -> NumerousFragment()
+                        else -> GraphicsFragment()
+                    }
+                )
+                .commit()
         }
     }
-
-
-    /**
-     * Listeners functions
-     */
-    private fun setupDatesClickListener() {
-        binding.startDateIb.setOnClickListener {
-            val dateSetListener =
-                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                    val cal = GregorianCalendar.getInstance()
-                    cal.set(Calendar.YEAR, year)
-                    cal.set(Calendar.MONTH, monthOfYear)
-                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                    viewModel.startDate = cal.time.time
-                }
-
-                val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.startDate }
-                DatePickerDialog(
-                    requireContext(), dateSetListener,
-                    cCal.get(Calendar.YEAR),
-                    cCal.get(Calendar.MONTH),
-                    cCal.get(Calendar.DAY_OF_MONTH)
-                ).show()
-        }
-
-        binding.endDateIb.setOnClickListener {
-            val dateSetListener =
-                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
-                    val cal = GregorianCalendar.getInstance()
-                    cal.set(Calendar.YEAR, year)
-                    cal.set(Calendar.MONTH, monthOfYear)
-                    cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-
-                    viewModel.endDate = cal.time.time
-                }
-
-            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.endDate }
-            DatePickerDialog(
-                requireContext(), dateSetListener,
-                cCal.get(Calendar.YEAR),
-                cCal.get(Calendar.MONTH),
-                cCal.get(Calendar.DAY_OF_MONTH)
-            ).show()
-        }
-    }
-
-
-    /**
-     * Additional functions
-     */
 
 
     /**
@@ -99,5 +47,24 @@ class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
     override fun onAttach(context: Context) {
         component.inject(this)
         super.onAttach(context)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container,
+                NumerousFragment()
+            )
+            .commit()
+
+        binding.rbNumerous.isChecked = true
+        binding.rbGraph.isChecked = false
+    }
+
+    companion object {
+        private const val NUMEROUS = R.id.rb_numerous
+        private const val GRAPH = R.id.rb_graph
     }
 }

@@ -18,12 +18,16 @@
     <string name="text_avg_fuel">Средний расход</string>
     <string name="text_moment_fuel">Моментальный расход</string>
     <string name="text_all_fuel">Всего залито</string>
+    <string name="text_all_fuel_graph">Залито топлива</string>
     <string name="text_all_fuel_price">Потрачено на бензин</string>
     <string name="text_mileage_price">Стоимость километра</string>
     <string name="text_all_price">Потрачено всего</string>
-    <string name="text_all_price_without_fuel">Потрачено всего (без топлива)</string>
+    <string name="text_all_price_graph">Расходы</string>
+    <string name="text_all_price_without_fuel">Расходы (без топлива)</string>
     <string name="text_all_mileage">Общий пробег</string>
+    <string name="text_all_mileage_graph">Пробег</string>
     <string name="text_empty_note_or_component">Здесь появятся записи, когда Вы их добавите (:</string>
+    <string name="text_not_enough_info">Недостаточно информации для предоставления статистики</string>
     <string name="text_font_size">Размер шрифта</string>
     <string name="text_font_size_large">Увеличенный шрифт</string>
     <string name="text_statistics_1">Поле статистики (1)</string>
@@ -109,6 +113,8 @@
     <string name="menu_home">Главная</string>
     <string name="menu_resources">Ресурс</string>
     <string name="menu_statistics">Статистика</string>
+    <string name="top_menu_numerous">Общая</string>
+    <string name="top_menu_graphic">Графики</string>
 
     <!-- Description labels -->
     <string name="description_add_new_note">Добавить новую запись</string>
@@ -148,6 +154,10 @@
         <item>За месяц</item>
         <item>За неделю</item>
     </string-array>
+    <string name="date_week">За неделю</string>
+    <string name="date_month">За месяц</string>
+    <string name="date_year">За год</string>
+    <string name="date_all_time">За всё время</string>
 
     <string-array name="fuel_values">
         <item>АИ-92</item>
@@ -181,4 +191,7 @@
     <string name="friday">ПТ</string>
     <string name="saturday">СБ</string>
     <string name="sunday">ВС</string>
+
+    <!-- Chart -->
+    <string name="x_axis_title">{%Value}{groupsSeparator: }\₽</string>
 </resources>

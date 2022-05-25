@@ -1,15 +1,21 @@
 package com.demo.carspends.presentation.fragments.statistics.graphics
 
 import android.content.Context
+import android.util.Log
+import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.GraphicsFragmentBinding
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_ALL_TIME
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_MONTH
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_WEEK
+import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_YEAR
+import com.demo.carspends.presentation.fragments.statistics.graphics.adapter.GraphAdapter
+import com.demo.carspends.utils.setVisibility
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
-import com.faltenreich.skeletonlayout.applySkeleton
-import me.aartikov.sesame.loading.simple.Loading
 
 class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     override val binding: GraphicsFragmentBinding by viewBinding()
@@ -30,26 +36,12 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
      */
     private fun setupRecyclerBind() {
         binding.rvGraphics.adapter = mainAdapter
-//        val skeleton = binding.rvGraphics.applySkeleton(R.layout.graphic_item)
-//        skeleton.showSkeleton()
 
         viewModel::testGraphItem bind {
             mainAdapter.submitList(it)
+            if (it.isEmpty()) binding.tvEmptyGraphs.setVisibility(true)
+            else binding.tvEmptyGraphs.setVisibility(false)
         }
-
-//        viewModel::graphListState bind {
-//            when (it) {
-//                is Loading.State.Data -> {
-//                    skeleton.showOriginal()
-//                    mainAdapter.submitList(it.data)
-//                }
-//                is Loading.State.Loading -> skeleton.showSkeleton()
-//                else -> {
-//                    skeleton.showOriginal()
-//                    mainAdapter.submitList(emptyList())
-//                }
-//            }
-//        }
     }
 
 
@@ -81,7 +73,20 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     private fun isFBDateShown(): Boolean = binding.fbDate.isVisible
 
     private fun setupDateType() {
-        viewModel.dateType
+        val popupmenu = PopupMenu(requireActivity(), binding.fbDate).apply {
+            inflate(R.menu.popup_menu)
+        }
+
+        popupmenu.setOnMenuItemClickListener {
+            viewModel.dateType = when(it.itemId) {
+                R.id.menu_week -> DATE_WEEK
+                R.id.menu_month -> DATE_MONTH
+                R.id.menu_year -> DATE_YEAR
+                else -> DATE_ALL_TIME
+            }
+            true
+        }
+        popupmenu.show()
     }
 
     private fun setFBDateVisibility(visible: Boolean) {

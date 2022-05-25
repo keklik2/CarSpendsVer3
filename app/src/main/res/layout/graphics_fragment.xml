@@ -21,6 +21,18 @@
         tools:itemCount="4"
         tools:listitem="@layout/graphic_item"/>
 
+    <TextView
+        android:id="@+id/tv_empty_graphs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:visibility="invisible"
+        android:text="@string/text_not_enough_info"
+        style="@style/entryUnitMainMenuText"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_date"
         android:layout_width="wrap_content"
@@ -31,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
-        app:srcCompat="@drawable/ic_baseline_more_time_24"
+        app:srcCompat="@drawable/ic_more_time"
         style="@style/floatingButton.Secondary"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

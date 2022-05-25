@@ -6,10 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
-import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.getFormattedDayOfWeekRes
-import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
-import com.demo.carspends.utils.getFormattedYear
+import com.demo.carspends.presentation.fragments.statistics.graphics.adapter.GraphItem
+import com.demo.carspends.utils.*
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.property.autorun
@@ -55,14 +53,11 @@ class GraphicsViewModel @Inject constructor(
                 getAvgFuel()?.let { add(it) }
                 getAllPriceWithoutFuel()?.let { add(it) }
                 getAllPrice()?.let { add(it) }
-                getAllMileage()?.let { add(it) }
+//                getAllMileage()?.let { add(it) }
             }
             testGraphItem = test
         }
     }
-
-    private fun areDaysTheSame(date1: Long, date2: Long): Boolean =
-        getFormattedDayOfWeekRes(date1) == getFormattedDayOfWeekRes(date2)
 
     private suspend fun getAvgFuel(): GraphItem? {
         val notes = getNoteItemsListUseCase(type = NoteType.FUEL, date = dateFilter)
@@ -77,42 +72,44 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            when (dateType) {
-                DATE_ALL_TIME -> {
-                    return null
-                }
-                DATE_YEAR -> {
-                    return null
-                }
-                DATE_MONTH -> {
-                    return null
-                }
-                else -> {
-                    var lastNoteDate = notes.first().date
-                    for (n in notes) {
-                        val day = getString(getFormattedDayOfWeekRes(n.date))
-                        var mileage = n.liters.toInt()
-
-                        if (n == notes.first() || !areDaysTheSame(lastNoteDate, n.date)) {
-                            titlesList.add(day)
-                            dataList.add(mileage)
-                        } else {
-                            mileage += dataList.last()
-                            dataList.remove(dataList.size - 1)
-                            dataList.add(mileage)
-                        }
-
-                        lastNoteDate = n.date
-                    }
-                }
+            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+                DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
+                DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
+                DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
+                else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
+
+            val titleFunction: (Long) -> String = when (dateType) {
+                DATE_ALL_TIME -> { date -> getFormattedYear(date) }
+                DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
+                DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
+                else -> { date -> getString(getFormattedDayOfWeekRes(date)) }
+            }
+
+            var lastNoteDate = notes.first().date
+            for (n in notes) {
+                val day = titleFunction(n.date)
+                var mileage = n.liters.toInt()
+
+                if (n == notes.first() || !compareFunc(lastNoteDate, n.date)) {
+                    titlesList.add(day)
+                    dataList.add(mileage)
+                } else {
+                    mileage += dataList.last()
+                    dataList.remove(dataList.last())
+                    dataList.add(mileage)
+                }
+
+                lastNoteDate = n.date
+            }
+
             GraphItem(
                 getString(TITLE_AVG_FUEL),
                 measure,
                 maxHeight,
                 AVG_FUEL_ICON,
-                titlesList.apply { sortDescending() },
-                dataList.apply { sortDescending() }
+                titlesList.apply { reverse() },
+                dataList.apply { reverse() }
             )
         } else null
     }
@@ -134,42 +131,44 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            when (dateType) {
-                DATE_ALL_TIME -> {
-                    return null
-                }
-                DATE_YEAR -> {
-                    return null
-                }
-                DATE_MONTH -> {
-                    return null
-                }
-                else -> {
-                    var lastNoteDate = notes.first().date
-                    for (n in notes) {
-                        val day = getString(getFormattedDayOfWeekRes(n.date))
-                        var price = n.totalPrice.toInt()
-
-                        if (n == notes.first() || !areDaysTheSame(lastNoteDate, n.date)) {
-                            titlesList.add(day)
-                            dataList.add(price)
-                        } else {
-                            price += dataList.last()
-                            dataList.remove(dataList.size - 1)
-                            dataList.add(price)
-                        }
-
-                        lastNoteDate = n.date
-                    }
-                }
+            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+                DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
+                DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
+                DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
+                else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
+
+            val titleFunction: (Long) -> String = when (dateType) {
+                DATE_ALL_TIME -> { date -> getFormattedYear(date) }
+                DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
+                DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
+                else -> { date -> getString(getFormattedDayOfWeekRes(date)) }
+            }
+
+            var lastNoteDate = notes.first().date
+            for (n in notes) {
+                val day = titleFunction(n.date)
+                var price = n.totalPrice.toInt()
+
+                if (n == notes.first() || !compareFunc(lastNoteDate, n.date)) {
+                    titlesList.add(day)
+                    dataList.add(price)
+                } else {
+                    price += dataList.last()
+                    dataList.remove(dataList.last())
+                    dataList.add(price)
+                }
+
+                lastNoteDate = n.date
+            }
+
             GraphItem(
                 getString(TITLE_ALL_PRICE_WITHOUT_FUEL),
                 measure,
                 maxHeight,
                 ALL_PRICE_ICON,
-                titlesList.apply { sortDescending() },
-                dataList.apply { sortDescending() }
+                titlesList.apply { reverse() },
+                dataList.apply { reverse() }
             )
         } else null
     }
@@ -188,123 +187,145 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            when (dateType) {
-                DATE_ALL_TIME -> {
-                    return null
-                }
-                DATE_YEAR -> {
-                    return null
-                }
-                DATE_MONTH -> {
-                    return null
-                }
-                else -> {
-                    var lastNoteDate = notes.first().date
-                    for (n in notes) {
-                        val day = getString(getFormattedDayOfWeekRes(n.date))
-                        var price = n.totalPrice.toInt()
-
-                        if (n == notes.first() || !areDaysTheSame(lastNoteDate, n.date)) {
-                            titlesList.add(day)
-                            dataList.add(price)
-                        } else {
-                            price += dataList.last()
-                            dataList.remove(dataList.size - 1)
-                            dataList.add(price)
-                        }
-
-                        lastNoteDate = n.date
-                    }
-                }
+            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+                DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
+                DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
+                DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
+                else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
+
+            val titleFunction: (Long) -> String = when (dateType) {
+                DATE_ALL_TIME -> { date -> getFormattedYear(date) }
+                DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
+                DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
+                else -> { date -> getString(getFormattedDayOfWeekRes(date)) }
+            }
+
+            var lastNoteDate = notes.first().date
+            for (n in notes) {
+                val day = titleFunction(n.date)
+                var price = n.totalPrice.toInt()
+
+                if (n == notes.first() || !compareFunc(lastNoteDate, n.date)) {
+                    titlesList.add(day)
+                    dataList.add(price)
+                } else {
+                    price += dataList.last()
+                    dataList.remove(dataList.last())
+                    dataList.add(price)
+                }
+
+                lastNoteDate = n.date
+            }
+
             GraphItem(
                 getString(TITLE_ALL_PRICE),
                 measure,
                 maxHeight,
                 ALL_PRICE_ICON,
-                titlesList.apply { sortDescending() },
-                dataList.apply { sortDescending() }
+                titlesList.apply { reverse() },
+                dataList.apply { reverse() }
             )
         } else null
     }
 
-    private suspend fun getAllMileage(): GraphItem? {
-        val notes = getNoteItemsListUseCase(date = dateFilter).filter {
-            it.type != NoteType.EXTRA
-        }
+//    private suspend fun getAllMileage(): GraphItem? {
+//        val notes = getNoteItemsListUseCase(date = dateFilter).filter {
+//            it.type != NoteType.EXTRA
+//        }.reversed()
+//
+//        return if (notes.isNotEmpty()) {
+//            val measure =
+//                String.format(
+//                    getString(STR_ALL_MILEAGE),
+//                    getFormattedIntAsStrForDisplay(notes.sumOf { it.mileage })
+//                )
+//
+//            val titlesList = mutableListOf<String>()
+//            val dataList = mutableListOf<Int>()
+//
+//            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+//                DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
+//                DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
+//                DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
+//                else -> { date1, date2 -> areDaysTheSame(date1, date2) }
+//            }
+//
+//            val titleFunction: (Long) -> String = when (dateType) {
+//                DATE_ALL_TIME -> { date -> getFormattedYear(date) }
+//                DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
+//                DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
+//                else -> { date -> getString(getFormattedDayOfWeekRes(date)) }
+//            }
+//
+//            var lastNoteDate = notes.first().date
+//            for (n in notes) {
+//                val day = titleFunction(n.date)
+//                var mileage = n.mileage
+//
+//                if (n == notes.first() || !compareFunc(lastNoteDate, n.date)) {
+//                    titlesList.add(day)
+//                    dataList.add(mileage)
+//                    if (!compareFunc(lastNoteDate, n.date)) {
+//                        mileage = dataList.last() - mileage
+//                        dataList.remove(dataList.last())
+//                        dataList.add(mileage)
+//                    }
+//                } else {
+//                    mileage = dataList.last() - mileage
+//                    dataList.remove(dataList.size - 1)
+//                    dataList.add(mileage)
+//                }
+//
+//                lastNoteDate = n.date
+//            }
+//
+//            val maxHeight = dataList.maxOf { it }
+//
+//            GraphItem(
+//                getString(TITLE_ALL_MILEAGE),
+//                measure,
+//                maxHeight,
+//                ALL_MILEAGE_ICON,
+//                titlesList.apply { reverse() },
+//                dataList.apply { reverse() }
+//            )
+//        } else null
+//    }
 
-        return if (notes.isNotEmpty()) {
-            val measure =
-                String.format(
-                    getString(STR_ALL_MILEAGE),
-                    getFormattedIntAsStrForDisplay(notes.sumOf { it.mileage })
-                )
-            val maxHeight = notes.maxOf { it.mileage }
+    private fun areDaysTheSame(date1: Long, date2: Long): Boolean =
+        getFormattedDayOfWeekRes(date1) == getFormattedDayOfWeekRes(date2)
 
-            val titlesList = mutableListOf<String>()
-            val dataList = mutableListOf<Int>()
+    private fun areWeeksTheSame(date1: Long, date2: Long): Boolean =
+        getWeekFromDate(date1) == getWeekFromDate(date2)
 
-            when (dateType) {
-                DATE_ALL_TIME -> {
-                    return null
-                }
-                DATE_YEAR -> {
-                    return null
-                }
-                DATE_MONTH -> {
-                    return null
-                }
-                else -> {
-                    var lastNoteDate = notes.first().date
-                    for (n in notes) {
-                        val day = getString(getFormattedDayOfWeekRes(n.date))
-                        var mileage = n.mileage
+    private fun areMonthsTheSame(date1: Long, date2: Long): Boolean =
+        getFormattedMonthOfYear(date1) == getFormattedMonthOfYear(date2)
 
-                        if (n == notes.first() || !areDaysTheSame(lastNoteDate, n.date)) {
-                            titlesList.add(day)
-                            dataList.add(mileage)
-                        } else {
-                            mileage += dataList.last()
-                            dataList.remove(dataList.size - 1)
-                            dataList.add(mileage)
-                        }
-
-                        lastNoteDate = n.date
-                    }
-                }
-            }
-            GraphItem(
-                getString(TITLE_ALL_MILEAGE),
-                measure,
-                maxHeight,
-                ALL_MILEAGE_ICON,
-                titlesList.apply { sortDescending() },
-                dataList.apply { sortDescending() }
-            )
-        } else null
-    }
+    private fun areYearsTheSame(date1: Long, date2: Long): Boolean =
+        getFormattedYear(date1) == getFormattedYear(date2)
 
     override val propertyHostScope: CoroutineScope
         get() = viewModelScope
 
     companion object {
-        private const val STR_AVG_FUEL = R.string.text_measure_gas_charge_for_formatting
+        private const val STR_AVG_FUEL = R.string.text_measure_gas_volume_unit_for_formatting
         private const val STR_ALL_PRICE = R.string.text_measure_currency_for_formatting
         private const val STR_ALL_MILEAGE = R.string.text_measure_mileage_unit_for_formatting
 
-        private const val TITLE_AVG_FUEL = R.string.text_avg_fuel
-        private const val TITLE_ALL_PRICE = R.string.text_all_price
+        private const val TITLE_AVG_FUEL = R.string.text_all_fuel_graph
+        private const val TITLE_ALL_PRICE = R.string.text_all_price_graph
         private const val TITLE_ALL_PRICE_WITHOUT_FUEL = R.string.text_all_price_without_fuel
-        private const val TITLE_ALL_MILEAGE = R.string.text_all_mileage
+        private const val TITLE_ALL_MILEAGE = R.string.text_all_mileage_graph
 
-        private const val AVG_FUEL_ICON = R.drawable.ic_baseline_local_gas_station_24_white
-        private const val ALL_PRICE_ICON = R.drawable.ic_baseline_currency_ruble_white_24
-        private const val ALL_MILEAGE_ICON = R.drawable.ic_baseline_location_on_white_24
+        private const val AVG_FUEL_ICON = R.drawable.ic_gas_station_white
+        private const val ALL_PRICE_ICON = R.drawable.ic_ruble_white
+        private const val ALL_MILEAGE_ICON = R.drawable.ic_location_white
 
-        private const val DATE_WEEK = 1
-        private const val DATE_MONTH = 2
-        private const val DATE_YEAR = 3
-        private const val DATE_ALL_TIME = 4
+        const val DATE_WEEK = 1
+        const val DATE_MONTH = 2
+        const val DATE_YEAR = 3
+        const val DATE_ALL_TIME = 4
 
         private const val ALL_TIME = 0L
         private const val MINUS_YEAR = -1

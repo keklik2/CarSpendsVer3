@@ -1,11 +1,24 @@
-package com.demo.carspends.presentation.fragments.statistics.graphics
+package com.demo.carspends.presentation.fragments.statistics.graphics.adapter
 
+import android.util.Log
 import android.view.View
+import com.anychart.AnyChart
+import com.anychart.AnyChart.column
+import com.anychart.chart.common.dataentry.DataEntry
+import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.demo.carspends.R
 import com.demo.carspends.databinding.GraphicItemBinding
-import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.ibrahimyilmaz.kiel.adapterOf
 import me.ibrahimyilmaz.kiel.core.RecyclerViewHolder
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.concurrent.thread
+import kotlin.concurrent.timer
+import kotlin.concurrent.timerTask
+
 
 object GraphAdapter {
     fun get() = adapterOf<GraphItem> {
@@ -16,7 +29,7 @@ object GraphAdapter {
         register(
             layoutResource = R.layout.graphic_item,
             viewHolder = ::GraphicItemViewHolder,
-            onBindViewHolder = {vh, _, item ->
+            onBindViewHolder = { vh, _, item ->
                 with(vh.binding) {
                     tvGraphTitle.text = item.title
                     tvGraphMeasure.text = item.measure
@@ -28,12 +41,18 @@ object GraphAdapter {
                         0
                     )
 
-                    chart.setBottomTextList(ArrayList(item.bottomTextList))
-                    chart.setDataList(ArrayList(item.dataList), item.maxHeight)
+                    // CHART
+                    with(chart) {
+                        setBottomTextList(ArrayList(item.bottomTextList))
+                        setDataList(ArrayList(item.dataList), item.maxHeight)
+                    }
                 }
             }
         )
     }
+
+    private fun getString(id: Int, viewHolder: GraphicItemViewHolder): String =
+        viewHolder.itemView.context.getString(id)
 }
 
 class GraphicItemViewHolder(view: View) : RecyclerViewHolder<GraphItem>(view) {

@@ -56,7 +56,7 @@
                 app:layout_constraintEnd_toEndOf="@+id/tv_car_title"
 
                 android:contentDescription="@string/description_img_car_menu"
-                app:srcCompat="@drawable/ic_round_settings_24" />
+                app:srcCompat="@drawable/ic_settings" />
 
             <View
                 android:id="@+id/statistics_background"
@@ -90,7 +90,7 @@
                 tools:text="10.3/100км"
 
                 style="@style/entryUnitMainMenuText.White"
-                app:drawableStartCompat="@drawable/ic_baseline_local_gas_station_24_white" />
+                app:drawableStartCompat="@drawable/ic_gas_station_white" />
 
             <TextView
                 android:id="@+id/tv_statistics_2"
@@ -109,7 +109,7 @@
                 tools:text="29p"
 
                 style="@style/entryUnitMainMenuText"
-                app:drawableStartCompat="@drawable/ic_baseline_currency_ruble_24" />
+                app:drawableStartCompat="@drawable/ic_ruble" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -199,7 +199,7 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_add_24" />
+        app:srcCompat="@drawable/ic_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_extra"
@@ -212,7 +212,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/fb_add_note"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_more_horiz_24" />
+        app:srcCompat="@drawable/ic_more_horiz" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_repair"
@@ -225,7 +225,7 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/fb_add_extra"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_build_24" />
+        app:srcCompat="@drawable/ic_repair" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_filling"
@@ -238,5 +238,5 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/fb_add_repair"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+        app:srcCompat="@drawable/ic_gas_station" />
 </androidx.constraintlayout.widget.ConstraintLayout>

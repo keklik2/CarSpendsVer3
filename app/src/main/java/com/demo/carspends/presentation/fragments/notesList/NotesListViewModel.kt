@@ -1,8 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
@@ -24,11 +22,9 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.*
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
-import java.lang.Error
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -48,8 +44,8 @@ class NotesListViewModel @Inject constructor(
     var carTitle by state(EMPTY_STR)
     var statisticsField1 by state(EMPTY_STR)
     var statisticsField2 by state(EMPTY_STR)
-    var statisticsField1Img by state(R.drawable.ic_baseline_local_gas_station_24)
-    var statisticsField2Img by state(R.drawable.ic_baseline_currency_ruble_24)
+    var statisticsField1Img by state(R.drawable.ic_gas_station)
+    var statisticsField2Img by state(R.drawable.ic_ruble)
 
     private var noteType: NoteType? by state(null)
     private var noteDate: Long by state(ALL_TIME)
@@ -419,12 +415,12 @@ class NotesListViewModel @Inject constructor(
     }
 
     companion object {
-        private const val IMG_FUEL = R.drawable.ic_baseline_local_gas_station_24
-        private const val IMG_FUEL_WHITE = R.drawable.ic_baseline_local_gas_station_24_white
-        private const val IMG_RUBLE = R.drawable.ic_baseline_currency_ruble_24
-        private const val IMG_RUBLE_WHITE = R.drawable.ic_baseline_currency_ruble_white_24
-        private const val IMG_GEO_LOCATION = R.drawable.ic_baseline_location_on_24
-        private const val IMG_GEO_LOCATION_WHITE = R.drawable.ic_baseline_location_on_white_24
+        private const val IMG_FUEL = R.drawable.ic_gas_station
+        private const val IMG_FUEL_WHITE = R.drawable.ic_gas_station_white
+        private const val IMG_RUBLE = R.drawable.ic_ruble
+        private const val IMG_RUBLE_WHITE = R.drawable.ic_ruble_white
+        private const val IMG_GEO_LOCATION = R.drawable.ic_location
+        private const val IMG_GEO_LOCATION_WHITE = R.drawable.ic_location_white
 
         private const val ALL_TIME = 0L
         private const val START_MIL = 0
