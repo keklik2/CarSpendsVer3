@@ -67,7 +67,6 @@ class GraphicsViewModel @Inject constructor(
                 getString(STR_AVG_FUEL),
                 getFormattedIntAsStrForDisplay(notes.sumOf { it.liters }.toInt())
             )
-            val maxHeight = notes.maxOf { it.liters }.toInt()
 
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
@@ -106,7 +105,7 @@ class GraphicsViewModel @Inject constructor(
             GraphItem(
                 getString(TITLE_AVG_FUEL),
                 measure,
-                maxHeight,
+                getString(MEASURE_UNIT_AVG_FUEL),
                 AVG_FUEL_ICON,
                 titlesList.apply { reverse() },
                 dataList.apply { reverse() }
@@ -126,7 +125,6 @@ class GraphicsViewModel @Inject constructor(
                     notes.sumOf { it.totalPrice }.toInt()
                 )
             )
-            val maxHeight = notes.maxOf { it.totalPrice }.toInt()
 
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
@@ -165,7 +163,7 @@ class GraphicsViewModel @Inject constructor(
             GraphItem(
                 getString(TITLE_ALL_PRICE_WITHOUT_FUEL),
                 measure,
-                maxHeight,
+                getString(MEASURE_UNIT_ALL_PRICE),
                 ALL_PRICE_ICON,
                 titlesList.apply { reverse() },
                 dataList.apply { reverse() }
@@ -182,7 +180,6 @@ class GraphicsViewModel @Inject constructor(
                     getString(STR_ALL_PRICE),
                     getFormattedIntAsStrForDisplay(notes.sumOf { it.totalPrice }.toInt())
                 )
-            val maxHeight = notes.maxOf { it.totalPrice }.toInt()
 
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
@@ -221,7 +218,7 @@ class GraphicsViewModel @Inject constructor(
             GraphItem(
                 getString(TITLE_ALL_PRICE),
                 measure,
-                maxHeight,
+                getString(MEASURE_UNIT_ALL_PRICE),
                 ALL_PRICE_ICON,
                 titlesList.apply { reverse() },
                 dataList.apply { reverse() }
@@ -285,7 +282,6 @@ class GraphicsViewModel @Inject constructor(
 //            GraphItem(
 //                getString(TITLE_ALL_MILEAGE),
 //                measure,
-//                maxHeight,
 //                ALL_MILEAGE_ICON,
 //                titlesList.apply { reverse() },
 //                dataList.apply { reverse() }
@@ -312,6 +308,10 @@ class GraphicsViewModel @Inject constructor(
         private const val STR_AVG_FUEL = R.string.text_measure_gas_volume_unit_for_formatting
         private const val STR_ALL_PRICE = R.string.text_measure_currency_for_formatting
         private const val STR_ALL_MILEAGE = R.string.text_measure_mileage_unit_for_formatting
+
+        private const val MEASURE_UNIT_AVG_FUEL = R.string.text_measure_gas_volume_unit
+        private const val MEASURE_UNIT_ALL_PRICE = R.string.text_measure_currency
+        private const val MEASURE_UNIT_ALL_MILEAGE = R.string.text_measure_mileage_unit
 
         private const val TITLE_AVG_FUEL = R.string.text_all_fuel_graph
         private const val TITLE_ALL_PRICE = R.string.text_all_price_graph

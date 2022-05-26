@@ -181,7 +181,6 @@
 
     <!-- Other -->
     <string name="pick_images">Выбрать изображение</string>
-    <string name="graph_title">%s\n(%s)</string>
 
     <!-- Days of weeks -->
     <string name="monday">ПН</string>

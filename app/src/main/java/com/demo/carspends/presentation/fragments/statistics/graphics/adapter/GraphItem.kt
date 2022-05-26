@@ -3,8 +3,8 @@ package com.demo.carspends.presentation.fragments.statistics.graphics.adapter
 data class GraphItem(
     var title: String,
     var measure: String,
-    var maxHeight: Int,
+    var measureUnit: String,
     var drawableRes: Int,
-    var bottomTextList: MutableList<String>,
-    var dataList: MutableList<Int>
+    var labels: MutableList<String>,
+    var data: MutableList<Int>
 )

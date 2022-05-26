@@ -1,23 +1,12 @@
 package com.demo.carspends.presentation.fragments.statistics.graphics.adapter
 
-import android.util.Log
 import android.view.View
-import com.anychart.AnyChart
-import com.anychart.AnyChart.column
-import com.anychart.chart.common.dataentry.DataEntry
-import com.anychart.chart.common.dataentry.ValueDataEntry
 import com.demo.carspends.R
 import com.demo.carspends.databinding.GraphicItemBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
+import lecho.lib.hellocharts.model.*
 import me.ibrahimyilmaz.kiel.adapterOf
 import me.ibrahimyilmaz.kiel.core.RecyclerViewHolder
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.concurrent.thread
-import kotlin.concurrent.timer
-import kotlin.concurrent.timerTask
 
 
 object GraphAdapter {
@@ -41,10 +30,37 @@ object GraphAdapter {
                         0
                     )
 
-                    // CHART
-                    with(chart) {
-                        setBottomTextList(ArrayList(item.bottomTextList))
-                        setDataList(ArrayList(item.dataList), item.maxHeight)
+                    chart.columnChartData = ColumnChartData().apply {
+                        columns = ArrayList<Column>().apply {
+                            for (i in 0 until item.data.size) {
+                                add(
+                                    Column(
+                                        ArrayList<SubcolumnValue>().apply {
+                                            add(
+                                                SubcolumnValue(item.data[i].toFloat()).apply {
+                                                    setLabel("${getFormattedIntAsStrForDisplay(item.data[i])} ${item.measureUnit}")
+                                                    color = getColor(R.color.vine, vh)
+                                                }
+                                            )
+                                        }
+                                    ).apply {
+                                        setHasLabels(true)
+                                        setHasLabelsOnlyForSelected(true)
+                                    }
+                                )
+                            }
+                        }
+                        axisXBottom = Axis().apply {
+                            values = ArrayList<AxisValue?>().apply {
+                                for (i in 0 until item.labels.size) {
+                                    add(AxisValue(i.toFloat()).setLabel(item.labels[i]))
+                                }
+                            }
+                            setHasLines(true)
+                        }
+                        axisYLeft = Axis().apply {
+                            maxLabelChars = item.data.maxOf { it }.toString().length
+                        }
                     }
                 }
             }
@@ -53,6 +69,9 @@ object GraphAdapter {
 
     private fun getString(id: Int, viewHolder: GraphicItemViewHolder): String =
         viewHolder.itemView.context.getString(id)
+
+    private fun getColor(id: Int, viewHolder: GraphicItemViewHolder): Int =
+        viewHolder.itemView.context.getColor(id)
 }
 
 class GraphicItemViewHolder(view: View) : RecyclerViewHolder<GraphItem>(view) {
