@@ -1,10 +1,13 @@
 package com.demo.carspends.presentation.fragments.statistics.numerous
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
+import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
@@ -21,11 +24,11 @@ import javax.inject.Inject
 
 class NumerousViewModel @Inject constructor(
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
-    private val getNoteItemsListUseCase: GetNoteItemsListUseCase,
+    private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val app: Application
 ) : BaseViewModel(app) {
 
-    var startDate by state(Calendar.getInstance().apply{ add(Calendar.YEAR, -1) }.timeInMillis)
+    var startDate by state(Calendar.getInstance().apply { add(Calendar.YEAR, -1) }.timeInMillis)
     var endDate by state(getCurrentDate())
 
     var sAvgFuel by state("-")
@@ -44,8 +47,17 @@ class NumerousViewModel @Inject constructor(
     )
     val carsListState by stateFromFlow(_carsListLoading.stateFlow)
 
+    private var notesForCalculation = mutableListOf<NoteItem>()
+    private var notesByDate = mutableListOf<NoteItem>()
+
     init {
         _carsListLoading.refresh()
+        withScope {
+            notesForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
+            notesByDate = notesForCalculation.sortedByDescending { it.date }.toMutableList()
+            startDate = notesByDate.lastOrNull()?.date ?: Calendar.getInstance()
+                .apply { add(Calendar.YEAR, -1) }.timeInMillis
+        }
 
         autorun(::carsListState) { itState ->
             when (itState) {
@@ -55,68 +67,158 @@ class NumerousViewModel @Inject constructor(
 
         autorun(::carItem) {
             it?.let {
-                sAvgFuel = String.format(
-                    app.getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.avgFuel)
-                )
-                sMomentFuel = String.format(
-                    app.getString(R.string.text_measure_gas_charge_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.momentFuel)
-                )
-                sAllFuel = String.format(
-                    app.getString(R.string.text_measure_gas_volume_unit_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allFuel)
-                )
-                sFuelPrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.fuelPrice)
-                )
-                sMileagePrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.milPrice)
-                )
-                sAllPrice = String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
-                    getFormattedDoubleAsStrForDisplay(it.allPrice)
-                )
-                sAllMileage = String.format(
-                    app.getString(R.string.text_measure_mileage_unit_for_formatting),
-                    getFormattedIntAsStrForDisplay(it.allMileage)
+                initData(
+                    it.avgFuel,
+                    it.momentFuel,
+                    it.allFuel,
+                    it.fuelPrice,
+                    it.milPrice,
+                    it.allPrice,
+                    it.allMileage
                 )
             }
         }
 
         autorun(::startDate, ::endDate) { sDate, eDate ->
-            withScope {  }
+            initData(
+                calculateAvgFuel(),
+                calculateMomentFuel(),
+                calculateAllFuel(),
+                calculateFuelPrice(),
+                calculateMileagePrice(),
+                calculateAllPrice(),
+                calculateAllMileage()
+            )
         }
     }
 
-    fun calculateAvgFuel() {
-
+    private fun initData(
+        avgFuel: Double,
+        momentFuel: Double,
+        allFuel: Double,
+        fuelPrice: Double,
+        milPrice: Double,
+        allPrice: Double,
+        allMileage: Int
+    ) {
+        sAvgFuel = String.format(
+            app.getString(R.string.text_measure_gas_charge_for_formatting),
+            getFormattedDoubleAsStrForDisplay(avgFuel)
+        )
+        sMomentFuel = String.format(
+            app.getString(R.string.text_measure_gas_charge_for_formatting),
+            getFormattedDoubleAsStrForDisplay(momentFuel)
+        )
+        sAllFuel = String.format(
+            app.getString(R.string.text_measure_gas_volume_unit_for_formatting),
+            getFormattedDoubleAsStrForDisplay(allFuel)
+        )
+        sFuelPrice = String.format(
+            app.getString(R.string.text_measure_currency_for_formatting),
+            getFormattedDoubleAsStrForDisplay(fuelPrice)
+        )
+        sMileagePrice = String.format(
+            app.getString(R.string.text_measure_currency_for_formatting),
+            getFormattedDoubleAsStrForDisplay(milPrice)
+        )
+        sAllPrice = String.format(
+            app.getString(R.string.text_measure_currency_for_formatting),
+            getFormattedDoubleAsStrForDisplay(allPrice)
+        )
+        sAllMileage = String.format(
+            app.getString(R.string.text_measure_mileage_unit_for_formatting),
+            getFormattedIntAsStrForDisplay(allMileage)
+        )
     }
 
-    fun calculateMomentFuel() {
-
+    private fun calculateAvgFuel(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.avgFuel
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
     }
 
-    fun calculateAllFuel() {
-
+    private fun calculateMomentFuel(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                // TODO("Return standard value from car item")
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
     }
 
-    fun calculateFuelPrice() {
-
+    private fun calculateAllFuel(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.allFuel
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
     }
 
-    fun calculateMileagePrice() {
-
+    private fun calculateFuelPrice(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.fuelPrice
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
     }
 
-    fun calculateAllPrice() {
-
+    private fun calculateMileagePrice(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.milPrice
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
     }
 
-    fun calculateAllMileage() {
+    private fun calculateAllPrice(): Double {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.allPrice
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0.0
+    }
 
+    private fun calculateAllMileage(): Int {
+        carItem?.let {
+            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
+                return it.allMileage
+            } else {
+                // TODO("Make calculations and return result")
+            }
+        }
+        return 0
+    }
+
+    fun restoreDates() {
+        startDate = notesByDate.lastOrNull()?.date ?: Calendar.getInstance()
+            .apply { add(Calendar.YEAR, -1) }.timeInMillis
+        endDate = getCurrentDate()
     }
 
     override val propertyHostScope: CoroutineScope

@@ -49,13 +49,13 @@
 
         app:layout_constraintStart_toEndOf="@+id/transitive_iv"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/preset_data_chooser"
+        app:layout_constraintEnd_toStartOf="@+id/date_restore_button"
 
         tools:text="17.24.15"
         style="@style/dateText.White"/>
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/preset_data_chooser"
+        android:id="@+id/date_restore_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"

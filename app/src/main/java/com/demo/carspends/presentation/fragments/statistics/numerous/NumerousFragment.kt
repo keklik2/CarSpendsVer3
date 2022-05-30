@@ -15,6 +15,7 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
     override val viewModel: NumerousViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatesClickListener()
+        setupRestoreDateListener()
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
@@ -84,6 +85,10 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
                 cCal.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+    }
+
+    private fun setupRestoreDateListener() {
+        binding.dateRestoreButton.setOnClickListener { viewModel.restoreDates() }
     }
 
 
