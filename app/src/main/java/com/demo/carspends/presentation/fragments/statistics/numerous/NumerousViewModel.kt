@@ -7,6 +7,7 @@ import com.demo.carspends.R
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
+import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
@@ -21,6 +22,8 @@ import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
 import java.util.*
 import javax.inject.Inject
+import kotlin.math.abs
+import kotlin.math.max
 
 class NumerousViewModel @Inject constructor(
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
@@ -133,11 +136,23 @@ class NumerousViewModel @Inject constructor(
 
     private fun calculateAvgFuel(): Double {
         carItem?.let {
-            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
-                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
-                return it.avgFuel
-            } else {
-                // TODO("Make calculations and return result")
+            return if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+                && endDate >= notesByDate.firstOrNull()?.date ?: 0L) it.avgFuel
+            else {
+                val notes = notesByDate.filter {
+                    it.type == NoteType.FUEL
+                            && it.date in startDate..endDate
+                }
+                return if (notes.isNotEmpty()) {
+                    val notesBefore = notesByDate.filter {
+                        it.type == NoteType.FUEL
+                                && it.date < startDate
+                    }
+                    val beforeMileage =
+                        if (notesBefore.isNotEmpty()) notesBefore.maxOf { it.mileage }
+                        else it.startMileage
+                    notes.sumOf { it.liters } / (abs(notes.maxOf { it.mileage } - beforeMileage) / 100)
+                } else 0.0
             }
         }
         return 0.0
@@ -145,12 +160,10 @@ class NumerousViewModel @Inject constructor(
 
     private fun calculateMomentFuel(): Double {
         carItem?.let {
-            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+            return if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
-                // TODO("Return standard value from car item")
-            } else {
-                // TODO("Make calculations and return result")
-            }
+                it.momentFuel
+            } else 0.0
         }
         return 0.0
     }
@@ -161,7 +174,12 @@ class NumerousViewModel @Inject constructor(
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
                 return it.allFuel
             } else {
-                // TODO("Make calculations and return result")
+                val notes = notesByDate.filter {
+                    it.type == NoteType.FUEL
+                            && it.date in startDate..endDate
+                }
+                return if (notes.isEmpty()) 0.0
+                else notes.sumOf { it.liters }
             }
         }
         return 0.0
@@ -173,7 +191,12 @@ class NumerousViewModel @Inject constructor(
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
                 return it.fuelPrice
             } else {
-                // TODO("Make calculations and return result")
+                val notes = notesByDate.filter {
+                    it.type == NoteType.FUEL
+                            && it.date in startDate..endDate
+                }
+                return if (notes.isEmpty()) 0.0
+                else notes.sumOf { it.totalPrice }
             }
         }
         return 0.0
@@ -181,11 +204,18 @@ class NumerousViewModel @Inject constructor(
 
     private fun calculateMileagePrice(): Double {
         carItem?.let {
-            if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
+            return if (startDate <= notesByDate.lastOrNull()?.date ?: 0L
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
-                return it.milPrice
+                it.milPrice
             } else {
-                // TODO("Make calculations and return result")
+                val notes = notesByDate.filter { it.date in startDate..endDate }
+                if (notes.isEmpty()) 0.0
+                else {
+                    val tPrice = notes.sumOf { it.totalPrice }
+                    val tMileage = notes.maxOf { it.mileage } - notes.minOf { it.mileage }
+                    if (tMileage != 0) tPrice / tMileage
+                    else 0.0
+                }
             }
         }
         return 0.0
@@ -197,7 +227,9 @@ class NumerousViewModel @Inject constructor(
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
                 return it.allPrice
             } else {
-                // TODO("Make calculations and return result")
+                val notes = notesByDate.filter { it.date in startDate..endDate }
+                return if (notes.isEmpty()) 0.0
+                else notes.sumOf { it.totalPrice }
             }
         }
         return 0.0
@@ -209,7 +241,9 @@ class NumerousViewModel @Inject constructor(
                 && endDate >= notesByDate.firstOrNull()?.date ?: 0L) {
                 return it.allMileage
             } else {
-                // TODO("Make calculations and return result")
+                val notes = notesByDate.filter { it.date in startDate..endDate }
+                return if (notes.isEmpty()) 0
+                else notes.maxOf { it.mileage } - notes.minOf { it.mileage }
             }
         }
         return 0
