@@ -16,4 +16,7 @@ interface CarDao {
 
     @Delete
     suspend fun delete(carItemDbModel: CarItemDbModel)
+
+    @Query("DELETE FROM cars")
+    suspend fun dropData()
 }

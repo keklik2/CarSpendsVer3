@@ -1,17 +1,21 @@
 package com.demo.carspends.presentation.fragments.car
 
 import android.app.Application
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
+import com.demo.carspends.data.database.car.CarItemDbModel
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.AddCarItemUseCase
+import com.demo.carspends.domain.car.usecases.DropCarsDataUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
-import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
+import com.demo.carspends.domain.component.usecases.DropComponentsDataUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
+import com.demo.carspends.domain.note.usecases.DropNotesDataUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.utils.*
 import com.demo.carspends.utils.files.fileSaver.DbSaver
@@ -35,7 +39,9 @@ class CarAddOrEditViewModel @Inject constructor(
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
     private val addNoteItemUseCase: AddNoteItemUseCase,
-    private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
+    private val dropCarsDataUseCase: DropCarsDataUseCase,
+    private val dropNotesDataUseCase: DropNotesDataUseCase,
+    private val dropComponentsDataUseCase: DropComponentsDataUseCase,
     private val router: Router,
     private val app: Application
 ) : BaseViewModel(app) {
@@ -311,6 +317,35 @@ class CarAddOrEditViewModel @Inject constructor(
             } else 0.0
         }
         return 0.0
+    }
+
+    fun dropCar() {
+        withScope {
+            dropNotesDataUseCase()
+            carItem?.let {
+                carItem = it.copy(
+                    mileage = it.startMileage,
+                    avgFuel = 0.0,
+                    momentFuel = 0.0,
+                    allFuel = 0.0,
+                    fuelPrice = 0.0,
+                    milPrice = 0.0,
+                    allPrice = 0.0,
+                    allMileage = 0
+                )
+            }
+            updateCarItem()
+        }
+        router.replaceScreen(Screens.HomePage())
+    }
+
+    fun deleteCar() {
+        withScope {
+            dropNotesDataUseCase()
+            dropComponentsDataUseCase()
+            dropCarsDataUseCase()
+            router.replaceScreen(Screens.HomePage())
+        }
     }
 
     private fun getFuelNotes(): List<NoteItem> =

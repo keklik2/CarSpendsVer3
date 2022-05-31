@@ -211,7 +211,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/power_layout"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/upload_button"
-                app:layout_constraintBottom_toBottomOf="parent"
 
                 android:background="@drawable/rounded_rectangle_dark_vine"
                 android:drawableEnd="@drawable/ic_file_download"/>
@@ -230,6 +229,25 @@
 
                 android:background="@drawable/rounded_rectangle_light_black"
                 android:src="@drawable/ic_file_upload"
+                />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/drop_car_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:padding="10dp"
+
+                app:layout_constraintTop_toBottomOf="@+id/download_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                android:textColor="@color/light_black"
+                style="@style/entryUnitMainMenuText.White"
+                android:text="@string/button_restore_data"
+                android:background="@drawable/rounded_rectangle_white_with_borders"
+                android:drawableStart="@drawable/ic_delete_light_black"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

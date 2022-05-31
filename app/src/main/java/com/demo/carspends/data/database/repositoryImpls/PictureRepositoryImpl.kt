@@ -25,6 +25,8 @@ class PictureRepositoryImpl @Inject constructor(
             dao.delete(mapper.mapEntityToDbModel(noteId, picture))
     }
 
+    override suspend fun dropData() { dao.dropData() }
+
     private fun deletePictureFromInternalStorage(name: String): Boolean {
         return try {
             imageFolder.mkdirs()

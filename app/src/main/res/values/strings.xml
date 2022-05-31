@@ -53,6 +53,9 @@
     <string name="button_apply">Принять</string>
     <string name="button_deny">Отмена</string>
     <string name="button_download_db">Сохранить записи</string>
+    <string name="button_restore_data">Сбросить данные</string>
+    <string name="button_delete">Удалить</string>
+    <string name="button_drop">Сбросить</string>
 
 
     <!-- Dialog messages -->
@@ -64,6 +67,10 @@
     <string name="dialog_delete_picture">Точно хотите удалить изображение «%s»?</string>
     <string name="dialog_exit_car">Точно хотите выйти из приложения? Несохранённые данные будут потеряны.</string>
     <string name="dialog_permission_denied">Без разрешения Вы не сможете пользоваться некоторым функционалом приложения.</string>
+    <string name="dialog_drop_car_title">Сбросить автомобиль</string>
+    <string name="dialog_drop_car">Удалить автомобиль вместе со всеми данными (статистика, компоненты и записи) или очистить только записи?</string>
+    <string name="dialog_delete_car_title">Удалить автомобиль</string>
+    <string name="dialog_delete_car">При удалении автомобиля восстановить информацию будет невозможно. Вы уверены, что хотите сделать это?</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>

@@ -6,4 +6,5 @@ interface ComponentRepository {
     suspend fun editComponentItemUseCase(component: ComponentItem)
     suspend fun getComponentItemsListUseCase(delay: Long): List<ComponentItem>
     suspend fun getComponentItemUseCase(id: Int): ComponentItem
+    suspend fun dropData()
 }

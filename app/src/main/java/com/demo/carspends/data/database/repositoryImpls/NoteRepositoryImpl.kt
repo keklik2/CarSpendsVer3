@@ -156,4 +156,9 @@ class NoteRepositoryImpl @Inject constructor(
             true
         } catch (e: Exception) { false }
     }
+
+    override suspend fun dropData() { 
+        noteDao.dropData()
+        pictureDao.dropData()
+    }
 }

@@ -11,6 +11,7 @@ interface NoteRepository {
     suspend fun getNoteItemsListUseCase(delay: Long, date: Long): List<NoteItem>
     suspend fun getNoteItemsListByMileageUseCase(): List<NoteItem>
     suspend fun getNoteItemUseCase(id: Int): Map<NoteItem, List<InternalPicture>>
+    suspend fun dropData()
 
     companion object {
         const val ALL_TIME = 0L

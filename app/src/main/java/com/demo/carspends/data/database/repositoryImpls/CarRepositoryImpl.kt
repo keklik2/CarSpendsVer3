@@ -10,25 +10,25 @@ import java.lang.Exception
 import javax.inject.Inject
 
 class CarRepositoryImpl @Inject constructor(
-    private val carDao: CarDao,
+    private val dao: CarDao,
     private val mapper: CarMapper
 ) : CarRepository {
 
     override suspend fun addCarItemUseCase(carItem: CarItem) {
-            carDao.insert(mapper.mapEntityToCarItemDbModel(carItem))
+            dao.insert(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun deleteCarItemUseCase(carItem: CarItem) {
-            carDao.delete(mapper.mapEntityToCarItemDbModel(carItem))
+            dao.delete(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun editCarItemUseCase(carItem: CarItem) {
-            carDao.insert(mapper.mapEntityToCarItemDbModel(carItem))
+            dao.insert(mapper.mapEntityToCarItemDbModel(carItem))
     }
 
     override suspend fun getCarItemsListUseCase(): List<CarItem> = withContext(Dispatchers.IO) {
         try {
-            val list = carDao.getCars()
+            val list = dao.getCars()
             list.map {
                 mapper.mapCarItemDbModelToEntity(it)
             }
@@ -40,9 +40,13 @@ class CarRepositoryImpl @Inject constructor(
 
     override suspend fun getCarItemUseCase(id: Int): CarItem = withContext(Dispatchers.IO) {
         try {
-            mapper.mapCarItemDbModelToEntity(carDao.getCar(id))
+            mapper.mapCarItemDbModelToEntity(dao.getCar(id))
         } catch (e: Exception) {
             throw e
         }
+    }
+
+    override suspend fun dropData() {
+        dao.dropData()
     }
 }
