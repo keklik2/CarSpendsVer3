@@ -10,9 +10,13 @@ import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
+import com.demo.carspends.domain.settings.GetSettingValueUseCase
+import com.demo.carspends.domain.settings.SetSettingUseCase
+import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
+import com.demo.carspends.utils.ui.tipShower.TipModel
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
@@ -28,6 +32,8 @@ import kotlin.math.max
 class NumerousViewModel @Inject constructor(
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val getNoteItemsListByMileageUseCase: GetNoteItemsListByMileageUseCase,
+    private val getSettingValueUseCase: GetSettingValueUseCase,
+    private val setSettingUseCase: SetSettingUseCase,
     private val app: Application
 ) : BaseViewModel(app) {
 
@@ -52,6 +58,19 @@ class NumerousViewModel @Inject constructor(
 
     private var notesForCalculation = mutableListOf<NoteItem>()
     private var notesByDate = mutableListOf<NoteItem>()
+
+    var isFirstLaunch = when(getSettingValueUseCase(SettingsRepository.SETTING_IS_FIRST_STATISTICS_LAUNCH)) {
+        SettingsRepository.FIRST_LAUNCH -> true
+        else -> false
+    }
+    var tipsCount by state(0)
+    fun nextTip() { tipsCount++ }
+
+    val tips = mutableListOf(
+        TipModel(resId = R.id.tv_avg_fuel_title, description = getString(R.string.tip_statistics_avg_fuel_description)),
+        TipModel(resId = R.id.tv_moment_fuel_title, description = getString(R.string.tip_statistics_moment_fuel_description)),
+        TipModel(resId = R.id.start_date_ib, description = getString(R.string.tip_statistics_date_change_description))
+    )
 
     init {
         _carsListLoading.refresh()
@@ -92,6 +111,16 @@ class NumerousViewModel @Inject constructor(
                 calculateAllPrice(),
                 calculateAllMileage()
             )
+        }
+
+        autorun(::tipsCount) {
+            if (it >= tips.size) {
+                isFirstLaunch = false
+                setSettingUseCase(
+                    SettingsRepository.SETTING_IS_FIRST_STATISTICS_LAUNCH,
+                    SettingsRepository.NOT_FIRST_LAUNCH
+                )
+            }
         }
     }
 

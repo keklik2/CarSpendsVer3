@@ -17,9 +17,13 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.DropNotesDataUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
+import com.demo.carspends.domain.settings.GetSettingValueUseCase
+import com.demo.carspends.domain.settings.SetSettingUseCase
+import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.*
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
+import com.demo.carspends.utils.ui.tipShower.TipModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -42,6 +46,8 @@ class CarAddOrEditViewModel @Inject constructor(
     private val dropCarsDataUseCase: DropCarsDataUseCase,
     private val dropNotesDataUseCase: DropNotesDataUseCase,
     private val dropComponentsDataUseCase: DropComponentsDataUseCase,
+    private val getSettingValueUseCase: GetSettingValueUseCase,
+    private val setSettingUseCase: SetSettingUseCase,
     private val router: Router,
     private val app: Application
 ) : BaseViewModel(app) {
@@ -70,6 +76,19 @@ class CarAddOrEditViewModel @Inject constructor(
     )
     private val notesListState by stateFromFlow(_notesListLoading.stateFlow)
     private var notesListForCalculation = mutableListOf<NoteItem>()
+
+    var isFirstLaunch = when(getSettingValueUseCase(SettingsRepository.SETTING_IS_FIRST_CAR_LAUNCH)) {
+        SettingsRepository.FIRST_LAUNCH -> true
+        else -> false
+    }
+    var tipsCount by state(0)
+    fun nextTip() { tipsCount++ }
+
+    val tips = mutableListOf(
+        TipModel(resId = R.id.download_button, description = getString(R.string.tip_car_download_description)),
+        TipModel(resId = R.id.upload_button, description = getString(R.string.tip_car_upload_description)),
+        TipModel(resId = R.id.drop_car_button, description = getString(R.string.tip_car_drop_data_description))
+    )
 
     init {
         autorun(::cId) {
@@ -108,6 +127,16 @@ class CarAddOrEditViewModel @Inject constructor(
                 cMileage = it.mileage.toString()
                 cEngineCapacity = getFormattedDoubleAsStr(it.engineVolume)
                 cPower = it.power.toString()
+            }
+        }
+
+        autorun(::tipsCount) {
+            if (it >= tips.size) {
+                isFirstLaunch = false
+                setSettingUseCase(
+                    SettingsRepository.SETTING_IS_FIRST_CAR_LAUNCH,
+                    SettingsRepository.NOT_FIRST_LAUNCH
+                )
             }
         }
     }
