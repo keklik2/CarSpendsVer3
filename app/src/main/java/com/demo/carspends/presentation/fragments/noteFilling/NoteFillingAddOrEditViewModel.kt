@@ -261,7 +261,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         if (listOfFuel.size > 1) {
             val allMileage = listOfFuel.first().mileage - listOfFuel.last().mileage
             val allFuel = max(
-                listOfFuel.sumOf { it.liters },
+                listOfFuel.dropLast(1).sumOf { it.liters },
                 0.0
             )
 

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:background="@drawable/circle_background"
+        android:background="@drawable/background_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1:1"
 
@@ -36,7 +36,7 @@
             app:layout_constraintStart_toStartOf="parent"
 
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+            app:srcCompat="@drawable/ic_gas_station" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -119,7 +119,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_date"
 
 
-        android:src="@drawable/ic_outline_photo_camera_24"
+        android:src="@drawable/ic_camera"
         app:tint="@color/light_vine"
         android:contentDescription="@string/description_note_has_pictures" />
 

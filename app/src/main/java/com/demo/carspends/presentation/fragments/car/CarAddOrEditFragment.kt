@@ -36,15 +36,10 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTextChangeListeners()
+        setupDropCarListener()
+        setupDbSaverListeners()
+
         setupApplyButtonOnClickListener()
-
-        binding.downloadButton.setOnClickListener {
-            viewModel.saveNotes(dbNotesSaver)
-        }
-
-        binding.uploadButton.setOnClickListener {
-            viewModel.downloadNotes(dbNotesSaver)
-        }
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
@@ -174,6 +169,35 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         }
     }
 
+    private fun setupDropCarListener() {
+        binding.dropCarButton.setOnClickListener {
+            AlertDialog.Builder(requireActivity())
+                .setTitle(R.string.dialog_drop_car_title)
+                .setMessage(getString(R.string.dialog_drop_car))
+                .setPositiveButton(R.string.button_delete) { _, _ ->
+                    AlertDialog.Builder(requireActivity())
+                        .setTitle(R.string.dialog_delete_car_title)
+                        .setMessage(getString(R.string.dialog_delete_car))
+                        .setPositiveButton(R.string.button_apply) { _, _ -> viewModel.deleteCar() }
+                        .setNegativeButton(R.string.button_deny) { _, _ -> }
+                        .show()
+                }
+                .setNeutralButton(R.string.button_drop) { _, _ -> viewModel.dropCar() }
+                .setNegativeButton(R.string.button_deny) { _, _ -> }
+                .show()
+        }
+    }
+
+    private fun setupDbSaverListeners() {
+        binding.downloadButton.setOnClickListener {
+            viewModel.saveNotes(dbNotesSaver)
+        }
+
+        binding.uploadButton.setOnClickListener {
+            viewModel.downloadNotes(dbNotesSaver)
+        }
+    }
+
 
     /**
      * Additional functions
@@ -253,6 +277,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         if (launchMode == ADD_MODE) {
             binding.downloadButton.visibility = View.INVISIBLE
             binding.uploadButton.visibility = View.INVISIBLE
+            binding.dropCarButton.visibility = View.INVISIBLE
         }
     }
 

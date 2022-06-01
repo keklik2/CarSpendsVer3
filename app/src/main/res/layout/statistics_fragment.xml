@@ -2,412 +2,64 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/avg_fuel_layout"
-
+    <RadioGroup
+        android:id="@+id/rg_top_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
 
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
 
-        <ImageView
-            android:id="@+id/iv_avg_fuel"
+        android:orientation="horizontal">
 
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_avg_fuel_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
+        <RadioButton
+            android:id="@+id/rb_numerous"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_avg_fuel"
+            android:elevation="4dp"
+            android:layout_margin="10dp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_avg_fuel"
-            app:layout_constraintStart_toEndOf="@+id/iv_avg_fuel"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:checked="true"
+            android:layout_weight="1"
+            android:button="@color/transparent"
+            android:background="@drawable/radio_group_menu"
 
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_avg_fuel"
+            android:textSize="14sp"
+            android:fontFamily="@font/gotham_pro_narrow"
+            android:textAlignment="center"
+            android:textColor="@drawable/radio_button_text"
+            android:text="@string/top_menu_numerous"/>
 
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
+        <RadioButton
+            android:id="@+id/rb_graph"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
+            android:elevation="4dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
 
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_avg_fuel_title"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_weight="1"
+            android:button="@color/transparent"
+            android:background="@drawable/radio_group_menu"
 
-            tools:text="11.30 л/км" />
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:fontFamily="@font/gotham_pro_narrow"
+            android:textColor="@drawable/radio_button_text"
+            android:text="@string/top_menu_graphic"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RadioGroup>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/moment_fuel_layout"
-
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_height="0dp"
 
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/avg_fuel_layout">
-
-        <ImageView
-            android:id="@+id/iv_moment_fuel"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_moment_fuel_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_moment_fuel"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_moment_fuel"
-            app:layout_constraintStart_toEndOf="@+id/iv_moment_fuel"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_moment_fuel"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_moment_fuel_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="10.70 л/км" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/all_fuel_layout"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/moment_fuel_layout">
-
-        <ImageView
-            android:id="@+id/iv_all_fuel"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_fuel_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_all_fuel"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_all_fuel"
-            app:layout_constraintStart_toEndOf="@+id/iv_all_fuel"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_fuel"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_all_fuel_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="1 070.00 л" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/all_fuel_price_layout"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/all_fuel_layout">
-
-        <ImageView
-            android:id="@+id/iv_all_fuel_price"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-            app:layout_constraintDimensionRatio="1:1"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_fuel_price_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_all_fuel_price"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_all_fuel_price"
-            app:layout_constraintStart_toEndOf="@+id/iv_all_fuel_price"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_fuel_price"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_all_fuel_price_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="110 250.33 p" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mileage_price_layout"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/all_fuel_price_layout">
-
-        <ImageView
-            android:id="@+id/iv_mileage_price"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_mileage_price_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_mileage_price"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_mileage_price"
-            app:layout_constraintStart_toEndOf="@+id/iv_mileage_price"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_mileage_price"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_mileage_price_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="8.10 р/км" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/all_price_layout"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mileage_price_layout">
-
-        <ImageView
-            android:id="@+id/iv_all_price"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_currency_ruble_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_price_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_all_price"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_all_price"
-            app:layout_constraintStart_toEndOf="@+id/iv_all_price"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_price"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_all_price_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="1 670 338.39 р" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/all_mileage_layout"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/all_price_layout">
-
-        <ImageView
-            android:id="@+id/iv_all_mileage"
-
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingVertical="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
-            app:srcCompat="@drawable/ic_baseline_location_on_24" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_mileage_title"
-
-            style="@style/extraInfoText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:text="@string/text_all_mileage"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_all_mileage"
-            app:layout_constraintStart_toEndOf="@+id/iv_all_mileage"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
-            android:id="@+id/tv_all_mileage"
-
-            style="@style/entryUnitText.RoundedRectangleBackground"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:ellipsize="end"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_all_mileage_title"
-            app:layout_constraintTop_toTopOf="parent"
-
-            tools:text="37 093 км" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@+id/rg_top_menu"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

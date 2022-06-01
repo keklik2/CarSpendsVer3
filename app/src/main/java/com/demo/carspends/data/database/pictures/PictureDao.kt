@@ -16,4 +16,7 @@ interface PictureDao {
 
     @Delete
     suspend fun delete(pictureDbModel: PictureDbModel)
+
+    @Query("DELETE FROM pictures_table")
+    suspend fun dropData()
 }

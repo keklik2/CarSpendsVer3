@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
 
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_local_gas_station_24" />
+        app:srcCompat="@drawable/ic_gas_station" />
 
     <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
         android:id="@+id/tv_title"

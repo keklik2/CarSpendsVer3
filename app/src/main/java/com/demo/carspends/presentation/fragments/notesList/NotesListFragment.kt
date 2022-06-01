@@ -1,8 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesList
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
@@ -46,6 +44,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
             viewModel.goToNoteAddOrEditFragment(it.type, it.id)
         }
     }
+
 
     /**
      * Binds
@@ -153,24 +152,21 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
      * Additional functions
      */
     private fun getYearDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.YEAR, MINUS_ONE)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
     private fun getMonthDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.MONTH, MINUS_ONE)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
     private fun getWeekDate(): Long {
-        val date = GregorianCalendar.getInstance().apply {
+        return GregorianCalendar.getInstance().apply {
             add(GregorianCalendar.DATE, MINUS_WEEK)
-        }.time.time
-        return date
+        }.timeInMillis
     }
 
 

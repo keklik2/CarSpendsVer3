@@ -46,7 +46,7 @@ object PictureAdapter {
                 } catch (e: Exception) {
                     getBitmapFromVectorDrawable(
                         vh.itemView.context,
-                        R.drawable.ic_baseline_image_not_supported_24
+                        R.drawable.ic_image_not_supported
                     )
                 }
                 vh.binding.ivPreview.setImageBitmap(bmp)

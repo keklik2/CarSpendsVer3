@@ -44,9 +44,9 @@ object NoteItemAdapter {
 
     private fun getImageID(noteType: NoteType): Int {
         return when (noteType) {
-            NoteType.FUEL -> R.drawable.ic_baseline_local_gas_station_24
-            NoteType.REPAIR -> R.drawable.ic_baseline_build_24
-            NoteType.EXTRA -> R.drawable.ic_baseline_more_horiz_24
+            NoteType.FUEL -> R.drawable.ic_gas_station
+            NoteType.REPAIR -> R.drawable.ic_repair
+            NoteType.EXTRA -> R.drawable.ic_more_horiz
         }
     }
 

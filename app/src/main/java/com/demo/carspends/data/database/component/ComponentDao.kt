@@ -16,4 +16,7 @@ interface ComponentDao {
 
     @Delete
     suspend fun delete(componentItemDbModel: ComponentItemDbModel)
+
+    @Query("DELETE FROM components")
+    suspend fun dropData()
 }

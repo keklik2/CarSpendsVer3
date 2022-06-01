@@ -1,7 +1,6 @@
 package com.demo.carspends.utils.ui.baseViewModel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -15,7 +14,6 @@ import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
-import java.util.*
 
 abstract class NoteAddOrEditViewModel(
     private val getCarItemUseCase: GetCarItemUseCase,
@@ -93,7 +91,6 @@ abstract class NoteAddOrEditViewModel(
         }
     }
 
-    fun getCurrentDate(): Long = Date().time
     fun setCanCloseScreen() {
         canCloseScreen = true
     }

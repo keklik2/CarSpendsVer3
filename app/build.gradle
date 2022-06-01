@@ -42,7 +42,7 @@ dependencies {
      */
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.4.2'
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
@@ -76,8 +76,8 @@ dependencies {
     /**
      * Dagger 2 - lib for dependency injection
      */
-    implementation 'com.google.dagger:dagger:2.40.5'
-    kapt 'com.google.dagger:dagger-compiler:2.40.5'
+    implementation 'com.google.dagger:dagger:2.41'
+    kapt 'com.google.dagger:dagger-compiler:2.41'
 
 
     /**
@@ -125,4 +125,9 @@ dependencies {
      * Gson - lib for work with JSon
      */
     implementation 'com.google.code.gson:gson:2.9.0'
+
+    /**
+     * Graph lib
+     */
+    implementation 'com.github.lecho:hellocharts-android:1.5.8'
 }
