@@ -13,6 +13,7 @@ import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 
@@ -27,17 +28,20 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
     override var setupBinds: (() -> Unit)? = {
         setupComponentsBind()
+        setupShowTipBind()
     }
 
     private val mainAdapter = ComponentItemAdapter.get {
         viewModel.goToComponentAddOrEdit(it.componentItem.id)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.refreshData()
+    private val tipShower by lazy {
+        TipShower(requireActivity())
     }
 
+    /**
+     * Bind functions
+     */
     private fun setupComponentsBind() {
         binding.rvComponents.adapter = mainAdapter
         val skeleton = binding.rvComponents.applySkeleton(R.layout.note_item_skeleton)
@@ -49,7 +53,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                     skeleton.showOriginal()
 
                     mainAdapter.submitList(it.data.map
-                        { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
+                    { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
                     )
                     binding.tvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
@@ -66,6 +70,17 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         }
     }
 
+    private fun setupShowTipBind() {
+        viewModel::tipsCount bind {
+            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
+                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
+        }
+    }
+
+
+    /**
+     * Listener functions
+     */
     private fun setupAddComponentButtonListener() {
         binding.fbAddComponent.setOnClickListener {
             viewModel.goToComponentAddOrEdit()
@@ -116,11 +131,24 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         })
     }
 
+
+    /**
+     * Additional functions
+     */
     private fun isFLBAddComponentShown(): Boolean = binding.fbAddComponent.isVisible
 
     private fun setFLBAddComponentVisibility(visible: Boolean) {
         if (visible) binding.fbAddComponent.show()
         else binding.fbAddComponent.hide()
+    }
+
+
+    /**
+     * Base functions to make class work as fragment
+     */
+    override fun onResume() {
+        super.onResume()
+        viewModel.refreshData()
     }
 
     override fun onAttach(context: Context) {

@@ -13,16 +13,19 @@ import com.demo.carspends.domain.note.usecases.DeleteNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.domain.settings.GetSettingValueUseCase
+import com.demo.carspends.domain.settings.SetSettingUseCase
 import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.NORMAL_LOADING_DELAY
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
+import com.demo.carspends.utils.ui.tipShower.TipModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.*
 import me.aartikov.sesame.property.autorun
+import me.aartikov.sesame.property.command
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
 import javax.inject.Inject
@@ -37,6 +40,7 @@ class NotesListViewModel @Inject constructor(
     private val editCarItemUseCase: EditCarItemUseCase,
     private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val getSettingValueUseCase: GetSettingValueUseCase,
+    private val setSettingUseCase: SetSettingUseCase,
     private val router: Router,
     private val app: Application
 ) : BaseViewModel(app) {
@@ -90,6 +94,20 @@ class NotesListViewModel @Inject constructor(
     )
     val notesListState by stateFromFlow(_notesListLoading.stateFlow)
 
+    var isFirstLaunch = when(getSettingValueUseCase(SettingsRepository.SETTING_IS_FIRST_MAIN_LAUNCH)) {
+        SettingsRepository.FIRST_LAUNCH -> true
+        else -> false
+    }
+    var tipsCount by state(0)
+    fun nextTip() { tipsCount++ }
+
+    val tips = mutableListOf(
+        TipModel(resId = R.id.tv_car_title, description = getString(R.string.tip_car_title_description)),
+        TipModel(resId = R.id.tv_statistics_1, description = getString(R.string.tip_statistics_1_description)),
+        TipModel(resId = R.id.iv_settings, description = getString(R.string.tip_settings_description)),
+        TipModel(resId = R.id.fb_add_note, description = getString(R.string.tip_note_add_button_description))
+    )
+
 
     init {
         refreshData()
@@ -126,6 +144,16 @@ class NotesListViewModel @Inject constructor(
 
         autorun(::noteDate) {
             _notesListLoading.refresh()
+        }
+
+        autorun(::tipsCount) {
+            if (it >= tips.size) {
+                isFirstLaunch = false
+                setSettingUseCase(
+                    SettingsRepository.SETTING_IS_FIRST_MAIN_LAUNCH,
+                    SettingsRepository.NOT_FIRST_LAUNCH
+                )
+            }
         }
     }
 

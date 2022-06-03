@@ -8,6 +8,7 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NumerousFragmentBinding
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+import com.demo.carspends.utils.ui.tipShower.TipShower
 import java.util.*
 
 class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
@@ -19,6 +20,11 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
+        setupShowTipBind()
+    }
+
+    private val tipShower by lazy {
+        TipShower(requireActivity())
     }
 
 
@@ -38,6 +44,13 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
                 ::startDate bind { startDateIb.text = getFormattedDate(it) }
                 ::endDate bind { endDateIb.text = getFormattedDate(it) }
             }
+        }
+    }
+
+    private fun setupShowTipBind() {
+        viewModel::tipsCount bind {
+            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
+                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
         }
     }
 

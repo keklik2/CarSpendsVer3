@@ -19,6 +19,7 @@ import com.demo.carspends.utils.DOWNLOAD_CHANNEL_ID
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.genericType
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+import com.demo.carspends.utils.ui.tipShower.TipShower
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule
@@ -44,9 +45,14 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupCanCloseScreenBind()
+        setupShowTipBind()
     }
 
     private lateinit var launchMode: String
+
+    private val tipShower by lazy {
+        TipShower(requireActivity())
+    }
 
 
     /**
@@ -100,6 +106,13 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
                 ::cEngineCapacity bind { it?.let { it1 -> tietEngineVolume.setText(it1) } }
                 ::cPower bind { it?.let { it1 -> tietPower.setText(it1) } }
             }
+        }
+    }
+
+    private fun setupShowTipBind() {
+        viewModel::tipsCount bind {
+            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
+                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
         }
     }
 

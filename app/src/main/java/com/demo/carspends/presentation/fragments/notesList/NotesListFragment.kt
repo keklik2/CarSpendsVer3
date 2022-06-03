@@ -14,9 +14,11 @@ import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
+import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 import java.util.*
+
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
@@ -37,12 +39,17 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     override var setupBinds: (() -> Unit)? = {
         setupNotesBind()
         bindCarFields()
+        setupShowTipBind()
     }
 
     private val mainAdapter by lazy {
         NoteItemAdapter.get {
             viewModel.goToNoteAddOrEditFragment(it.type, it.id)
         }
+    }
+
+    private val tipShower by lazy {
+        TipShower(requireActivity())
     }
 
 
@@ -94,6 +101,13 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                 0,
                 0
             )
+        }
+    }
+
+    private fun setupShowTipBind() {
+        viewModel::tipsCount bind {
+            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
+                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
         }
     }
 

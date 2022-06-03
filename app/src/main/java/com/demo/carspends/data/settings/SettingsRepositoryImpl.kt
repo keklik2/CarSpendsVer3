@@ -24,7 +24,6 @@ class SettingsRepositoryImpl @Inject constructor(
         }.apply()
     }
 
-
     override fun setSetting(key: String, value: String) =
         sp.edit().apply {
             putString(key, value)
@@ -35,7 +34,6 @@ class SettingsRepositoryImpl @Inject constructor(
             putFloat(key, value)
         }.apply()
     }
-
 
     override fun setSetting(key: String, value: Double) =
         sp.edit().apply {
@@ -61,6 +59,22 @@ class SettingsRepositoryImpl @Inject constructor(
                 key,
                 SettingsRepository.STATISTIC_MILEAGE_PRICE
             ).toString()
+            SettingsRepository.SETTING_IS_FIRST_MAIN_LAUNCH -> sp.getInt(
+                key,
+                SettingsRepository.FIRST_LAUNCH
+            )
+            SettingsRepository.SETTING_IS_FIRST_COMPONENT_LAUNCH -> sp.getInt(
+                key,
+                SettingsRepository.FIRST_LAUNCH
+            )
+            SettingsRepository.SETTING_IS_FIRST_STATISTICS_LAUNCH -> sp.getInt(
+                key,
+                SettingsRepository.FIRST_LAUNCH
+            )
+            SettingsRepository.SETTING_IS_FIRST_CAR_LAUNCH -> sp.getInt(
+                key,
+                SettingsRepository.FIRST_LAUNCH
+            )
             else -> throw Exception("Unknown key for application settings")
         }
     }
