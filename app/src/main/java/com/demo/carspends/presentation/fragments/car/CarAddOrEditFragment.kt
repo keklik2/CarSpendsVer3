@@ -111,7 +111,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
     private fun setupShowTipBind() {
         viewModel::tipsCount bind {
-            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
+            if (it < viewModel.tips.size && viewModel.isFirstLaunch && launchMode != ADD_MODE)
                 tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
         }
     }
