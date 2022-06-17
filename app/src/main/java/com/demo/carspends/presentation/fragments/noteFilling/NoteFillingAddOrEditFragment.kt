@@ -90,8 +90,11 @@ class NoteFillingAddOrEditFragment :
     /**
      * Binds
      */
-    override fun setupPicturesRecyclerViewBind() = viewModel::pictures bind {
-        pictureAdapter.submitList(it)
+    override fun setupPicturesRecyclerViewBind() {
+        binding.picturesRv.adapter = pictureAdapter
+        viewModel::pictures bind {
+            pictureAdapter.submitList(it)
+        }
     }
     private fun setupLastFuelTypeBind() =
         viewModel::lastFuelType bind {
@@ -328,7 +331,6 @@ class NoteFillingAddOrEditFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.picturesRv.adapter = pictureAdapter
         setupFuelSpinnerAdapter()
     }
 

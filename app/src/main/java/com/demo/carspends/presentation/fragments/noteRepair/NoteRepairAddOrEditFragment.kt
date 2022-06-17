@@ -81,9 +81,11 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
             }
         }
     }
-    override fun setupPicturesRecyclerViewBind() = viewModel::pictures bind {
+    override fun setupPicturesRecyclerViewBind() {
         binding.picturesRv.adapter = pictureAdapter
-        pictureAdapter.submitList(it)
+        viewModel::pictures bind {
+            pictureAdapter.submitList(it)
+        }
     }
 
 
