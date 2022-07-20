@@ -3,6 +3,7 @@ package com.demo.carspends.presentation.fragments.noteFilling
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
@@ -14,7 +15,6 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.baseFragment.NoteAddOrEditFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -165,19 +165,22 @@ class NoteFillingAddOrEditFragment :
                 validate(fuelVolumeValidation)
             }
 
-
             if (open) {
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_AMOUNT) viewModel.calculatePrice(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelLiters.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateTotalPrice(
-                        binding.tietFuelLiters.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_AMOUNT) {
+                        viewModel.calculatePrice(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelLiters.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_PRICE) {
+                        viewModel.calculateTotalPrice(
+                            binding.tietFuelLiters.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -194,7 +197,6 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.tietFuelTotalPrice.addTextChangedListener {
-
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -207,14 +209,18 @@ class NoteFillingAddOrEditFragment :
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculatePrice(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelLiters.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateVolume(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_VOLUME) {
+                        viewModel.calculatePrice(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelLiters.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_PRICE) {
+                        viewModel.calculateVolume(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -231,7 +237,6 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.tietFuelPrice.addTextChangedListener {
-
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -244,14 +249,18 @@ class NoteFillingAddOrEditFragment :
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculateTotalPrice(
-                        binding.tietFuelLiters.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_AMOUNT) viewModel.calculateVolume(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_VOLUME) {
+                        viewModel.calculateTotalPrice(
+                            binding.tietFuelLiters.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_AMOUNT) {
+                        viewModel.calculateVolume(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -333,7 +342,6 @@ class NoteFillingAddOrEditFragment :
         super.onViewCreated(view, savedInstanceState)
         setupFuelSpinnerAdapter()
     }
-
 
     companion object {
         private const val CHANGED_NULL = -1
