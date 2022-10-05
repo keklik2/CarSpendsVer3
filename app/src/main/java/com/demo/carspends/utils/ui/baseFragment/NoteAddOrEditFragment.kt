@@ -19,7 +19,7 @@ abstract class NoteAddOrEditFragment(layout: Int) :
     BaseFragment(layout),
     FileSelectionEntryPoint {
 
-    abstract override val viewModel: NoteAddOrEditViewModel
+    abstract override val vm: NoteAddOrEditViewModel
     abstract fun setupPicturesRecyclerViewBind()
 
     val pictureAdapter by lazy {
@@ -43,7 +43,7 @@ abstract class NoteAddOrEditFragment(layout: Int) :
                         )
                     )
                     .setPositiveButton(R.string.button_apply) { _, _ ->
-                        viewModel.deletePicture(it)
+                        vm.deletePicture(it)
                     }
                     .setNegativeButton(R.string.button_deny) { _, _ -> }
                     .show()
@@ -52,7 +52,7 @@ abstract class NoteAddOrEditFragment(layout: Int) :
     }
 
     fun openPicturesPicker() {
-        if (viewModel.pictures.size < 4) {
+        if (vm.pictures.size < 4) {
             if (isPermissionGranted(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 picturesPicker.launch(null)
             } else readStoragePermission.launch(
@@ -97,7 +97,7 @@ abstract class NoteAddOrEditFragment(layout: Int) :
                     uri = itUri
                 )
             }
-            viewModel.addPictures(newPictures)
+            vm.addPictures(newPictures)
         }
     }
 

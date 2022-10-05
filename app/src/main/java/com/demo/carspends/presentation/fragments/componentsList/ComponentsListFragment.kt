@@ -12,6 +12,8 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
+import com.demo.carspends.utils.dialogs.AppAlertDialog
+import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
@@ -19,7 +21,7 @@ import me.aartikov.sesame.loading.simple.Loading
 
 class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     override val binding: ComponentsListFragmentBinding by viewBinding()
-    override val viewModel: ComponentsListViewModel by viewModels { viewModelFactory }
+    override val vm: ComponentsListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRecyclerOnSwipeListener()
         setupRecyclerScrollListener()
@@ -32,7 +34,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
 
     private val mainAdapter = ComponentItemAdapter.get {
-        viewModel.goToComponentAddOrEdit(it.componentItem.id)
+        vm.goToComponentAddOrEdit(it.componentItem.id)
     }
 
     private val tipShower by lazy {
@@ -47,13 +49,13 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         val skeleton = binding.rvComponents.applySkeleton(R.layout.note_item_skeleton)
         skeleton.showSkeleton()
 
-        viewModel::componentsListState bind {
+        vm::componentsListState bind {
             when (it) {
                 is Loading.State.Data -> {
                     skeleton.showOriginal()
 
                     mainAdapter.submitList(it.data.map
-                    { it1 -> ExtendedComponentItem(it1, viewModel.mileage) }
+                    { it1 -> ExtendedComponentItem(it1, vm.mileage) }
                     )
                     binding.tvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
@@ -71,9 +73,9 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
     }
 
     private fun setupShowTipBind() {
-        viewModel::tipsCount bind {
-            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
-                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
+        vm::tipsCount bind {
+            if (it < vm.tips.size && vm.isFirstLaunch)
+                tipShower.showTip(vm.tips[it]) { vm.nextTip() }
         }
     }
 
@@ -83,7 +85,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
      */
     private fun setupAddComponentButtonListener() {
         binding.fbAddComponent.setOnClickListener {
-            viewModel.goToComponentAddOrEdit()
+            vm.goToComponentAddOrEdit()
         }
     }
 
@@ -101,19 +103,16 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                 val currItem =
                     mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
                 binding.rvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
-                AlertDialog.Builder(requireActivity())
-                    .setTitle(R.string.dialog_delete_title)
-                    .setMessage(
-                        String.format(
+                makeAlert(
+                    AppDialogContainer(
+                        title = getString(R.string.dialog_delete_title),
+                        message = String.format(
                             getString(R.string.dialog_delete_component),
                             currItem.title
-                        )
+                        ),
+                        positiveBtnCallback = { vm.deleteComponent(currItem) }
                     )
-                    .setPositiveButton(R.string.button_apply) { _, _ ->
-                        viewModel.deleteComponent(currItem)
-                    }
-                    .setNegativeButton(R.string.button_deny) { _, _ -> }
-                    .show()
+                )
             }
         }
 
@@ -148,7 +147,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
      */
     override fun onResume() {
         super.onResume()
-        viewModel.refreshData()
+        vm.refreshData()
     }
 
     override fun onAttach(context: Context) {

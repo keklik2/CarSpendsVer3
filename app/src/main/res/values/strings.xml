@@ -73,7 +73,16 @@
     <string name="dialog_drop_car">Удалить автомобиль вместе со всеми данными (статистика, компоненты и записи) или очистить только записи?</string>
     <string name="dialog_delete_car_title">Удалить автомобиль</string>
     <string name="dialog_delete_car">При удалении автомобиля восстановить информацию будет невозможно. Вы уверены, что хотите сделать это?</string>
+    <string name="dialog_delete_car_info_title">Сбросить записи</string>
+    <string name="dialog_delete_car_info">При сбросе записей восстановить информацию будет невозможно. Вы уверены, что хотите сделать это?</string>
     <string name="dialog_select_item_title">Выберите один из вариантов</string>
+    <string name="dialog_positive">Принять</string>
+    <string name="dialog_negative">Отмена</string>
+    <string name="dialog_neutral">Ок</string>
+    <string name="dialog_info_title">Справка</string>
+    <string name="dialog_info_statistics">Поля «быстрой статистики» находятся на главном экране
+        приложения и позволяют Вам быстро просматривать информацию об автомобиле.\n
+        Вы можете выбрать какую статистику отображать и менять поля в любое время</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>
@@ -129,11 +138,11 @@
     <!-- Description labels -->
     <string name="description_add_new_note">Добавить новую запись</string>
     <string name="description_set_date">Установить временные рамки</string>
-    <string name="description_add_new_note_extra">Добавить новую запись, категория "прочее"</string>
-    <string name="description_add_new_note_repair">Добавить новую запись, категория "ремонт"</string>
-    <string name="description_add_new_note_filling">Добавить новую запись, категория "заправка"</string>
-    <string name="description_img_car_menu">Иконка "настройки приложения"</string>
-    <string name="description_img_tools">Иконка "тип записи"</string>
+    <string name="description_add_new_note_extra">Добавить новую запись, категория «прочее»</string>
+    <string name="description_add_new_note_repair">Добавить новую запись, категория «ремонт»</string>
+    <string name="description_add_new_note_filling">Добавить новую запись, категория «заправка»</string>
+    <string name="description_img_car_menu">Иконка «настройки приложения»</string>
+    <string name="description_img_tools">Иконка «тип записи»</string>
     <string name="description_img_choose_date">Иконка выбора даты</string>
     <string name="description_img_currency">Иконка валюты</string>
     <string name="description_internal_picture">Добавленное из галереи изображение</string>

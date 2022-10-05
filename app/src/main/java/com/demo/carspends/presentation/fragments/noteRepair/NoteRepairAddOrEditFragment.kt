@@ -11,7 +11,6 @@ import com.demo.carspends.databinding.NoteRepairAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.baseFragment.NoteAddOrEditFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -22,7 +21,7 @@ import java.util.*
 
 class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_add_edit_fragment) {
     override val binding: NoteRepairAddEditFragmentBinding by viewBinding()
-    override val viewModel: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
+    override val vm: NoteRepairAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTextChangeListeners()
@@ -69,10 +68,10 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
      * Bind functions
      */
     private fun setupCanCloseScreenBind() =
-        viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+        vm::canCloseScreen bind { if (it) vm.goBack() }
 
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             with(binding) {
                 ::nTitle bind { it?.let { it1 -> tietName.setText(it1) } }
                 ::nPrice bind { it?.let { it1 -> tietTotalPriceValue.setText(it1) } }
@@ -83,7 +82,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
     }
     override fun setupPicturesRecyclerViewBind() {
         binding.picturesRv.adapter = pictureAdapter
-        viewModel::pictures bind {
+        vm::pictures bind {
             pictureAdapter.submitList(it)
         }
     }
@@ -106,11 +105,11 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                viewModel.nDate = cal.time.time
+                vm.nDate = cal.time.time
             }
 
         binding.dateIb.setOnClickListener {
-            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.nDate }
+            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = vm.nDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
@@ -158,7 +157,7 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
-                            viewModel.addOrEditNoteItem(
+                            vm.addOrEditNoteItem(
                                 tietName.text.toString(),
                                 tietTotalPriceValue.text.toString(),
                                 tietMileageValue.text.toString()
@@ -184,9 +183,9 @@ class NoteRepairAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_repair_a
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteRepairAddOrEditFragment: $type")
 
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteRepairAddOrEditFragment")
-        viewModel.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        vm.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteRepairAddOrEditFragment")
-        viewModel.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        vm.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
 

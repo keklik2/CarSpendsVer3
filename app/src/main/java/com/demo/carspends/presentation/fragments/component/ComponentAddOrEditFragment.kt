@@ -20,7 +20,7 @@ import java.util.*
 
 class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_fragment) {
     override val binding: ComponentAddEditFragmentBinding by viewBinding()
-    override val viewModel: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
+    override val vm: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
         setupTitleTextChangeListener()
@@ -63,10 +63,10 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
     /**
      * Bind methods are to make fragment observe values from viewModel
      */
-    private fun setupDateBind() = viewModel::cDate bind { binding.dateIb.text = getFormattedDate(it) }
-    private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+    private fun setupDateBind() = vm::cDate bind { binding.dateIb.text = getFormattedDate(it) }
+    private fun setupCanCloseScreenBind() = vm::canCloseScreen bind { if (it) vm.goBack() }
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             ::cTitle bind { it?.let { binding.tietName.setText(it) } }
             ::cResourceMileage bind { it?.let { binding.tietResourceValue.setText(it) } }
             ::cStartMileage bind { it?.let { binding.tietMileageValue.setText(it) } }
@@ -85,12 +85,12 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                viewModel.cDate = cal.time.time
+                vm.cDate = cal.time.time
             }
 
         binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
-                timeInMillis = viewModel.cDate
+                timeInMillis = vm.cDate
             }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -143,7 +143,7 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
-                            viewModel.addOrEditComponentItem(
+                            vm.addOrEditComponentItem(
                                 tietName.text.toString(),
                                 tietResourceValue.text.toString(),
                                 tietMileageValue.text.toString()
@@ -174,10 +174,8 @@ class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_frag
         /**
          * This check must be used when multiple cars allowed
          */
-//        if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for ComponentAddOrEditFragment")
-//        carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("ComponentItem id must be implemented for ComponentAddOrEditFragment")
-        viewModel.cId = args.getInt(ID_KEY, ComponentItem.UNDEFINED_ID)
+        vm.cId = args.getInt(ID_KEY, ComponentItem.UNDEFINED_ID)
     }
 
     override fun onAttach(context: Context) {

@@ -10,6 +10,7 @@ import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import com.demo.carspends.utils.refactorInt
 import com.demo.carspends.utils.refactorString
+import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -28,7 +29,7 @@ class ComponentAddOrEditViewModel @Inject constructor(
     private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
     private val router: Router,
     private val app: Application
-) : AndroidViewModel(app), PropertyHost {
+) : BaseViewModel(app) {
 
     fun goBack() = router.exit()
 
@@ -111,7 +112,6 @@ class ComponentAddOrEditViewModel @Inject constructor(
         }
     }
 
-    private fun getCurrentDate(): Long = Date().time
     private fun setCanCloseScreen() { canCloseScreen = true }
 
     override val propertyHostScope: CoroutineScope

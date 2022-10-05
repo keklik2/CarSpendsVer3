@@ -13,7 +13,7 @@ import java.util.*
 
 class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
     override val binding: NumerousFragmentBinding by viewBinding()
-    override val viewModel: NumerousViewModel by viewModels { viewModelFactory }
+    override val vm: NumerousViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatesClickListener()
         setupRestoreDateListener()
@@ -32,7 +32,7 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
      * Binds
      */
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             with(binding) {
                 ::sAvgFuel bind { tvAvgFuel.text = it }
                 ::sMomentFuel bind { tvMomentFuel.text = it }
@@ -48,9 +48,9 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
     }
 
     private fun setupShowTipBind() {
-        viewModel::tipsCount bind {
-            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
-                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
+        vm::tipsCount bind {
+            if (it < vm.tips.size && vm.isFirstLaunch)
+                tipShower.showTip(vm.tips[it]) { vm.nextTip() }
         }
     }
 
@@ -67,10 +67,10 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
                     cal.set(Calendar.MONTH, monthOfYear)
                     cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                    viewModel.startDate = cal.time.time
+                    vm.startDate = cal.time.time
                 }
 
-                val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.startDate }
+                val cCal = GregorianCalendar.getInstance().apply { timeInMillis = vm.startDate }
                 DatePickerDialog(
                     requireContext(), dateSetListener,
                     cCal.get(Calendar.YEAR),
@@ -87,10 +87,10 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
                     cal.set(Calendar.MONTH, monthOfYear)
                     cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                    viewModel.endDate = cal.time.time
+                    vm.endDate = cal.time.time
                 }
 
-            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.endDate }
+            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = vm.endDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
@@ -101,7 +101,7 @@ class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
     }
 
     private fun setupRestoreDateListener() {
-        binding.dateRestoreButton.setOnClickListener { viewModel.restoreDates() }
+        binding.dateRestoreButton.setOnClickListener { vm.restoreDates() }
     }
 
 

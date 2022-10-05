@@ -7,13 +7,14 @@ import androidx.fragment.app.DialogFragment
 import com.demo.carspends.R
 
 class AppItemPickDialog(
-    private val itemsResId: Int,
-    private val onItemSelected: (Int) -> Unit
+    private val itemDialogContainer: AppItemDialogContainer
 ) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext()).apply {
             setTitle(R.string.dialog_select_item_title)
-            setItems(itemsResId) { _, item -> onItemSelected(item) }
+            setItems(itemDialogContainer.itemsResId) { _, item ->
+                itemDialogContainer.onItemSelected(item)
+            }
         }.create()
     }
 }
