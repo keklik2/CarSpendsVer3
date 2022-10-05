@@ -70,7 +70,7 @@ abstract class NoteAddOrEditViewModel(
     }
 
     fun addPictures(newPictures: List<InternalPicture>) {
-        pictures.apply {
+        pictures = pictures.toMutableList().apply {
             addAll(newPictures)
         }
         if(pictures.size > 4) pictures = pictures.dropLast(pictures.size - 4).toMutableList()
