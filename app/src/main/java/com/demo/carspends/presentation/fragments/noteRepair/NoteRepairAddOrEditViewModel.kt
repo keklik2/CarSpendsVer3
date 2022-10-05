@@ -107,16 +107,8 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
             notesListForCalculation.clear()
             notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
-            if (noteItem == null) {
-                updateMileage(rMileage)
-                addLastPrice(newNote)
-            } else {
-                noteItem = newNote
-                rollbackCarMileage()
-                addAllPrice()
-            }
-
             calculateAllMileage()
+            calculateAllPrice()
             calculateAvgPrice()
 
             updateCarItem()
@@ -124,90 +116,42 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
         }
     }
 
-    private fun getLastNotExtraNote(): NoteItem? {
-        return notesListForCalculation.lastOrNull {
-            it.type != NoteType.EXTRA
-        }
-    }
-
     private fun calculateAllMileage() {
         carItem?.let { itCar ->
-            val resMil = if (notesListForCalculation.isNotEmpty()) {
-                val maxMil = max(itCar.mileage, notesListForCalculation[0].mileage)
-                val lastNote = getLastNotExtraNote()
-                val minMil =
-                    if (lastNote != null) min(
-                        itCar.startMileage,
-                        lastNote.mileage
-                    ) else itCar.startMileage
-                abs(maxMil - minMil)
-            } else 0
+            val sorted = getNotExtraNotes().sortedByDescending { it.mileage }
+            val newMileage =
+                if (sorted.isNotEmpty())
+                    abs(sorted.first().mileage - min(sorted.last().mileage, itCar.startMileage))
+                else 0
 
             carItem = itCar.copy(
-                allMileage = resMil
-            )
-        }
-
-    }
-
-    private fun addLastPrice(note: NoteItem) {
-        carItem?.let {
-            carItem = it.copy(
-                allPrice = it.allPrice + note.totalPrice
+                allMileage = newMileage,
+                mileage = max(itCar.startMileage, sorted.first().mileage)
             )
         }
     }
 
-    private fun addAllPrice() {
-        carItem?.let {
-            val allPrice = max(
-                notesListForCalculation.sumOf { it.totalPrice },
-                0.0
-            )
+    private fun calculateAllPrice() {
+        carItem?.let { itCar ->
+            val allPrice = notesListForCalculation.sumOf { it.totalPrice }
 
-            carItem = it.copy(
-                allPrice = allPrice
-            )
+            carItem = itCar.copy(allPrice = if (allPrice < 0) 0.0 else allPrice)
         }
     }
 
     private fun calculateAvgPrice() {
         carItem?.let { itCar ->
-            val newMilPrice =
-                if (itCar.allPrice > 0 && itCar.allMileage > 0) {
-                    val res = itCar.allPrice / itCar.allMileage
-                    if (res < 0) 0.0
-                    else res
-                } else 0.0
+            val allPrice = if (itCar.allPrice > 0) itCar.allPrice else 0.0
+            val allMileage = if (itCar.allMileage > 0) itCar.allMileage else 0
 
             carItem = itCar.copy(
-                milPrice = newMilPrice
+                milPrice = if (allPrice <= 0.0 || allMileage <= 0) 0.0 else allPrice / allMileage
             )
         }
     }
 
-    private fun rollbackCarMileage() {
-        carItem?.let { itCar ->
-            val newMileage: Int = when (val item = notesListForCalculation.firstOrNull {
-                it.type != NoteType.EXTRA
-                        && it.mileage > itCar.startMileage
-            }) {
-                null -> itCar.startMileage
-                else -> item.mileage
-            }
-
-            carItem = itCar.copy(
-                mileage = newMileage
-            )
-        }
-    }
-
-    private fun updateMileage(newMileage: Int) {
-        carItem?.let { itCar ->
-            carItem = itCar.copy(
-                mileage = max(newMileage, itCar.mileage)
-            )
-        }
+    private fun getNotExtraNotes(): List<NoteItem> {
+        return notesListForCalculation.filter { it.type != NoteType.EXTRA }
     }
 
     override val propertyHostScope: CoroutineScope

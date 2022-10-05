@@ -91,8 +91,6 @@ abstract class NoteAddOrEditViewModel(
         }
     }
 
-    fun setCanCloseScreen() {
-        canCloseScreen = true
-    }
+    fun setCanCloseScreen() { canCloseScreen = true }
     suspend fun updateCarItem() = carItem?.let { editCarItemUseCase(it) }
 }
