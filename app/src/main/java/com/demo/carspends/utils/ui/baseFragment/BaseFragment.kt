@@ -1,5 +1,7 @@
 package com.demo.carspends.utils.ui.baseFragment
 
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
@@ -32,8 +34,8 @@ abstract class BaseFragment(layout: Int): Fragment(layout), PropertyObserver {
         (requireActivity().application as CarSpendsApp).component
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupListeners?.invoke()
         setupBinds?.invoke()
