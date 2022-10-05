@@ -421,7 +421,7 @@ class NotesListViewModel @Inject constructor(
             SettingsRepository.STATISTIC_MILEAGE_PRICE -> {
                 statisticsField2Img = IMG_RUBLE
                 String.format(
-                    app.getString(R.string.text_measure_currency_for_formatting),
+                    app.getString(R.string.text_measure_price_charge_for_formatting),
                     getFormattedDoubleAsStrForDisplay(car.milPrice)
                 )
             }

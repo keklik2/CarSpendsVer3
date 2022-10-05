@@ -56,6 +56,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
 
     /**
+     *
      * Validation functions
      */
     private val titleValidation by lazy {

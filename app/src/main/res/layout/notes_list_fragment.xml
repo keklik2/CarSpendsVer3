@@ -33,6 +33,7 @@
                 android:id="@+id/tv_car_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="30dp"
 
                 android:layout_margin="10dp"
                 android:ellipsize="end"
@@ -76,6 +77,9 @@
                 android:id="@+id/tv_statistics_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp"
                 android:padding="10dp"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -96,6 +100,9 @@
                 android:id="@+id/tv_statistics_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
                 android:padding="10dp"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -180,15 +187,17 @@
 
     <TextView
         android:id="@+id/tv_empty_notes"
-        style="@style/entryUnitMainMenuText"
         android:layout_width="match_parent"
-
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_2"
+
+        style="@style/entryUnitMainMenuText"
         android:text="@string/text_empty_note_or_component"
 
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_2" />
+        android:visibility="invisible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fb_add_note"

@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
 import com.demo.carspends.databinding.SettingsFragmentBinding
+import com.demo.carspends.utils.dialogs.AppItemPickDialog
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
 
@@ -17,6 +18,7 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     override var setupListeners: (() -> Unit)? = {
         switchListener()
         statisticSpinnersListener()
+        showInfoListener()
 
         acceptClickListener()
     }
@@ -32,9 +34,10 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     private fun setupFieldsBind() {
         with(viewModel) {
             with(binding) {
+                val statisticValues = resources.getStringArray(R.array.statistic_values)
                 ::isExtendedFont bind { fontSizeSwitch.isChecked = it }
-                ::statistics1Id bind { statistics1Spinner.setSelection(it) }
-                ::statistics2Id bind { statistics2Spinner.setSelection(it) }
+                ::statistics1Id bind { tvStatisticsOneDescription.text = statisticValues[it] }
+                ::statistics2Id bind { tvStatisticsTwoDescription.text = statisticValues[it] }
             }
         }
     }
@@ -55,25 +58,31 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
     }
 
     private fun statisticSpinnersListener() {
-        binding.statistics1Spinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    viewModel.changeStatistic1(pos)
-                }
+        val statisticsListId = R.array.statistic_values
 
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
+        binding.llStatisticsOne.setOnClickListener {
+            AppItemPickDialog(statisticsListId) {
+                viewModel.changeStatistic1(it)
+            }.show(childFragmentManager, DIALOG_TAG)
         }
 
-        binding.statistics2Spinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    viewModel.changeStatistic2(pos)
-                }
+        binding.llStatisticsTwo.setOnClickListener {
+            AppItemPickDialog(statisticsListId) {
+                viewModel.changeStatistic2(it)
+            }.show(childFragmentManager, DIALOG_TAG)
+        }
+    }
 
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
+    private fun showInfoListener() {
+        with(binding) {
+            btnStatisticsOneInfo.setOnClickListener {
+
             }
+
+            btnStatisticsTwoInfo.setOnClickListener {
+
+            }
+        }
     }
 
 
@@ -96,5 +105,6 @@ class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
 
     companion object {
         private const val IMAGE_TEST = 1
+        private const val DIALOG_TAG = "dialog_tag"
     }
 }

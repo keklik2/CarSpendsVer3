@@ -30,8 +30,8 @@
     <string name="text_not_enough_info">Недостаточно информации для предоставления статистики</string>
     <string name="text_font_size">Размер шрифта</string>
     <string name="text_font_size_large">Увеличенный шрифт</string>
-    <string name="text_statistics_1">Поле статистики (1)</string>
-    <string name="text_statistics_2">Поле статистики (2)</string>
+    <string name="text_statistics_one">Быстрая статистика (1)</string>
+    <string name="text_statistics_two">Быстрая статистика (2)</string>
     <string name="text_unnamed">- без названия -</string>
 
     <string name="text_measure_mileage_unit">км</string>
@@ -48,6 +48,8 @@
     <string name="text_measure_price_charge_for_formatting">%s ₽/км</string>
     <string name="text_measure_currency">₽</string>
     <string name="text_measure_currency_for_formatting">%s ₽</string>
+
+    <string name="text_version_for_settings">Release 1.2</string>
 
     <!-- Buttons -->
     <string name="button_apply">Принять</string>
@@ -71,6 +73,7 @@
     <string name="dialog_drop_car">Удалить автомобиль вместе со всеми данными (статистика, компоненты и записи) или очистить только записи?</string>
     <string name="dialog_delete_car_title">Удалить автомобиль</string>
     <string name="dialog_delete_car">При удалении автомобиля восстановить информацию будет невозможно. Вы уверены, что хотите сделать это?</string>
+    <string name="dialog_select_item_title">Выберите один из вариантов</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>
