@@ -71,6 +71,8 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                     binding.tvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
+
+                    vm.calculateComponentsResources()
                 }
                 is Loading.State.Loading -> skeleton.showSkeleton()
                 else -> {

@@ -103,6 +103,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                 val currItem =
                     mainAdapter.currentList[viewHolder.absoluteAdapterPosition].componentItem
                 binding.rvComponents.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
+
                 makeAlert(
                     AppDialogContainer(
                         title = getString(R.string.dialog_delete_title),

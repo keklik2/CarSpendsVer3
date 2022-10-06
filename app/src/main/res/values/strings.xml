@@ -83,6 +83,8 @@
     <string name="dialog_info_statistics">Поля «быстрой статистики» находятся на главном экране
         приложения и позволяют Вам быстро просматривать информацию об автомобиле.\n
         Вы можете выбрать какую статистику отображать и менять поля в любое время</string>
+    <string name="dialog_low_component_title">Низкий ресурс</string>
+    <string name="dialog_low_component">У компонента <b>«%s»</b> низкий остаточный ресурс - <b>%s%% (%sкм)</b>!</string>
 
     <!-- Toast messages -->
     <string name="toast_missing_data">Заполните все поля</string>

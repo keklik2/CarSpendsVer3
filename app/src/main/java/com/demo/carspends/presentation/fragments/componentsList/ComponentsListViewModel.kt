@@ -106,6 +106,7 @@ class ComponentsListViewModel @Inject constructor(
     fun deleteComponent(component: ComponentItem) {
         viewModelScope.launch {
             deleteComponentUseCase(component)
+            refreshData()
         }
     }
 

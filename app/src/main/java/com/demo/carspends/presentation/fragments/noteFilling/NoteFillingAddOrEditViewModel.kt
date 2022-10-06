@@ -141,7 +141,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
             carItem = itCar.copy(
                 allMileage = newMileage,
-                mileage = max(itCar.startMileage, notes.first().mileage)
+                mileage = if (notes.isNotEmpty()) max(itCar.startMileage, notes.first().mileage) else itCar.startMileage
             )
         }
     }
