@@ -33,9 +33,10 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
         setupShowTipBind()
     }
 
-    private val mainAdapter = ComponentItemAdapter.get {
-        vm.goToComponentAddOrEdit(it.componentItem.id)
-    }
+    private val mainAdapter = ComponentItemAdapter.get(
+        onItemClick = { vm.goToComponentAddOrEdit(it.componentItem.id) },
+        onRestoreClick = { vm.refreshComponent(it.componentItem) }
+    )
 
     private val tipShower by lazy {
         TipShower(requireActivity())
