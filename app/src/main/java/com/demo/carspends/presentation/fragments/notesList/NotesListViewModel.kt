@@ -1,10 +1,6 @@
 package com.demo.carspends.presentation.fragments.notesList
 
 import android.app.Application
-import android.os.Build
-import android.text.Html
-import android.text.Spanned
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
@@ -476,8 +472,8 @@ class NotesListViewModel @Inject constructor(
                         per.toString(),
                         getLeftComponentMileage(component).toString()
                     ),
-                    positiveBtnCallback = { showComponentWarning(components) },
-                    negativeBtnCallback = { showComponentWarning(components) }
+                    onPositiveButtonClicked = { showComponentWarning(components) },
+                    onNegativeButtonClicked = { showComponentWarning(components) }
                 )
             )
         }

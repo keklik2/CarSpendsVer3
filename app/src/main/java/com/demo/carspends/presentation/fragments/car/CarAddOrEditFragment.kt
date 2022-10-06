@@ -234,7 +234,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
                         AppDialogContainer(
                             title = getString(R.string.dialog_exit_title),
                             message = getString(R.string.dialog_exit_car),
-                            positiveBtnCallback = {
+                            onPositiveButtonClicked = {
                                 validator(requireActivity()) {
                                     listener = object : Validator.OnValidateListener {
                                         override fun onValidateSuccess(values: List<String>) {

@@ -12,10 +12,10 @@ class AppAlertDialog(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return AlertDialog.Builder(requireContext()).apply {
             setMessage(container.message)
-            setPositiveButton(R.string.dialog_positive) { _, _ -> container.positiveBtnCallback() }
+            setPositiveButton(R.string.dialog_positive) { _, _ -> container.onPositiveButtonClicked() }
             container.title?.let { setTitle(it) }
-            container.negativeBtnCallback?.let { setNegativeButton(R.string.dialog_negative) { _, _ -> it() } }
-            container.neutralBtnCallback?.let { setNeutralButton(R.string.dialog_neutral) { _, _ -> it() } }
+            container.onNegativeButtonClicked?.let { setNegativeButton(R.string.dialog_negative) { _, _ -> it() } }
+            container.onNeutralButtonClicked?.let { setNeutralButton(R.string.dialog_neutral) { _, _ -> it() } }
         }.create()
     }
 }

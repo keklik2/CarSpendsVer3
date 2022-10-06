@@ -1,10 +1,6 @@
 package com.demo.carspends.presentation.fragments.settings
 
 import android.app.Application
-import android.content.Context.MODE_PRIVATE
-import android.graphics.Bitmap
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
@@ -15,7 +11,6 @@ import com.demo.carspends.domain.settings.SettingsRepository.Companion.FONT_SIZE
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.state
 import javax.inject.Inject
 import com.demo.carspends.domain.settings.SettingsRepository.Companion.SETTING_FONT_SIZE
@@ -32,12 +27,9 @@ import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.dialogs.AppItemDialogContainer
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import me.aartikov.sesame.loading.simple.Loading
-import me.aartikov.sesame.loading.simple.dataOrNull
 import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.stateFromFlow
-import java.io.IOException
-import java.lang.Integer.max
 
 class SettingsViewModel @Inject constructor(
     private val setSettingUseCase: SetSettingUseCase,
@@ -175,7 +167,7 @@ class SettingsViewModel @Inject constructor(
             AppDialogContainer(
                 getString(R.string.dialog_info_title),
                 message = getString(R.string.dialog_info_statistics),
-                positiveBtnCallback = {  }
+                onPositiveButtonClicked = {  }
             )
         )
     }

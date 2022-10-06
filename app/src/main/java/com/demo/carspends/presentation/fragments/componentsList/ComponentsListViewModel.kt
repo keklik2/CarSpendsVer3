@@ -1,8 +1,6 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
 import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
@@ -25,7 +23,6 @@ import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
 import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
@@ -128,13 +125,13 @@ class ComponentsListViewModel @Inject constructor(
                         getString(R.string.dialog_restore_component),
                         component.title
                     ),
-                    positiveBtnCallback = {
+                    onPositiveButtonClicked = {
                         withScope {
                             addComponentUseCase(component.copy(startMileage = it.mileage))
                             refreshData()
                         }
                     },
-                    negativeBtnCallback = {  }
+                    onNegativeButtonClicked = {  }
                 )
             )
         }

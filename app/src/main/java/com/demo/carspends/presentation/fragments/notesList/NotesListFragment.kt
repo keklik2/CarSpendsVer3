@@ -3,7 +3,6 @@ package com.demo.carspends.presentation.fragments.notesList
 import android.content.Context
 import android.view.View
 import android.widget.AdapterView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -256,7 +255,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                             getString(R.string.dialog_delete_note),
                             currItem.title
                         ),
-                        positiveBtnCallback = { vm.deleteNote(currItem) }
+                        onPositiveButtonClicked = { vm.deleteNote(currItem) }
                     )
                 )
             }

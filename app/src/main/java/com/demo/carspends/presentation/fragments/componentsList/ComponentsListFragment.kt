@@ -2,7 +2,6 @@ package com.demo.carspends.presentation.fragments.componentsList
 
 import android.content.Context
 import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -12,7 +11,6 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.ComponentsListFragmentBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
-import com.demo.carspends.utils.dialogs.AppAlertDialog
 import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.tipShower.TipShower
@@ -112,7 +110,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
                             getString(R.string.dialog_delete_component),
                             currItem.title
                         ),
-                        positiveBtnCallback = { vm.deleteComponent(currItem) }
+                        onPositiveButtonClicked = { vm.deleteComponent(currItem) }
                     )
                 )
             }
