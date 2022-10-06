@@ -1,14 +1,9 @@
 package com.demo.carspends.presentation.fragments.noteRepair
 
 import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.demo.carspends.R
-import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
@@ -23,14 +18,8 @@ import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import me.aartikov.sesame.loading.simple.Loading
-import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
-import me.aartikov.sesame.property.stateFromFlow
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -118,15 +107,15 @@ class NoteRepairAddOrEditViewModel @Inject constructor(
 
     private fun calculateAllMileage() {
         carItem?.let { itCar ->
-            val sorted = getNotExtraNotes().sortedByDescending { it.mileage }
+            val notes = getNotExtraNotes()
             val newMileage =
-                if (sorted.isNotEmpty())
-                    abs(sorted.first().mileage - min(sorted.last().mileage, itCar.startMileage))
+                if (notes.isNotEmpty())
+                    abs(max(notes.maxOf { it.mileage }, itCar.startMileage) - min(notes.minOf { it.mileage }, itCar.startMileage))
                 else 0
 
             carItem = itCar.copy(
                 allMileage = newMileage,
-                mileage = max(itCar.startMileage, sorted.first().mileage)
+                mileage = max(itCar.startMileage, notes.first().mileage)
             )
         }
     }

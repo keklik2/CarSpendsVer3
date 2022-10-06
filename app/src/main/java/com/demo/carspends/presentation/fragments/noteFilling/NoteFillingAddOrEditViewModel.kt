@@ -133,15 +133,15 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun calculateAllMileage() {
         carItem?.let { itCar ->
-            val sorted = getNotExtraNotes().sortedByDescending { it.mileage }
+            val notes = getNotExtraNotes()
             val newMileage =
-                if (sorted.isNotEmpty())
-                    abs(sorted.first().mileage - min(sorted.last().mileage, itCar.startMileage))
+                if (notes.isNotEmpty())
+                    abs(max(notes.maxOf { it.mileage }, itCar.startMileage) - min(notes.minOf { it.mileage }, itCar.startMileage))
                 else 0
 
             carItem = itCar.copy(
                 allMileage = newMileage,
-                mileage = max(itCar.startMileage, sorted.first().mileage)
+                mileage = max(itCar.startMileage, notes.first().mileage)
             )
         }
     }
@@ -167,10 +167,10 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun calculateAvgFuel() {
         carItem?.let { itCar ->
-            val sorted = getFuelNotes().sortedByDescending { it.mileage }
-            val newAvgFuel = if (sorted.size >= 2) {
-                val mileage = abs(sorted.first().mileage - sorted.last().mileage)
-                val fuel = abs(sorted.sumOf { it.liters } - sorted.last().liters)
+            val notes = getFuelNotes().sortedByDescending { it.mileage }
+            val newAvgFuel = if (notes.size >= 2) {
+                val mileage = abs(notes.first().mileage - notes.last().mileage)
+                val fuel = abs(notes.sumOf { it.liters } - notes.last().liters)
                 if (fuel <= 0 || mileage <= 0) 0.0
                 else fuel / (mileage / 100)
             } else 0.0
@@ -199,9 +199,9 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun calculateAllFuel() {
         carItem?.let { itCar ->
-            val sorted = getFuelNotes().sortedByDescending { it.mileage }
-            val newFuel = if (sorted.isNotEmpty()) {
-                val fuel = sorted.sumOf { it.liters }
+            val notes = getFuelNotes()
+            val newFuel = if (notes.isNotEmpty()) {
+                val fuel = notes.sumOf { it.liters }
                 if (fuel <= 0 ) 0.0
                 else fuel
             } else 0.0
@@ -214,9 +214,9 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun calculateFuelPrice() {
         carItem?.let { itCar ->
-            val sorted = getFuelNotes().sortedByDescending { it.mileage }
-            val newFuelPrice = if (sorted.isNotEmpty()) {
-                val price = sorted.sumOf { it.totalPrice }
+            val notes = getFuelNotes()
+            val newFuelPrice = if (notes.isNotEmpty()) {
+                val price = notes.sumOf { it.totalPrice }
                 if (price <= 0 ) 0.0
                 else price
             } else 0.0
