@@ -136,7 +136,7 @@
     <string name="menu_home">Главная</string>
     <string name="menu_resources">Ресурс</string>
     <string name="menu_statistics">Статистика</string>
-    <string name="top_menu_numerous">Общая</string>
+    <string name="top_menu_numerous">Стандарт</string>
     <string name="top_menu_graphic">Графики</string>
 
     <!-- Description labels -->

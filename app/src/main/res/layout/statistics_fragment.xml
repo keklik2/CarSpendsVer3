@@ -19,14 +19,14 @@
         <RadioButton
             android:id="@+id/rb_numerous"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
-            android:layout_margin="10dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
 
             android:checked="true"
             android:layout_weight="1"
             android:button="@color/transparent"
-            android:background="@drawable/radio_group_menu"
+            android:background="@drawable/radio_group_menu_left"
 
             android:textSize="14sp"
             android:fontFamily="@font/gotham_pro_narrow"
@@ -37,15 +37,13 @@
         <RadioButton
             android:id="@+id/rb_graph"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="4dp"
+            android:layout_height="30dp"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
 
             android:layout_weight="1"
             android:button="@color/transparent"
-            android:background="@drawable/radio_group_menu"
+            android:background="@drawable/radio_group_menu_right"
 
             android:textAlignment="center"
             android:textSize="14sp"
