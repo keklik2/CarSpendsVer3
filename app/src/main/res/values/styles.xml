@@ -77,7 +77,7 @@
         <item name="textAllCaps">true</item>
         <item name="android:layout_margin">10dp</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:background">@drawable/rounded_rectangle_light_light_vine</item>
+        <item name="android:background">@drawable/bg_rectangle_light_light_vine</item>
         <item name="android:padding">5dp</item>
     </style>
 

@@ -1,23 +1,18 @@
 package com.demo.carspends.presentation.fragments.statistics.graphics
 
 import android.content.Context
-import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.GraphicsFragmentBinding
-import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_ALL_TIME
-import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_MONTH
-import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_WEEK
-import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsViewModel.Companion.DATE_YEAR
+import com.demo.carspends.databinding.FragmentGraphicsStatisticsBinding
 import com.demo.carspends.presentation.fragments.statistics.graphics.adapter.GraphAdapter
 import com.demo.carspends.utils.setVisibility
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
-class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
-    override val binding: GraphicsFragmentBinding by viewBinding()
+class GraphicsFragment : BaseFragment(R.layout.fragment_graphics_statistics) {
+    override val binding: FragmentGraphicsStatisticsBinding by viewBinding()
     override val vm: GraphicsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDateChangeListener()

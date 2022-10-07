@@ -8,7 +8,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.NoteExtraAddEditFragmentBinding
+import com.demo.carspends.databinding.FragmentNoteExtraAddEditBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.getFormattedDate
@@ -20,8 +20,8 @@ import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 import java.util.*
 
-class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add_edit_fragment) {
-    override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
+class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.fragment_note_extra_add_edit) {
+    override val binding: FragmentNoteExtraAddEditBinding by viewBinding()
     override val vm: NoteExtraAddOrEditViewModel by viewModels { viewModelFactory }
 
     override var setupListeners: (() -> Unit)? = {

@@ -15,7 +15,7 @@ object NoteItemAdapter {
             areItemsTheSame = { old, new -> old.id == new.id },
         )
         register(
-            layoutResource = R.layout.note_item,
+            layoutResource = R.layout.item_note,
             viewHolder = ::NoteItemViewHolder,
             onBindViewHolder = { viewHolder, _, item ->
                 viewHolder.itemView.setOnClickListener {

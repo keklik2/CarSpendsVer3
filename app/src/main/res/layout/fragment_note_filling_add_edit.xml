@@ -168,7 +168,7 @@
                 android:layout_marginHorizontal="10dp"
                 android:paddingHorizontal="10dp"
 
-                android:background="@drawable/rounded_rectangle_dark_vine"
+                android:background="@drawable/bg_rectangle_dark_vine"
                 android:backgroundTint="@color/light_light_vine"
 
                 app:layout_constraintTop_toTopOf="@+id/date_ib"
@@ -189,7 +189,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="10dp"
 
-                android:background="@drawable/rounded_rectangle_dark_vine"
+                android:background="@drawable/bg_rectangle_dark_vine"
                 android:drawableEnd="@drawable/ic_edit_calendar"
                 android:padding="10dp"
                 android:textAlignment="center"
@@ -209,7 +209,7 @@
                 app:layout_constraintDimensionRatio="1:1"
                 android:layout_margin="10dp"
 
-                android:background="@drawable/rounded_rectangle_light_black"
+                android:background="@drawable/bg_rectangle_light_black"
                 android:src="@drawable/ic_camera"
                 android:padding="8dp"
                 android:layout_marginEnd="10dp"
@@ -232,7 +232,7 @@
                 app:layoutManager="androidx.recyclerview.widget.StaggeredGridLayoutManager"
                 app:spanCount="3"
                 tools:itemCount="4"
-                tools:listitem="@layout/picture_item"/>
+                tools:listitem="@layout/item_picture"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

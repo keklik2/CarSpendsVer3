@@ -2,7 +2,7 @@ package com.demo.carspends.presentation.fragments.statistics.graphics.adapter
 
 import android.view.View
 import com.demo.carspends.R
-import com.demo.carspends.databinding.GraphicItemBinding
+import com.demo.carspends.databinding.ItemGraphicBinding
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import lecho.lib.hellocharts.model.*
 import me.ibrahimyilmaz.kiel.adapterOf
@@ -16,7 +16,7 @@ object GraphAdapter {
             areItemsTheSame = { old, new -> old == new }
         )
         register(
-            layoutResource = R.layout.graphic_item,
+            layoutResource = R.layout.item_graphic,
             viewHolder = ::GraphicItemViewHolder,
             onBindViewHolder = { vh, _, item ->
                 with(vh.binding) {
@@ -75,5 +75,5 @@ object GraphAdapter {
 }
 
 class GraphicItemViewHolder(view: View) : RecyclerViewHolder<GraphItem>(view) {
-    val binding = GraphicItemBinding.bind(view)
+    val binding = ItemGraphicBinding.bind(view)
 }

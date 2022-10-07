@@ -18,7 +18,7 @@ object PictureAdapter {
         onItemDeleteFunc: ((InternalPicture) -> Unit)? = null
     ) = adapterOf<InternalPicture> {
         register(
-            layoutResource = R.layout.picture_item,
+            layoutResource = R.layout.item_picture,
             viewHolder = ::PictureViewHolder,
             onBindViewHolder = { vh, _, item ->
                 vh.binding.cvPreview.setOnClickListener {

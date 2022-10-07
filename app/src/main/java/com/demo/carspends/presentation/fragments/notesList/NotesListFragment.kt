@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.NotesListFragmentBinding
+import com.demo.carspends.databinding.FragmentNotesListBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
 import com.demo.carspends.utils.dialogs.AppDialogContainer
@@ -18,9 +18,9 @@ import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 
 
-class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
+class NotesListFragment : BaseFragment(R.layout.fragment_notes_list) {
 
-    override val binding: NotesListFragmentBinding by viewBinding()
+    override val binding: FragmentNotesListBinding by viewBinding()
     override val vm: NotesListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTypeSpinnerListener()
@@ -58,7 +58,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
      */
     private fun setupNotesBind() {
         binding.rvNotes.adapter = mainAdapter
-        val skeleton = binding.rvNotes.applySkeleton(R.layout.note_item_skeleton)
+        val skeleton = binding.rvNotes.applySkeleton(R.layout.item_skeleton_note)
         skeleton.showSkeleton()
 
         vm::notesListState bind {

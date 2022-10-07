@@ -185,7 +185,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
                 val mileage = abs(notes.first().mileage - notes.last().mileage)
                 val fuel = abs(notes.sumOf { it.liters } - notes.last().liters)
                 if (fuel <= 0 || mileage <= 0) 0.0
-                else fuel / (mileage / 100)
+                else fuel / (mileage.toDouble() / 100)
             } else 0.0
 
             carItem = itCar.copy(

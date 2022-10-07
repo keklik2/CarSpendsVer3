@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.ComponentsListFragmentBinding
+import com.demo.carspends.databinding.FragmentComponentsListBinding
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ComponentItemAdapter
 import com.demo.carspends.presentation.fragments.componentsList.recycleView.ExtendedComponentItem
 import com.demo.carspends.utils.dialogs.AppDialogContainer
@@ -17,8 +17,8 @@ import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
 
-class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
-    override val binding: ComponentsListFragmentBinding by viewBinding()
+class ComponentsListFragment : BaseFragment(R.layout.fragment_components_list) {
+    override val binding: FragmentComponentsListBinding by viewBinding()
     override val vm: ComponentsListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRecyclerOnSwipeListener()
@@ -45,7 +45,7 @@ class ComponentsListFragment : BaseFragment(R.layout.components_list_fragment) {
      */
     private fun setupComponentsBind() {
         binding.rvComponents.adapter = mainAdapter
-        val skeleton = binding.rvComponents.applySkeleton(R.layout.note_item_skeleton)
+        val skeleton = binding.rvComponents.applySkeleton(R.layout.item_skeleton_note)
         skeleton.showSkeleton()
 
         vm::componentsListState bind {

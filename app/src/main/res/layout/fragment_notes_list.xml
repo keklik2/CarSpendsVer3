@@ -68,7 +68,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tv_statistics_1"
                 app:layout_constraintTop_toTopOf="@+id/tv_statistics_1"
 
-                android:background="@drawable/rounded_rectangle_white">
+                android:background="@drawable/bg_rectangle_white">
 
             </View>
 
@@ -84,7 +84,7 @@
                 android:ellipsize="end"
                 android:gravity="center"
 
-                android:background="@drawable/rounded_rectangle_dark_vine"
+                android:background="@drawable/bg_rectangle_dark_vine"
                 app:layout_constraintTop_toBottomOf="@+id/tv_car_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/cv_guide_line"
@@ -212,7 +212,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_2"
 
-        tools:listitem="@layout/note_item" />
+        tools:listitem="@layout/item_note" />
 
     <TextView
         android:id="@+id/tv_empty_notes"

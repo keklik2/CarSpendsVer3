@@ -5,14 +5,14 @@ import android.content.Context
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.NumerousFragmentBinding
+import com.demo.carspends.databinding.FragmentNumerousStatisticsBinding
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.tipShower.TipShower
 import java.util.*
 
-class NumerousFragment: BaseFragment(R.layout.numerous_fragment) {
-    override val binding: NumerousFragmentBinding by viewBinding()
+class NumerousFragment: BaseFragment(R.layout.fragment_numerous_statistics) {
+    override val binding: FragmentNumerousStatisticsBinding by viewBinding()
     override val vm: NumerousViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatesClickListener()

@@ -12,7 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.CarAddEditFragmentBinding
+import com.demo.carspends.databinding.FragmentCarAddEditBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.DOWNLOAD_CHANNEL_ID
@@ -28,13 +28,13 @@ import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 
 
-class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
+class CarAddOrEditFragment : BaseFragment(R.layout.fragment_car_add_edit) {
     private val dbNotesSaver = DbSaver<List<NoteItem>>(
         this,
         genericType<List<NoteItem>>()
     ) { vm.applyNotes(it) }
 
-    override val binding: CarAddEditFragmentBinding by viewBinding()
+    override val binding: FragmentCarAddEditBinding by viewBinding()
     override val vm: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTextChangeListeners()

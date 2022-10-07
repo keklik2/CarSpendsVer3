@@ -5,14 +5,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.SettingsFragmentBinding
-import com.demo.carspends.utils.dialogs.AppItemDialogContainer
-import com.demo.carspends.utils.dialogs.AppItemPickDialog
+import com.demo.carspends.databinding.FragmentSettingsBinding
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
 
-class SettingsFragment: BaseFragment(R.layout.settings_fragment) {
-    override val binding: SettingsFragmentBinding by viewBinding()
+class SettingsFragment: BaseFragment(R.layout.fragment_settings) {
+    override val binding: FragmentSettingsBinding by viewBinding()
     override val vm: SettingsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         switchListener()

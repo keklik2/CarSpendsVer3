@@ -8,13 +8,13 @@
     android:layout_height="wrap_content"
     android:layout_margin="10dp"
 
-    android:background="@drawable/rounded_rectangle_light_light_vine">
+    android:background="@drawable/bg_rectangle_light_light_vine">
 
     <View
         android:layout_width="0dp"
         android:layout_height="0dp"
 
-        android:background="@drawable/rounded_rectangle_white"
+        android:background="@drawable/bg_rectangle_white"
 
         app:layout_constraintTop_toTopOf="@+id/tv_graph_title"
         app:layout_constraintBottom_toBottomOf="@+id/tv_graph_title"
@@ -36,7 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_graph_measure"
         app:layout_constraintEnd_toStartOf="@+id/tv_graph_measure"
 
-        android:background="@drawable/rounded_rectangle_white"
+        android:background="@drawable/bg_rectangle_white"
         android:maxLines="1"
         android:ellipsize="end"
 
@@ -62,7 +62,7 @@
 
         app:drawableStartCompat="@drawable/ic_gas_station_white"
         android:drawablePadding="10dp"
-        android:background="@drawable/rounded_rectangle_light_black"
+        android:background="@drawable/bg_rectangle_light_black"
 
         android:fontFamily="@font/gotham_pro_narrow"
         android:textSize="16sp"

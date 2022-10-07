@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
 
         tools:itemCount="4"
-        tools:listitem="@layout/graphic_item"/>
+        tools:listitem="@layout/item_graphic"/>
 
     <TextView
         android:id="@+id/tv_empty_graphs"

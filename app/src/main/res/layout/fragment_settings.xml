@@ -103,7 +103,7 @@
                     android:padding="4dp"
 
                     android:src="@drawable/ic_question_mark"
-                    android:background="@drawable/background_circle"
+                    android:background="@drawable/bg_circle"
                     android:scaleType="fitCenter"
 
                     app:layout_constraintTop_toTopOf="@+id/tv_statistics_one_title"
@@ -166,7 +166,7 @@
                     android:padding="4dp"
 
                     android:src="@drawable/ic_question_mark"
-                    android:background="@drawable/background_circle"
+                    android:background="@drawable/bg_circle"
                     android:scaleType="fitCenter"
 
                     app:layout_constraintTop_toTopOf="@+id/tv_statistics_two_title"

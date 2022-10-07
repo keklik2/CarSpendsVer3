@@ -24,7 +24,7 @@ object ComponentItemAdapter {
                 },
             )
             register(
-                layoutResource = R.layout.component_item,
+                layoutResource = R.layout.item_component,
                 viewHolder = ::ComponentItemViewHolder,
                 onBindViewHolder = { viewHolder, _, item ->
                     viewHolder.itemView.setOnClickListener {

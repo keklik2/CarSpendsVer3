@@ -26,12 +26,12 @@
             android:checked="true"
             android:layout_weight="1"
             android:button="@color/transparent"
-            android:background="@drawable/radio_group_menu_left"
+            android:background="@drawable/rg_menu_left"
 
             android:textSize="14sp"
             android:fontFamily="@font/gotham_pro_narrow"
             android:textAlignment="center"
-            android:textColor="@drawable/radio_button_text"
+            android:textColor="@drawable/rb_text"
             android:text="@string/top_menu_numerous"/>
 
         <RadioButton
@@ -43,12 +43,12 @@
 
             android:layout_weight="1"
             android:button="@color/transparent"
-            android:background="@drawable/radio_group_menu_right"
+            android:background="@drawable/rg_menu_right"
 
             android:textAlignment="center"
             android:textSize="14sp"
             android:fontFamily="@font/gotham_pro_narrow"
-            android:textColor="@drawable/radio_button_text"
+            android:textColor="@drawable/rb_text"
             android:text="@string/top_menu_graphic"/>
 
     </RadioGroup>
@@ -60,6 +60,6 @@
 
         app:layout_constraintTop_toBottomOf="@+id/rg_top_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/numerous_fragment" />
+        tools:layout="@layout/fragment_numerous_statistics" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

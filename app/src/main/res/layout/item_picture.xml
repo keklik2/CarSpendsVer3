@@ -35,7 +35,7 @@
             android:id="@+id/ib_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_rectangle_white"
+            android:background="@drawable/bg_rectangle_white"
             android:elevation="5dp"
             android:src="@drawable/ic_delete"
             android:padding="4dp"

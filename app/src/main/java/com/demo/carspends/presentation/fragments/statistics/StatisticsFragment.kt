@@ -2,18 +2,17 @@ package com.demo.carspends.presentation.fragments.statistics
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.StatisticsFragmentBinding
+import com.demo.carspends.databinding.FragmentStatisticsBinding
 import com.demo.carspends.presentation.fragments.statistics.graphics.GraphicsFragment
 import com.demo.carspends.presentation.fragments.statistics.numerous.NumerousFragment
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
-class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
-    override val binding: StatisticsFragmentBinding by viewBinding()
+class StatisticsFragment: BaseFragment(R.layout.fragment_statistics) {
+    override val binding: FragmentStatisticsBinding by viewBinding()
     override val vm: StatisticsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRadioGroupClickListener()

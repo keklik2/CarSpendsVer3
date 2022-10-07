@@ -7,7 +7,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.demo.carspends.R
-import com.demo.carspends.databinding.ComponentAddEditFragmentBinding
+import com.demo.carspends.databinding.FragmentComponentAddEditBinding
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
@@ -18,8 +18,8 @@ import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
 import java.util.*
 
-class ComponentAddOrEditFragment : BaseFragment(R.layout.component_add_edit_fragment) {
-    override val binding: ComponentAddEditFragmentBinding by viewBinding()
+class ComponentAddOrEditFragment : BaseFragment(R.layout.fragment_component_add_edit) {
+    override val binding: FragmentComponentAddEditBinding by viewBinding()
     override val vm: ComponentAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
