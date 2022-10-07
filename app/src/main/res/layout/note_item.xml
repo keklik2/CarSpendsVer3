@@ -19,7 +19,6 @@
         android:layout_marginHorizontal="10dp"
         android:padding="12dp"
         android:layout_marginVertical="5dp"
-        android:elevation="4dp"
 
         app:layout_constraintEnd_toStartOf="@+id/main_info_layout"
         app:layout_constraintStart_toStartOf="parent"

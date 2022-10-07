@@ -51,7 +51,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     var nMileage: String? by state(null)
 
     override val noteType = NoteType.FUEL
-    private val noteFuelTypes = Fuel.values()
     private val nTitle = app.getString(NOTE_TITLE_ID)
 
     private var _fuelType by state(Fuel.F92)
@@ -255,10 +254,6 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
                 }
             }
         )
-    }
-
-    private fun refactorFuel(id: Int): Fuel {
-        return noteFuelTypes[id]
     }
 
     fun calculateVolume(amount: String?, price: String?) {

@@ -14,7 +14,6 @@
         android:background="@color/light_light_vine"
         android:backgroundTint="@color/light_light_vine"
         app:cardCornerRadius="15dp"
-        app:cardElevation="10dp"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
