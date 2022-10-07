@@ -113,8 +113,8 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-    private fun setupDateSpinnerBind() = vm::noteDate bind { binding.tvNoteDate.text = it }
-    private fun setupTypeSpinnerBind() = vm::noteType bind { binding.tvNoteType.text = it }
+    private fun setupDateSpinnerBind() = vm::noteDate bind { binding.btnNoteDate.text = it }
+    private fun setupTypeSpinnerBind() = vm::noteType bind { binding.btnNoteType.text = it }
 
 
     /**
@@ -122,8 +122,8 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
      */
     private fun setupSettingsListener() = binding.ivSettings.setOnClickListener { vm.goToSettingsFragment() }
     private fun setupCarInfoListener() = binding.carInfoLayout.setOnClickListener { vm.goToCarEditFragment() }
-    private fun setupDateSpinnerListener() = binding.llNoteDate.setOnClickListener { vm.setData() }
-    private fun setupTypeSpinnerListener() = binding.llNoteType.setOnClickListener { vm.setType() }
+    private fun setupDateSpinnerListener() = binding.btnNoteDate.setOnClickListener { vm.setData() }
+    private fun setupTypeSpinnerListener() = binding.btnNoteType.setOnClickListener { vm.setType() }
 
 
     /**
