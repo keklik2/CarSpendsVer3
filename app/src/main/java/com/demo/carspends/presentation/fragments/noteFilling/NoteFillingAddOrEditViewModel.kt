@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.noteFilling
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
@@ -13,6 +12,7 @@ import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.domain.picture.DeletePictureUseCase
+import com.demo.carspends.utils.dialogs.AppItemDialogContainer
 import com.demo.carspends.utils.getFormattedDoubleAsStr
 import com.demo.carspends.utils.refactorDouble
 import com.demo.carspends.utils.refactorInt
@@ -54,25 +54,32 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     private val noteFuelTypes = Fuel.values()
     private val nTitle = app.getString(NOTE_TITLE_ID)
 
-    var lastFuelType by state(Fuel.F92)
+    private var _fuelType by state(Fuel.F92)
+    var fuelType: String by state(Fuel.F92.toString(app.applicationContext))
+    var fuelImage: Int by state(IMG_FUEL)
     private var notesListForCalculation = mutableListOf<NoteItem>()
 
     init {
         withScope {
             notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
-            if (noteItem == null) lastFuelType = getFuelNotes().firstOrNull()?.fuelType ?: Fuel.F95
+            if (noteItem == null) _fuelType =
+                getFuelNotes().firstOrNull()?.fuelType ?: BASIC_FUEL_TYPE
+        }
+
+        autorun(::_fuelType) {
+            fuelType = _fuelType.toString(app.applicationContext)
+            changeFuelImg(it)
         }
 
         autorun(::noteItem) {
             if (it != null) {
-                lastFuelType = it.fuelType
+                _fuelType = it.fuelType
                 nVolume = getFormattedDoubleAsStr(it.liters)
                 nTotalPrice = getFormattedDoubleAsStr(it.totalPrice)
                 nPrice = getFormattedDoubleAsStr(it.price)
                 nMileage = it.mileage.toString()
                 nDate = it.date
-            }
-            else nDate = getCurrentDate()
+            } else nDate = getCurrentDate()
         }
 
         autorun(::carItem) {
@@ -83,13 +90,11 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     }
 
     fun addOrEditNoteItem(
-        fuelTypeId: Int,
         volume: String?,
         totalPrice: String?,
         price: String?,
         mileage: String?
     ) {
-        val rFuelType = refactorFuel(fuelTypeId)
         val rVolume = refactorDouble(volume)
         val rTotalPrice = refactorDouble(totalPrice)
         val rPrice = refactorDouble(price)
@@ -100,7 +105,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             price = rPrice,
             liters = rVolume,
             mileage = rMileage,
-            fuelType = rFuelType,
+            fuelType = _fuelType,
             date = nDate
         ) ?: NoteItem(
             title = nTitle,
@@ -108,7 +113,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             price = rPrice,
             liters = rVolume,
             mileage = rMileage,
-            fuelType = rFuelType,
+            fuelType = _fuelType,
             date = nDate,
             type = noteType
         )
@@ -137,12 +142,20 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             val notes = getNotExtraNotes()
             val newMileage =
                 if (notes.isNotEmpty())
-                    abs(max(notes.maxOf { it.mileage }, itCar.startMileage) - min(notes.minOf { it.mileage }, itCar.startMileage))
+                    abs(
+                        max(
+                            notes.maxOf { it.mileage },
+                            itCar.startMileage
+                        ) - min(notes.minOf { it.mileage }, itCar.startMileage)
+                    )
                 else 0
 
             carItem = itCar.copy(
                 allMileage = newMileage,
-                mileage = if (notes.isNotEmpty()) max(itCar.startMileage, notes.first().mileage) else itCar.startMileage
+                mileage = if (notes.isNotEmpty()) max(
+                    itCar.startMileage,
+                    notes.first().mileage
+                ) else itCar.startMileage
             )
         }
     }
@@ -203,7 +216,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             val notes = getFuelNotes()
             val newFuel = if (notes.isNotEmpty()) {
                 val fuel = notes.sumOf { it.liters }
-                if (fuel <= 0 ) 0.0
+                if (fuel <= 0) 0.0
                 else fuel
             } else 0.0
 
@@ -218,7 +231,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             val notes = getFuelNotes()
             val newFuelPrice = if (notes.isNotEmpty()) {
                 val price = notes.sumOf { it.totalPrice }
-                if (price <= 0 ) 0.0
+                if (price <= 0) 0.0
                 else price
             } else 0.0
 
@@ -228,15 +241,24 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         }
     }
 
-    private fun refactorFuel(id: Int): Fuel {
-        return noteFuelTypes[id]
+    fun changeFuelType() {
+        showItemListDialog(
+            AppItemDialogContainer(R.array.fuel_values) {
+                _fuelType = when (it) {
+                    0 -> Fuel.F92
+                    1 -> Fuel.F95
+                    2 -> Fuel.F98
+                    3 -> Fuel.F100
+                    4 -> Fuel.DIESEL
+                    5 -> Fuel.GAS
+                    else -> Fuel.ELECTRICITY
+                }
+            }
+        )
     }
 
-    fun getFuelId(fuel: Fuel): Int {
-        for ((i, f) in Fuel.values().withIndex()) {
-            if (f == fuel) return i
-        }
-        return 0
+    private fun refactorFuel(id: Int): Fuel {
+        return noteFuelTypes[id]
     }
 
     fun calculateVolume(amount: String?, price: String?) {
@@ -273,14 +295,26 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         } else getFormattedDoubleAsStr(0.0)
     }
 
+    private fun changeFuelImg(fuel: Fuel) {
+        fuelImage = when (fuel) {
+            Fuel.ELECTRICITY -> IMG_ELECTRICITY
+            else -> IMG_FUEL
+        }
+    }
+
     private fun getFuelNotes(): List<NoteItem> =
         notesListForCalculation.filter { it.type == NoteType.FUEL }
+
     private fun getNotExtraNotes(): List<NoteItem> {
         return notesListForCalculation.filter { it.type != NoteType.EXTRA }
     }
 
     companion object {
         private const val NOTE_TITLE_ID = R.string.text_refill
+        private const val IMG_FUEL = R.drawable.ic_gas_station
+        private const val IMG_ELECTRICITY = R.drawable.ic_bolt
+
+        private val BASIC_FUEL_TYPE = Fuel.F95
     }
 
     override val propertyHostScope: CoroutineScope

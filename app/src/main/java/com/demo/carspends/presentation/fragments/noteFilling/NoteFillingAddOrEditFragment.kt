@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -12,7 +11,6 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NoteFillingAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
-import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.utils.getFormattedDate
 import com.demo.carspends.utils.ui.baseFragment.NoteAddOrEditFragment
 import io.github.anderscheow.validator.Validator
@@ -34,12 +32,12 @@ class NoteFillingAddOrEditFragment :
         setupMileageTextChangeListener()
         setupApplyButtonClickListener()
         setupPicturesPickerListener()
-
+        setupFuelTypeListener()
     }
     override var setupBinds: (() -> Unit)? = {
         setupFieldsBind()
         setupNoteDateBind()
-        setupLastFuelTypeBind()
+        setupFuelTypeBind()
         setupPicturesRecyclerViewBind()
         setupCanCloseScreenBind()
     }
@@ -95,14 +93,22 @@ class NoteFillingAddOrEditFragment :
             pictureAdapter.submitList(it)
         }
     }
-    private fun setupLastFuelTypeBind() =
-        vm::lastFuelType bind {
-            binding.spinnerFuelType.setSelection(vm.getFuelId(it))
+
+    private fun setupFuelTypeBind() {
+        vm::fuelType bind { binding.btnFuelType.text = it }
+        vm::fuelImage bind {
+            binding.btnFuelType.setCompoundDrawablesWithIntrinsicBounds(
+                null, null, requireActivity().getDrawable(it), null
+            )
         }
+    }
+
     private fun setupNoteDateBind() =
         vm::nDate bind { binding.dateIb.text = getFormattedDate(it) }
+
     private fun setupCanCloseScreenBind() =
         vm::canCloseScreen bind { if (it) vm.goBack() }
+
     private fun setupFieldsBind() {
         with(vm) {
             with(binding) {
@@ -118,10 +124,12 @@ class NoteFillingAddOrEditFragment :
     /**
      * Listeners
      */
-    private fun setupPicturesPickerListener() {
-        binding.addImgButton.setOnClickListener {
-            openPicturesPicker()
-        }
+    private fun setupFuelTypeListener() = binding.btnFuelType.setOnClickListener {
+        vm.changeFuelType()
+    }
+
+    private fun setupPicturesPickerListener() = binding.addImgButton.setOnClickListener {
+        openPicturesPicker()
     }
 
     private fun setupDatePickerDialogListener() {
@@ -173,8 +181,7 @@ class NoteFillingAddOrEditFragment :
                             binding.tietFuelTotalPrice.text.toString(),
                             binding.tietFuelLiters.text.toString()
                         )
-                    }
-                    else if (preLastChanged == CHANGED_PRICE) {
+                    } else if (preLastChanged == CHANGED_PRICE) {
                         vm.calculateTotalPrice(
                             binding.tietFuelLiters.text.toString(),
                             binding.tietFuelPrice.text.toString()
@@ -213,8 +220,7 @@ class NoteFillingAddOrEditFragment :
                             binding.tietFuelTotalPrice.text.toString(),
                             binding.tietFuelLiters.text.toString()
                         )
-                    }
-                    else if (preLastChanged == CHANGED_PRICE) {
+                    } else if (preLastChanged == CHANGED_PRICE) {
                         vm.calculateVolume(
                             binding.tietFuelTotalPrice.text.toString(),
                             binding.tietFuelPrice.text.toString()
@@ -253,8 +259,7 @@ class NoteFillingAddOrEditFragment :
                             binding.tietFuelLiters.text.toString(),
                             binding.tietFuelPrice.text.toString()
                         )
-                    }
-                    else if (preLastChanged == CHANGED_AMOUNT) {
+                    } else if (preLastChanged == CHANGED_AMOUNT) {
                         vm.calculateVolume(
                             binding.tietFuelTotalPrice.text.toString(),
                             binding.tietFuelPrice.text.toString()
@@ -285,7 +290,6 @@ class NoteFillingAddOrEditFragment :
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
                             vm.addOrEditNoteItem(
-                                spinnerFuelType.selectedItemPosition,
                                 tietFuelLiters.text.toString(),
                                 tietFuelTotalPrice.text.toString(),
                                 tietFuelPrice.text.toString(),
@@ -296,18 +300,14 @@ class NoteFillingAddOrEditFragment :
 
                     override fun onValidateFailed(errors: List<String>) {}
                 }
-                validate(mileageValidation, fuelPriceValidation, fuelAmountValidation, fuelVolumeValidation)
+                validate(
+                    mileageValidation,
+                    fuelPriceValidation,
+                    fuelAmountValidation,
+                    fuelVolumeValidation
+                )
             }
         }
-    }
-
-    private fun setupFuelSpinnerAdapter() {
-        // Setting Fuel enum values for spinner
-        binding.spinnerFuelType.adapter = ArrayAdapter(
-            requireActivity(),
-            R.layout.support_simple_spinner_dropdown_item,
-            Fuel.values().map { it.toString(requireContext()) }
-        )
     }
 
     private fun getArgs() {
@@ -335,11 +335,6 @@ class NoteFillingAddOrEditFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getArgs()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupFuelSpinnerAdapter()
     }
 
     companion object {
