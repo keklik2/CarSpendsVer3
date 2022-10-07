@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
+import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.component.ComponentItem
 import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
@@ -25,6 +26,7 @@ import java.util.*
 import javax.inject.Inject
 
 class ComponentAddOrEditViewModel @Inject constructor(
+    private val getCarItemsListUseCase: GetCarItemsListUseCase,
     private val addComponentUseCase: AddComponentItemUseCase,
     private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
     private val router: Router,
@@ -49,6 +51,10 @@ class ComponentAddOrEditViewModel @Inject constructor(
     private val componentsListState by stateFromFlow(_componentsListLoading.stateFlow)
 
     init {
+        withScope {
+            cStartMileage = getCarItemsListUseCase()[0].mileage.toString()
+        }
+
         autorun(::cId) {
             if (it != null) _componentsListLoading.refresh()
             else {
