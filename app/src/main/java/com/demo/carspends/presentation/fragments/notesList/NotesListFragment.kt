@@ -2,7 +2,6 @@ package com.demo.carspends.presentation.fragments.notesList
 
 import android.content.Context
 import android.view.View
-import android.widget.AdapterView
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -17,7 +16,6 @@ import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
-import java.util.*
 
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
@@ -38,8 +36,10 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     }
     override var setupBinds: (() -> Unit)? = {
         setupNotesBind()
-        bindCarFields()
+        setupCarFieldsBind()
         setupShowTipBind()
+        setupDateSpinnerBind()
+        setupTypeSpinnerBind()
     }
 
     private val mainAdapter by lazy {
@@ -84,7 +84,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-    private fun bindCarFields() {
+    private fun setupCarFieldsBind() {
         vm::carTitle bind { binding.tvCarTitle.text = it }
         vm::statisticsField1 bind { binding.tvStatistics1.text = it }
         vm::statisticsField2 bind { binding.tvStatistics2.text = it }
@@ -113,77 +113,17 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
+    private fun setupDateSpinnerBind() = vm::noteDate bind { binding.tvNoteDate.text = it }
+    private fun setupTypeSpinnerBind() = vm::noteType bind { binding.tvNoteType.text = it }
+
 
     /**
      * Listeners
      */
-    private fun setupSettingsListener() {
-        binding.ivSettings.setOnClickListener {
-            vm.goToSettingsFragment()
-        }
-    }
-
-    private fun setupCarInfoListener() {
-        binding.carInfoLayout.setOnClickListener {
-            vm.goToCarEditFragment()
-        }
-    }
-
-    private fun setupDateSpinnerListener() {
-        binding.spinnerDate.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    when (pos) {
-                        0 -> vm.setData()
-                        1 -> vm.setData(getYearDate())
-                        2 -> vm.setData(getMonthDate())
-                        else -> vm.setData(getWeekDate())
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-    }
-
-    private fun setupTypeSpinnerListener() {
-        binding.spinnerNoteType.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    when (pos) {
-                        0 -> vm.setType()
-                        1 -> vm.setType(NoteType.FUEL)
-                        2 -> vm.setType(NoteType.REPAIR)
-                        else -> vm.setType(NoteType.EXTRA)
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-    }
-
-
-    /**
-     * Additional functions
-     */
-    private fun getYearDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.YEAR, MINUS_ONE)
-        }.timeInMillis
-    }
-
-    private fun getMonthDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.MONTH, MINUS_ONE)
-        }.timeInMillis
-    }
-
-    private fun getWeekDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.DATE, MINUS_WEEK)
-        }.timeInMillis
-    }
+    private fun setupSettingsListener() = binding.ivSettings.setOnClickListener { vm.goToSettingsFragment() }
+    private fun setupCarInfoListener() = binding.carInfoLayout.setOnClickListener { vm.goToCarEditFragment() }
+    private fun setupDateSpinnerListener() = binding.llNoteDate.setOnClickListener { vm.setData() }
+    private fun setupTypeSpinnerListener() = binding.llNoteType.setOnClickListener { vm.setType() }
 
 
     /**
@@ -297,10 +237,5 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     override fun onResume() {
         super.onResume()
         vm.refreshData()
-    }
-
-    companion object {
-        private const val MINUS_WEEK = -7
-        private const val MINUS_ONE = -1
     }
 }

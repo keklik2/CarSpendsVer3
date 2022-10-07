@@ -15,6 +15,7 @@ class AppItemPickDialog(
             setItems(itemDialogContainer.itemsResId) { _, item ->
                 itemDialogContainer.onItemSelected(item)
             }
+            setNegativeButton(R.string.dialog_negative) { _, _ ->  }
         }.create()
     }
 }

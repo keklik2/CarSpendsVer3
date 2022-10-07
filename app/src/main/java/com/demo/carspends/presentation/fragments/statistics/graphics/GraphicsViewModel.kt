@@ -8,6 +8,7 @@ import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListUseCase
 import com.demo.carspends.presentation.fragments.statistics.graphics.adapter.GraphItem
 import com.demo.carspends.utils.*
+import com.demo.carspends.utils.dialogs.AppItemDialogContainer
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import me.aartikov.sesame.property.autorun
@@ -23,8 +24,9 @@ class GraphicsViewModel @Inject constructor(
 
     var testGraphItem by state(mutableListOf<GraphItem>())
 
-    var dateType by state(DATE_WEEK)
-    private val dateFilter by computed(::dateType) {
+    private var _dateType by state(DATE_WEEK)
+    private var dateType by state(app.resources.getStringArray(R.array.date_values)[0])
+    private val dateFilter by computed(::_dateType) {
         when (it) {
             DATE_ALL_TIME -> ALL_TIME
             DATE_YEAR -> GregorianCalendar.getInstance().apply {
@@ -42,9 +44,32 @@ class GraphicsViewModel @Inject constructor(
     init {
         getNewGraphList()
 
+        autorun(::_dateType) {
+            val index = when (it) {
+                DATE_ALL_TIME -> 0
+                DATE_YEAR -> 1
+                DATE_MONTH -> 2
+                else -> 3
+            }
+            dateType = app.resources.getStringArray(R.array.date_values)[index]
+        }
+
         autorun(::dateFilter) {
             getNewGraphList()
         }
+    }
+
+    fun changeDate() {
+        showItemListDialog(
+            AppItemDialogContainer(R.array.date_values) {
+                _dateType = when(it) {
+                    0 -> DATE_ALL_TIME
+                    1 -> DATE_YEAR
+                    2 -> DATE_MONTH
+                    else -> DATE_WEEK
+                }
+            }
+        )
     }
 
     private fun getNewGraphList() {
@@ -53,7 +78,6 @@ class GraphicsViewModel @Inject constructor(
                 getAvgFuel()?.let { add(it) }
                 getAllPriceWithoutFuel()?.let { add(it) }
                 getAllPrice()?.let { add(it) }
-//                getAllMileage()?.let { add(it) }
             }
             testGraphItem = test
         }
@@ -71,14 +95,14 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+            val compareFunc: (Long, Long) -> Boolean = when (_dateType) {
                 DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
                 DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
                 DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
                 else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
 
-            val titleFunction: (Long) -> String = when (dateType) {
+            val titleFunction: (Long) -> String = when (_dateType) {
                 DATE_ALL_TIME -> { date -> getFormattedYear(date) }
                 DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
                 DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
@@ -129,14 +153,14 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+            val compareFunc: (Long, Long) -> Boolean = when (_dateType) {
                 DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
                 DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
                 DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
                 else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
 
-            val titleFunction: (Long) -> String = when (dateType) {
+            val titleFunction: (Long) -> String = when (_dateType) {
                 DATE_ALL_TIME -> { date -> getFormattedYear(date) }
                 DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
                 DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
@@ -184,14 +208,14 @@ class GraphicsViewModel @Inject constructor(
             val titlesList = mutableListOf<String>()
             val dataList = mutableListOf<Int>()
 
-            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
+            val compareFunc: (Long, Long) -> Boolean = when (_dateType) {
                 DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
                 DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
                 DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
                 else -> { date1, date2 -> areDaysTheSame(date1, date2) }
             }
 
-            val titleFunction: (Long) -> String = when (dateType) {
+            val titleFunction: (Long) -> String = when (_dateType) {
                 DATE_ALL_TIME -> { date -> getFormattedYear(date) }
                 DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
                 DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
@@ -225,69 +249,6 @@ class GraphicsViewModel @Inject constructor(
             )
         } else null
     }
-
-//    private suspend fun getAllMileage(): GraphItem? {
-//        val notes = getNoteItemsListUseCase(date = dateFilter).filter {
-//            it.type != NoteType.EXTRA
-//        }.reversed()
-//
-//        return if (notes.isNotEmpty()) {
-//            val measure =
-//                String.format(
-//                    getString(STR_ALL_MILEAGE),
-//                    getFormattedIntAsStrForDisplay(notes.sumOf { it.mileage })
-//                )
-//
-//            val titlesList = mutableListOf<String>()
-//            val dataList = mutableListOf<Int>()
-//
-//            val compareFunc: (Long, Long) -> Boolean = when (dateType) {
-//                DATE_ALL_TIME -> { date1, date2 -> areYearsTheSame(date1, date2) }
-//                DATE_YEAR -> { date1, date2 -> areMonthsTheSame(date1, date2) }
-//                DATE_MONTH -> { date1, date2 -> areWeeksTheSame(date1, date2) }
-//                else -> { date1, date2 -> areDaysTheSame(date1, date2) }
-//            }
-//
-//            val titleFunction: (Long) -> String = when (dateType) {
-//                DATE_ALL_TIME -> { date -> getFormattedYear(date) }
-//                DATE_YEAR -> { date -> getFormattedMonthOfYear(date) }
-//                DATE_MONTH -> { date -> getFormattedWeekFromDate(date) }
-//                else -> { date -> getString(getFormattedDayOfWeekRes(date)) }
-//            }
-//
-//            var lastNoteDate = notes.first().date
-//            for (n in notes) {
-//                val day = titleFunction(n.date)
-//                var mileage = n.mileage
-//
-//                if (n == notes.first() || !compareFunc(lastNoteDate, n.date)) {
-//                    titlesList.add(day)
-//                    dataList.add(mileage)
-//                    if (!compareFunc(lastNoteDate, n.date)) {
-//                        mileage = dataList.last() - mileage
-//                        dataList.remove(dataList.last())
-//                        dataList.add(mileage)
-//                    }
-//                } else {
-//                    mileage = dataList.last() - mileage
-//                    dataList.remove(dataList.size - 1)
-//                    dataList.add(mileage)
-//                }
-//
-//                lastNoteDate = n.date
-//            }
-//
-//            val maxHeight = dataList.maxOf { it }
-//
-//            GraphItem(
-//                getString(TITLE_ALL_MILEAGE),
-//                measure,
-//                ALL_MILEAGE_ICON,
-//                titlesList.apply { reverse() },
-//                dataList.apply { reverse() }
-//            )
-//        } else null
-//    }
 
     private fun areDaysTheSame(date1: Long, date2: Long): Boolean =
         getFormattedDayOfWeekRes(date1) == getFormattedDayOfWeekRes(date2)

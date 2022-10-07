@@ -19,6 +19,7 @@ import com.demo.carspends.domain.settings.SetSettingUseCase
 import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.NORMAL_LOADING_DELAY
 import com.demo.carspends.utils.dialogs.AppDialogContainer
+import com.demo.carspends.utils.dialogs.AppItemDialogContainer
 import com.demo.carspends.utils.getFormattedDoubleAsStrForDisplay
 import com.demo.carspends.utils.getFormattedIntAsStrForDisplay
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
@@ -32,6 +33,7 @@ import me.aartikov.sesame.loading.simple.refresh
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
+import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -57,8 +59,14 @@ class NotesListViewModel @Inject constructor(
     var statisticsField1Img by state(R.drawable.ic_gas_station)
     var statisticsField2Img by state(R.drawable.ic_ruble)
 
-    private var noteType: NoteType? by state(null)
-    private var noteDate: Long by state(ALL_TIME)
+    private var _noteType: NoteType? by state(null)
+    var noteType: String by state(
+        app.resources.getStringArray(R.array.note_type_values).toMutableList()[0]
+    )
+    private var _noteDate: Long by state(ALL_TIME)
+    var noteDate: String by state(
+        app.resources.getStringArray(R.array.date_values).toMutableList()[0]
+    )
 
     private var _carId = CarItem.UNDEFINED_ID
     private var _carItem: CarItem? by state(null)
@@ -95,8 +103,8 @@ class NotesListViewModel @Inject constructor(
         load = {
             getNoteItemsListUseCase.invoke(
                 delay = NORMAL_LOADING_DELAY,
-                type = noteType,
-                date = noteDate
+                type = _noteType,
+                date = _noteDate
             )
         }
     )
@@ -165,11 +173,11 @@ class NotesListViewModel @Inject constructor(
             }
         }
 
-        autorun(::noteType) {
+        autorun(::_noteType) {
             _notesListLoading.refresh()
         }
 
-        autorun(::noteDate) {
+        autorun(::_noteDate) {
             _notesListLoading.refresh()
         }
 
@@ -191,26 +199,18 @@ class NotesListViewModel @Inject constructor(
             notesListForCalculation.clear()
             notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
-            if (noteType != NoteType.EXTRA) {
-//                rollbackCarMileage()
-                calculateAllMileage()
-            }
+            if (noteType != NoteType.EXTRA) calculateAllMileage()
 
             calculateAllPrice()
             calculateAvgPrice()
 
             if (noteType == NoteType.FUEL) {
-//                calculateAvgFuel()
-//                calculateAllFuel(note)
-//                calculateAllFuelPrice(note)
                 calculateAvgFuel()
                 calculateMomentFuel()
                 calculateAllFuel()
                 calculateFuelPrice()
             }
 
-//            rollbackAllPrice(note)
-//            calculateAvgPrice()
             pushNewCarItem()
         }
     }
@@ -220,12 +220,20 @@ class NotesListViewModel @Inject constructor(
             val notes = getNotExtraNotes()
             val newMileage =
                 if (notes.isNotEmpty())
-                    abs(max(notes.maxOf { it.mileage }, itCar.startMileage) - min(notes.minOf { it.mileage }, itCar.startMileage))
+                    abs(
+                        max(
+                            notes.maxOf { it.mileage },
+                            itCar.startMileage
+                        ) - min(notes.minOf { it.mileage }, itCar.startMileage)
+                    )
                 else 0
 
             _carItem = itCar.copy(
                 allMileage = newMileage,
-                mileage = if (notes.isNotEmpty()) max(itCar.startMileage, notes.first().mileage) else itCar.startMileage
+                mileage = if (notes.isNotEmpty()) max(
+                    itCar.startMileage,
+                    notes.first().mileage
+                ) else itCar.startMileage
             )
         }
     }
@@ -286,7 +294,7 @@ class NotesListViewModel @Inject constructor(
             val notes = getFuelNotes()
             val newFuel = if (notes.isNotEmpty()) {
                 val fuel = notes.sumOf { it.liters }
-                if (fuel <= 0 ) 0.0
+                if (fuel <= 0) 0.0
                 else fuel
             } else 0.0
 
@@ -301,7 +309,7 @@ class NotesListViewModel @Inject constructor(
             val notes = getFuelNotes()
             val newFuelPrice = if (notes.isNotEmpty()) {
                 val price = notes.sumOf { it.totalPrice }
-                if (price <= 0 ) 0.0
+                if (price <= 0) 0.0
                 else price
             } else 0.0
 
@@ -311,12 +319,44 @@ class NotesListViewModel @Inject constructor(
         }
     }
 
-    fun setData(date: Long = ALL_TIME) {
-        noteDate = date
+    fun setData() {
+        showItemListDialog(
+            AppItemDialogContainer(
+                R.array.date_values
+            ) {
+                when (it) {
+                    0 -> data()
+                    1 -> data(getYearDate())
+                    2 -> data(getMonthDate())
+                    else -> data(getWeekDate())
+                }
+                noteDate = app.resources.getStringArray(R.array.date_values).toMutableList()[it]
+            }
+        )
     }
 
-    fun setType(type: NoteType? = null) {
-        noteType = type
+    fun setType() {
+        showItemListDialog(
+            AppItemDialogContainer(
+                R.array.note_type_values
+            ) {
+                when (it) {
+                    0 -> type()
+                    1 -> type(NoteType.FUEL)
+                    2 -> type(NoteType.REPAIR)
+                    else -> type(NoteType.EXTRA)
+                }
+                noteType = app.resources.getStringArray(R.array.note_type_values).toMutableList()[it]
+            }
+        )
+    }
+
+    private fun data(date: Long = ALL_TIME) {
+        _noteDate = date
+    }
+
+    private fun type(type: NoteType? = null) {
+        _noteType = type
     }
 
     fun refreshData() {
@@ -505,8 +545,30 @@ class NotesListViewModel @Inject constructor(
         return component.resourceMileage
     }
 
+    /**
+     * Additional functions
+     */
+    private fun getYearDate(): Long {
+        return GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.YEAR, MINUS_ONE)
+        }.timeInMillis
+    }
+
+    private fun getMonthDate(): Long {
+        return GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.MONTH, MINUS_ONE)
+        }.timeInMillis
+    }
+
+    private fun getWeekDate(): Long {
+        return GregorianCalendar.getInstance().apply {
+            add(GregorianCalendar.DATE, MINUS_WEEK)
+        }.timeInMillis
+    }
+
     private fun getFuelNotes(): List<NoteItem> =
         notesListForCalculation.filter { it.type == NoteType.FUEL }
+
     private fun getNotExtraNotes(): List<NoteItem> {
         return notesListForCalculation.filter { it.type != NoteType.EXTRA }
     }
@@ -526,6 +588,9 @@ class NotesListViewModel @Inject constructor(
         private const val EMPTY_STR = ""
 
         private const val MIN_COMPONENT_PERCENTAGE = 10
+
+        private const val MINUS_WEEK = -7
+        private const val MINUS_ONE = -1
     }
 
     override val propertyHostScope: CoroutineScope

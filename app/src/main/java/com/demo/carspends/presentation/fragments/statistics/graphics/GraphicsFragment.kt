@@ -47,11 +47,7 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     /**
      * Listener functions
      */
-    private fun setupDateChangeListener() {
-        binding.fbDate.setOnClickListener {
-            setupDateType()
-        }
-    }
+    private fun setupDateChangeListener() = binding.fbDate.setOnClickListener { vm.changeDate() }
 
     private fun setupRecyclerScrollListener() {
         binding.rvGraphics.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -70,23 +66,6 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
      * Additional functions
      */
     private fun isFBDateShown(): Boolean = binding.fbDate.isVisible
-
-    private fun setupDateType() {
-        val popupmenu = PopupMenu(requireActivity(), binding.fbDate).apply {
-            inflate(R.menu.popup_menu)
-        }
-
-        popupmenu.setOnMenuItemClickListener {
-            vm.dateType = when(it.itemId) {
-                R.id.menu_week -> DATE_WEEK
-                R.id.menu_month -> DATE_MONTH
-                R.id.menu_year -> DATE_YEAR
-                else -> DATE_ALL_TIME
-            }
-            true
-        }
-        popupmenu.show()
-    }
 
     private fun setFBDateVisibility(visible: Boolean) {
         if (visible) binding.fbDate.show()
