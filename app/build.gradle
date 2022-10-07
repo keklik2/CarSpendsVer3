@@ -13,7 +13,7 @@ android {
         minSdk 23
         targetSdk 31
         versionCode 4100
-        versionName "Release-1.2"
+        versionName "Release-1.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -5,6 +5,7 @@
     <string name="settings_file_name">inside_settings</string>
     <string name="notification_channel_download">Download notifications</string>
     <string name="notification_channel_download_description">Channel for download notifications</string>
+    <string name="text_version_for_settings">Release 1.3</string>
 
     <!-- Layouts Visible Resources (textVies mainly) -->
     <string name="text_resource">Ресурс:</string>
@@ -48,8 +49,6 @@
     <string name="text_measure_price_charge_for_formatting">%s ₽/км</string>
     <string name="text_measure_currency">₽</string>
     <string name="text_measure_currency_for_formatting">%s ₽</string>
-
-    <string name="text_version_for_settings">Release 1.2</string>
 
     <!-- Buttons -->
     <string name="button_apply">Принять</string>
