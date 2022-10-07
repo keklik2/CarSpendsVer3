@@ -42,8 +42,13 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
     var nPrice: String? by state(null)
 
     override val noteType = NoteType.EXTRA
+    private var notesListForCalculation = mutableListOf<NoteItem>()
 
     init {
+        withScope {
+            notesListForCalculation = getNoteItemsListByMileageUseCase().toMutableList()
+        }
+
         autorun(::noteItem) {
             withScope {
                 if (it != null) {
@@ -72,40 +77,33 @@ class NoteExtraAddOrEditViewModel @Inject constructor(
 
         withScope {
             addNoteItemUseCase(newNote, pictures)
+            notesListForCalculation.clear()
+            notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
-            addAllPrice()
+            calculateAllPrice()
             calculateAvgPrice()
+
             updateCarItem()
             setCanCloseScreen()
         }
     }
 
-    private fun calculateAvgPrice() {
-        carItem?.let {
-            val newMilPrice =
-                if (it.allPrice > 0 && it.allMileage > 0) {
-                    val res = it.allPrice / it.allMileage
-                    if (res < 0) 0.0
-                    else res
-                } else 0.0
+    private fun calculateAllPrice() {
+        carItem?.let { itCar ->
+            val allPrice = notesListForCalculation.sumOf { it.totalPrice }
 
-            carItem = it.copy(
-                milPrice = newMilPrice
-            )
+            carItem = itCar.copy(allPrice = if (allPrice < 0) 0.0 else allPrice)
         }
     }
 
-    private suspend fun addAllPrice() {
+    private fun calculateAvgPrice() {
         carItem?.let { itCar ->
-            getNoteItemsListByMileageUseCase().let { itList ->
-                val newAllPrice = max(
-                    itList.sumOf { it1 -> it1.totalPrice },
-                    0.0
-                )
-                carItem = itCar.copy(
-                    allPrice = newAllPrice
-                )
-            }
+            val allPrice = if (itCar.allPrice > 0) itCar.allPrice else 0.0
+            val allMileage = if (itCar.allMileage > 0) itCar.allMileage else 0
+
+            carItem = itCar.copy(
+                milPrice = if (allPrice <= 0.0 || allMileage <= 0) 0.0 else allPrice / allMileage
+            )
         }
     }
 

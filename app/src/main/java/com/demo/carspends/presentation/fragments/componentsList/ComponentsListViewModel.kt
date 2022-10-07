@@ -1,19 +1,20 @@
 package com.demo.carspends.presentation.fragments.componentsList
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
 import com.demo.carspends.Screens
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.component.ComponentItem
+import com.demo.carspends.domain.component.usecases.AddComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.DeleteComponentItemUseCase
 import com.demo.carspends.domain.component.usecases.GetComponentItemsListUseCase
 import com.demo.carspends.domain.settings.GetSettingValueUseCase
 import com.demo.carspends.domain.settings.SetSettingUseCase
 import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.NORMAL_LOADING_DELAY
+import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.demo.carspends.utils.ui.tipShower.TipModel
 import com.github.terrakok.cicerone.Router
@@ -22,7 +23,6 @@ import kotlinx.coroutines.launch
 import me.aartikov.sesame.loading.simple.Loading
 import me.aartikov.sesame.loading.simple.OrdinaryLoading
 import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
 import me.aartikov.sesame.property.stateFromFlow
@@ -34,6 +34,7 @@ class ComponentsListViewModel @Inject constructor(
     private val getComponentItemsListUseCase: GetComponentItemsListUseCase,
     private val getSettingValueUseCase: GetSettingValueUseCase,
     private val setSettingUseCase: SetSettingUseCase,
+    private val addComponentUseCase: AddComponentItemUseCase,
     private val router: Router,
     app: Application
 ) : BaseViewModel(app) {
@@ -106,12 +107,34 @@ class ComponentsListViewModel @Inject constructor(
     fun deleteComponent(component: ComponentItem) {
         viewModelScope.launch {
             deleteComponentUseCase(component)
+            refreshData()
         }
     }
 
     fun refreshData() {
         _componentsListLoading.refresh()
         _carsListLoading.refresh()
+    }
+
+    fun refreshComponent(component: ComponentItem) {
+        _carItem?.let {
+            showAlert(
+                AppDialogContainer(
+                    title = getString(R.string.dialog_restore_component_title),
+                    message = String.format(
+                        getString(R.string.dialog_restore_component),
+                        component.title
+                    ),
+                    onPositiveButtonClicked = {
+                        withScope {
+                            addComponentUseCase(component.copy(startMileage = it.mileage))
+                            refreshData()
+                        }
+                    },
+                    onNegativeButtonClicked = {  }
+                )
+            )
+        }
     }
 
     override val propertyHostScope: CoroutineScope

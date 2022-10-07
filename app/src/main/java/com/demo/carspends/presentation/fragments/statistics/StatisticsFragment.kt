@@ -14,7 +14,7 @@ import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
 class StatisticsFragment: BaseFragment(R.layout.statistics_fragment) {
     override val binding: StatisticsFragmentBinding by viewBinding()
-    override val viewModel: StatisticsViewModel by viewModels { viewModelFactory }
+    override val vm: StatisticsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupRadioGroupClickListener()
     }

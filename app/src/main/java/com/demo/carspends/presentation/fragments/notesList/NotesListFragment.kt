@@ -2,8 +2,6 @@ package com.demo.carspends.presentation.fragments.notesList
 
 import android.content.Context
 import android.view.View
-import android.widget.AdapterView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -13,17 +11,17 @@ import com.demo.carspends.R
 import com.demo.carspends.databinding.NotesListFragmentBinding
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.presentation.fragments.notesList.recyclerView.NoteItemAdapter
+import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.tipShower.TipShower
 import com.faltenreich.skeletonlayout.applySkeleton
 import me.aartikov.sesame.loading.simple.Loading
-import java.util.*
 
 
 class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
     override val binding: NotesListFragmentBinding by viewBinding()
-    override val viewModel: NotesListViewModel by viewModels { viewModelFactory }
+    override val vm: NotesListViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTypeSpinnerListener()
         setupDateSpinnerListener()
@@ -38,13 +36,15 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     }
     override var setupBinds: (() -> Unit)? = {
         setupNotesBind()
-        bindCarFields()
+        setupCarFieldsBind()
         setupShowTipBind()
+        setupDateSpinnerBind()
+        setupTypeSpinnerBind()
     }
 
     private val mainAdapter by lazy {
         NoteItemAdapter.get {
-            viewModel.goToNoteAddOrEditFragment(it.type, it.id)
+            vm.goToNoteAddOrEditFragment(it.type, it.id)
         }
     }
 
@@ -61,7 +61,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         val skeleton = binding.rvNotes.applySkeleton(R.layout.note_item_skeleton)
         skeleton.showSkeleton()
 
-        viewModel::notesListState bind {
+        vm::notesListState bind {
             when (it) {
                 is Loading.State.Data -> {
                     skeleton.showOriginal()
@@ -70,6 +70,8 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                     binding.tvEmptyNotes.visibility =
                         if (it.data.isNotEmpty()) View.INVISIBLE
                         else View.VISIBLE
+
+                    vm.calculateComponentsResources()
                 }
                 is Loading.State.Loading -> skeleton.showSkeleton()
                 else -> {
@@ -82,11 +84,11 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         }
     }
 
-    private fun bindCarFields() {
-        viewModel::carTitle bind { binding.tvCarTitle.text = it }
-        viewModel::statisticsField1 bind { binding.tvStatistics1.text = it }
-        viewModel::statisticsField2 bind { binding.tvStatistics2.text = it }
-        viewModel::statisticsField1Img bind {
+    private fun setupCarFieldsBind() {
+        vm::carTitle bind { binding.tvCarTitle.text = it }
+        vm::statisticsField1 bind { binding.tvStatistics1.text = it }
+        vm::statisticsField2 bind { binding.tvStatistics2.text = it }
+        vm::statisticsField1Img bind {
             binding.tvStatistics1.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 it,
                 0,
@@ -94,7 +96,7 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
                 0
             )
         }
-        viewModel::statisticsField2Img bind {
+        vm::statisticsField2Img bind {
             binding.tvStatistics2.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 it,
                 0,
@@ -105,83 +107,23 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
     }
 
     private fun setupShowTipBind() {
-        viewModel::tipsCount bind {
-            if (it < viewModel.tips.size && viewModel.isFirstLaunch)
-                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
+        vm::tipsCount bind {
+            if (it < vm.tips.size && vm.isFirstLaunch)
+                tipShower.showTip(vm.tips[it]) { vm.nextTip() }
         }
     }
+
+    private fun setupDateSpinnerBind() = vm::noteDate bind { binding.tvNoteDate.text = it }
+    private fun setupTypeSpinnerBind() = vm::noteType bind { binding.tvNoteType.text = it }
 
 
     /**
      * Listeners
      */
-    private fun setupSettingsListener() {
-        binding.ivSettings.setOnClickListener {
-            viewModel.goToSettingsFragment()
-        }
-    }
-
-    private fun setupCarInfoListener() {
-        binding.carInfoLayout.setOnClickListener {
-            viewModel.goToCarEditFragment()
-        }
-    }
-
-    private fun setupDateSpinnerListener() {
-        binding.spinnerDate.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    when (pos) {
-                        0 -> viewModel.setData()
-                        1 -> viewModel.setData(getYearDate())
-                        2 -> viewModel.setData(getMonthDate())
-                        else -> viewModel.setData(getWeekDate())
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-    }
-
-    private fun setupTypeSpinnerListener() {
-        binding.spinnerNoteType.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, pos: Int, p3: Long) {
-                    when (pos) {
-                        0 -> viewModel.setType()
-                        1 -> viewModel.setType(NoteType.FUEL)
-                        2 -> viewModel.setType(NoteType.REPAIR)
-                        else -> viewModel.setType(NoteType.EXTRA)
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-                }
-            }
-    }
-
-
-    /**
-     * Additional functions
-     */
-    private fun getYearDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.YEAR, MINUS_ONE)
-        }.timeInMillis
-    }
-
-    private fun getMonthDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.MONTH, MINUS_ONE)
-        }.timeInMillis
-    }
-
-    private fun getWeekDate(): Long {
-        return GregorianCalendar.getInstance().apply {
-            add(GregorianCalendar.DATE, MINUS_WEEK)
-        }.timeInMillis
-    }
+    private fun setupSettingsListener() = binding.ivSettings.setOnClickListener { vm.goToSettingsFragment() }
+    private fun setupCarInfoListener() = binding.carInfoLayout.setOnClickListener { vm.goToCarEditFragment() }
+    private fun setupDateSpinnerListener() = binding.llNoteDate.setOnClickListener { vm.setData() }
+    private fun setupTypeSpinnerListener() = binding.llNoteType.setOnClickListener { vm.setType() }
 
 
     /**
@@ -191,17 +133,17 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
         with(binding) {
             fbAddFilling.setOnClickListener {
                 floatingButtonsChangeStatement()
-                viewModel.goToNoteAddOrEditFragment(NoteType.FUEL)
+                vm.goToNoteAddOrEditFragment(NoteType.FUEL)
             }
 
             fbAddRepair.setOnClickListener {
                 floatingButtonsChangeStatement()
-                viewModel.goToNoteAddOrEditFragment(NoteType.REPAIR)
+                vm.goToNoteAddOrEditFragment(NoteType.REPAIR)
             }
 
             fbAddExtra.setOnClickListener {
                 floatingButtonsChangeStatement()
-                viewModel.goToNoteAddOrEditFragment(NoteType.EXTRA)
+                vm.goToNoteAddOrEditFragment(NoteType.EXTRA)
             }
         }
     }
@@ -245,22 +187,18 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val currItem = mainAdapter.currentList[viewHolder.absoluteAdapterPosition]
                 binding.rvNotes.adapter?.notifyItemChanged(viewHolder.absoluteAdapterPosition)
-                AlertDialog.Builder(requireActivity())
-                    .setTitle(R.string.dialog_delete_title)
-                    .setMessage(
-                        String.format(
+
+                makeAlert(
+                    AppDialogContainer(
+                        title = getString(R.string.dialog_delete_title),
+                        message = String.format(
                             getString(R.string.dialog_delete_note),
                             currItem.title
-                        )
+                        ),
+                        onPositiveButtonClicked = { vm.deleteNote(currItem) }
                     )
-                    .setPositiveButton(R.string.button_apply) { _, _ ->
-                        viewModel.deleteNote(currItem)
-                    }
-                    .setNegativeButton(R.string.button_deny) { _, _ -> }
-                    .show()
+                )
             }
-
-
         }
 
         val itemTouchHelper = ItemTouchHelper(callback)
@@ -298,11 +236,6 @@ class NotesListFragment : BaseFragment(R.layout.notes_list_fragment) {
 
     override fun onResume() {
         super.onResume()
-        viewModel.refreshData()
-    }
-
-    companion object {
-        private const val MINUS_WEEK = -7
-        private const val MINUS_ONE = -1
+        vm.refreshData()
     }
 }

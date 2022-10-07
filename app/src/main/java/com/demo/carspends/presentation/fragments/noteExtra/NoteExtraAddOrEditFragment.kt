@@ -4,7 +4,6 @@ import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.viewModels
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -19,15 +18,11 @@ import io.github.anderscheow.validator.rules.common.NotBlankRule
 import io.github.anderscheow.validator.rules.common.NotEmptyRule
 import io.github.anderscheow.validator.validation
 import io.github.anderscheow.validator.validator
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.util.*
 
 class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add_edit_fragment) {
     override val binding: NoteExtraAddEditFragmentBinding by viewBinding()
-    override val viewModel: NoteExtraAddOrEditViewModel by viewModels { viewModelFactory }
+    override val vm: NoteExtraAddOrEditViewModel by viewModels { viewModelFactory }
 
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerListener()
@@ -65,17 +60,17 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
     /**
      * Binds
      */
-    private fun setupNoteDateBind() = viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
-    private fun setupCanCloseScreenBind() = viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+    private fun setupNoteDateBind() = vm::nDate bind { binding.dateIb.text = getFormattedDate(it) }
+    private fun setupCanCloseScreenBind() = vm::canCloseScreen bind { if (it) vm.goBack() }
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             ::nTitle bind { it?.let { it1 -> binding.tietName.setText(it1) }  }
             ::nPrice bind { it?.let { it1 -> binding.tietTotalPriceValue.setText(it1) }  }
         }
     }
     override fun setupPicturesRecyclerViewBind() {
         binding.picturesRv.adapter = pictureAdapter
-        viewModel::pictures bind {
+        vm::pictures bind {
             pictureAdapter.submitList(it)
         }
     }
@@ -97,12 +92,12 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
             cal.set(Calendar.MONTH, monthOfYear)
             cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            viewModel.nDate = cal.time.time
+            vm.nDate = cal.time.time
         }
 
         binding.dateIb.setOnClickListener {
             val cCal = GregorianCalendar.getInstance().apply {
-                timeInMillis = viewModel.nDate
+                timeInMillis = vm.nDate
             }
             DatePickerDialog(
                 requireContext(), dateSetListener,
@@ -119,7 +114,7 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
-                            viewModel.addOrEditNoteItem(
+                            vm.addOrEditNoteItem(
                                 tietName.text.toString(),
                                 tietTotalPriceValue.text.toString()
                             )
@@ -178,9 +173,9 @@ class NoteExtraAddOrEditFragment : NoteAddOrEditFragment(R.layout.note_extra_add
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteExtraAddOrEditFragment: $type")
 
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteExtraAddOrEditFragment")
-        viewModel.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        vm.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteExtraAddOrEditFragment")
-        viewModel.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        vm.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
 

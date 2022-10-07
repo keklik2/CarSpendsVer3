@@ -16,6 +16,7 @@ import com.demo.carspends.databinding.CarAddEditFragmentBinding
 import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.utils.DOWNLOAD_CHANNEL_ID
+import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.genericType
 import com.demo.carspends.utils.ui.baseFragment.BaseFragment
@@ -31,10 +32,10 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     private val dbNotesSaver = DbSaver<List<NoteItem>>(
         this,
         genericType<List<NoteItem>>()
-    ) { viewModel.applyNotes(it) }
+    ) { vm.applyNotes(it) }
 
     override val binding: CarAddEditFragmentBinding by viewBinding()
-    override val viewModel: CarAddOrEditViewModel by viewModels { viewModelFactory }
+    override val vm: CarAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupTextChangeListeners()
         setupDropCarListener()
@@ -56,6 +57,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
 
     /**
+     *
      * Validation functions
      */
     private val titleValidation by lazy {
@@ -96,10 +98,10 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
      * Binds functions
      */
     private fun setupCanCloseScreenBind() =
-        viewModel::canCloseScreen bind { if (it) viewModel.goToHomeScreen() }
+        vm::canCloseScreen bind { if (it) vm.goToHomeScreen() }
 
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             with(binding) {
                 ::cTitle bind { it?.let { it1 -> tietCarName.setText(it1) } }
                 ::cMileage bind { it?.let { it1 -> tietMileageValue.setText(it1) } }
@@ -110,9 +112,9 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
     }
 
     private fun setupShowTipBind() {
-        viewModel::tipsCount bind {
-            if (it < viewModel.tips.size && viewModel.isFirstLaunch && launchMode != ADD_MODE)
-                tipShower.showTip(viewModel.tips[it]) { viewModel.nextTip() }
+        vm::tipsCount bind {
+            if (it < vm.tips.size && vm.isFirstLaunch && launchMode != ADD_MODE)
+                tipShower.showTip(vm.tips[it]) { vm.nextTip() }
         }
     }
 
@@ -184,6 +186,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
     private fun setupDropCarListener() {
         binding.dropCarButton.setOnClickListener {
+            // Dialog left moving to VM bc of custom button names
             AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.dialog_drop_car_title)
                 .setMessage(getString(R.string.dialog_drop_car))
@@ -191,11 +194,18 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
                     AlertDialog.Builder(requireActivity())
                         .setTitle(R.string.dialog_delete_car_title)
                         .setMessage(getString(R.string.dialog_delete_car))
-                        .setPositiveButton(R.string.button_apply) { _, _ -> viewModel.deleteCar() }
+                        .setPositiveButton(R.string.button_apply) { _, _ -> vm.deleteCar() }
                         .setNegativeButton(R.string.button_deny) { _, _ -> }
                         .show()
                 }
-                .setNeutralButton(R.string.button_drop) { _, _ -> viewModel.dropCar() }
+                .setNeutralButton(R.string.button_drop) { _, _ ->
+                    AlertDialog.Builder(requireActivity())
+                        .setTitle(R.string.dialog_delete_car_info_title)
+                        .setMessage(getString(R.string.dialog_delete_car_info))
+                        .setPositiveButton(R.string.button_apply) { _, _ -> vm.dropCar()  }
+                        .setNegativeButton(R.string.button_deny) { _, _ -> }
+                        .show()
+                }
                 .setNegativeButton(R.string.button_deny) { _, _ -> }
                 .show()
         }
@@ -203,11 +213,11 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
     private fun setupDbSaverListeners() {
         binding.downloadButton.setOnClickListener {
-            viewModel.saveNotes(dbNotesSaver)
+            vm.saveNotes(dbNotesSaver)
         }
 
         binding.uploadButton.setOnClickListener {
-            viewModel.downloadNotes(dbNotesSaver)
+            vm.downloadNotes(dbNotesSaver)
         }
     }
 
@@ -220,31 +230,30 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
             requireActivity().onBackPressedDispatcher.addCallback(object :
                 OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    AlertDialog.Builder(requireActivity())
-                        .setTitle(R.string.dialog_exit_title)
-                        .setMessage(
-                            getString(R.string.dialog_exit_car)
-                        )
-                        .setPositiveButton(R.string.button_apply) { _, _ ->
-                            validator(requireActivity()) {
-                                listener = object : Validator.OnValidateListener {
-                                    override fun onValidateSuccess(values: List<String>) {
-                                        addOrEditCar()
-                                    }
+                    makeAlert(
+                        AppDialogContainer(
+                            title = getString(R.string.dialog_exit_title),
+                            message = getString(R.string.dialog_exit_car),
+                            onPositiveButtonClicked = {
+                                validator(requireActivity()) {
+                                    listener = object : Validator.OnValidateListener {
+                                        override fun onValidateSuccess(values: List<String>) {
+                                            addOrEditCar()
+                                        }
 
-                                    override fun onValidateFailed(errors: List<String>) {}
+                                        override fun onValidateFailed(errors: List<String>) {}
+                                    }
+                                    validate(
+                                        titleValidation,
+                                        mileageValidation,
+                                        powerValidation,
+                                        engineCapacityValidation
+                                    )
                                 }
-                                validate(
-                                    titleValidation,
-                                    mileageValidation,
-                                    powerValidation,
-                                    engineCapacityValidation
-                                )
+                                vm.exit()
                             }
-                            viewModel.exit()
-                        }
-                        .setNegativeButton(R.string.button_deny) { _, _ -> }
-                        .show()
+                        )
+                    )
                 }
             })
         }
@@ -252,7 +261,7 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
 
     private fun addOrEditCar() {
         with(binding) {
-            viewModel.addOrEditCar(
+            vm.addOrEditCar(
                 tietCarName.text.toString(),
                 tietMileageValue.text.toString(),
                 tietEngineVolume.text.toString(),
@@ -271,13 +280,17 @@ class CarAddOrEditFragment : BaseFragment(R.layout.car_add_edit_fragment) {
         launchMode = type
         if (launchMode == EDIT_MODE && !args.containsKey(ID_KEY))
             throw Exception("CarItem id must be implemented for CarRepairAddOrEditFragment")
-        viewModel.cId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
+        vm.cId = args.getInt(ID_KEY, CarItem.UNDEFINED_ID)
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(DOWNLOAD_CHANNEL_ID, getString(R.string.notification_channel_download), importance).apply {
+            val channel = NotificationChannel(
+                DOWNLOAD_CHANNEL_ID,
+                getString(R.string.notification_channel_download),
+                importance
+            ).apply {
                 description = getString(R.string.notification_channel_download_description)
             }
             val notificationManager: NotificationManager =

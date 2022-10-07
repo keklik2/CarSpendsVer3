@@ -1,18 +1,14 @@
 package com.demo.carspends.presentation.fragments.noteFilling
 
 import android.app.Application
-import android.widget.Toast
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.demo.carspends.R
-import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.car.usecases.EditCarItemUseCase
 import com.demo.carspends.domain.car.usecases.GetCarItemUseCase
-import com.demo.carspends.domain.car.usecases.GetCarItemsListUseCase
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.note.NoteType
 import com.demo.carspends.domain.note.usecases.AddNoteItemUseCase
-import com.demo.carspends.domain.note.usecases.EditNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemUseCase
 import com.demo.carspends.domain.note.usecases.GetNoteItemsListByMileageUseCase
 import com.demo.carspends.domain.others.Fuel
@@ -24,14 +20,8 @@ import com.demo.carspends.utils.ui.baseViewModel.NoteAddOrEditViewModel
 import com.github.terrakok.cicerone.Router
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import me.aartikov.sesame.loading.simple.Loading
-import me.aartikov.sesame.loading.simple.OrdinaryLoading
-import me.aartikov.sesame.loading.simple.refresh
-import me.aartikov.sesame.property.PropertyHost
 import me.aartikov.sesame.property.autorun
 import me.aartikov.sesame.property.state
-import me.aartikov.sesame.property.stateFromFlow
-import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.max
@@ -128,33 +118,82 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
             notesListForCalculation.clear()
             notesListForCalculation.addAll(getNoteItemsListByMileageUseCase())
 
-            if (noteItem == null) updateMileage(rMileage)
-            else {
-                noteItem = newNote
-                rollbackCarMileage()
-            }
             calculateAllMileage()
-            addAllPrice()
-            calculateAvgFuel()
+            calculateAllPrice()
             calculateAvgPrice()
-            calculateAllFuelPrice()
+
+            calculateAvgFuel()
+            calculateMomentFuel()
             calculateAllFuel()
+            calculateFuelPrice()
 
             updateCarItem()
             setCanCloseScreen()
         }
     }
 
-    private fun calculateAllFuelPrice() {
+    private fun calculateAllMileage() {
         carItem?.let { itCar ->
-            val notes = getFuelNotes()
-            val totalFuelPrice = max(
-                notes.sumOf { it.totalPrice },
-                0.0
-            )
+            val notes = getNotExtraNotes()
+            val newMileage =
+                if (notes.isNotEmpty())
+                    abs(max(notes.maxOf { it.mileage }, itCar.startMileage) - min(notes.minOf { it.mileage }, itCar.startMileage))
+                else 0
 
             carItem = itCar.copy(
-                fuelPrice = totalFuelPrice
+                allMileage = newMileage,
+                mileage = if (notes.isNotEmpty()) max(itCar.startMileage, notes.first().mileage) else itCar.startMileage
+            )
+        }
+    }
+
+    private fun calculateAllPrice() {
+        carItem?.let { itCar ->
+            val allPrice = notesListForCalculation.sumOf { it.totalPrice }
+
+            carItem = itCar.copy(allPrice = if (allPrice < 0) 0.0 else allPrice)
+        }
+    }
+
+    private fun calculateAvgPrice() {
+        carItem?.let { itCar ->
+            val allPrice = if (itCar.allPrice > 0) itCar.allPrice else 0.0
+            val allMileage = if (itCar.allMileage > 0) itCar.allMileage else 0
+
+            carItem = itCar.copy(
+                milPrice = if (allPrice <= 0.0 || allMileage <= 0) 0.0 else allPrice / allMileage
+            )
+        }
+    }
+
+    private fun calculateAvgFuel() {
+        carItem?.let { itCar ->
+            val notes = getFuelNotes().sortedByDescending { it.mileage }
+            val newAvgFuel = if (notes.size >= 2) {
+                val mileage = abs(notes.first().mileage - notes.last().mileage)
+                val fuel = abs(notes.sumOf { it.liters } - notes.last().liters)
+                if (fuel <= 0 || mileage <= 0) 0.0
+                else fuel / (mileage / 100)
+            } else 0.0
+
+            carItem = itCar.copy(
+                avgFuel = newAvgFuel
+            )
+        }
+    }
+
+    private fun calculateMomentFuel() {
+        carItem?.let { itCar ->
+            val sorted = getFuelNotes().sortedByDescending { it.mileage }
+            val newMomentFuel = if (sorted.size >= 2) {
+                val mileage = abs(sorted.first().mileage - sorted[1].mileage)
+                val fuel = sorted.first().liters
+                if (fuel <= 0 || mileage <= 0) 0.0
+                else fuel / (mileage.toDouble() / 100)
+            } else 0.0
+
+            carItem = itCar.copy(
+                momentFuel = newMomentFuel
             )
         }
     }
@@ -162,137 +201,31 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
     private fun calculateAllFuel() {
         carItem?.let { itCar ->
             val notes = getFuelNotes()
-            val totalFuel = max(
-                notes.sumOf { it.liters },
-                0.0
-            )
-
-            carItem = itCar.copy(
-                allFuel = totalFuel
-            )
-        }
-    }
-
-    private fun calculateAvgPrice() {
-        carItem?.let { itCar ->
-            val newMilPrice =
-                if (itCar.allPrice > 0 && itCar.allMileage > 0) {
-                    val res = itCar.allPrice / itCar.allMileage
-                    if (res < 0) 0.0
-                    else res
-                } else 0.0
-
-            carItem = itCar.copy(
-                milPrice = newMilPrice
-            )
-        }
-
-    }
-
-    private fun calculateAllMileage() {
-        carItem?.let { itCar ->
-            val resMil = if (notesListForCalculation.isNotEmpty()) {
-                val lastNote = getLastNotExtraNote()
-                val maxMil = max(itCar.mileage, lastNote?.mileage ?: 0)
-                val minMil =
-                    if (lastNote != null) min(
-                        itCar.startMileage,
-                        lastNote.mileage
-                    ) else itCar.startMileage
-                abs(maxMil - minMil)
-            } else 0
-
-            carItem = itCar.copy(
-                allMileage = resMil
-            )
-        }
-    }
-
-    private fun rollbackCarMileage() {
-        carItem?.let { itCar ->
-            val newMileage: Int = when (val item = notesListForCalculation.firstOrNull {
-                it.type != NoteType.EXTRA
-                        && it.mileage > itCar.startMileage
-            }) {
-                null -> itCar.startMileage
-                else -> item.mileage
-            }
-
-            carItem = itCar.copy(
-                mileage = newMileage
-            )
-        }
-    }
-
-    private fun addAllPrice() {
-        carItem?.let { itCar ->
-            val allPrice = max(
-                notesListForCalculation.sumOf { it.totalPrice },
-                0.0
-            )
-
-            carItem = itCar.copy(
-                allPrice = allPrice
-            )
-        }
-    }
-
-    private fun calculateAvgFuel() {
-        carItem?.let { itCar ->
-            if (notesListForCalculation.size > 1) {
-                val listOfFuel = getFuelNotes()
-                if (listOfFuel.size > 1) {
-                    val note1 = listOfFuel[0]
-                    val note2 = listOfFuel[1]
-                    if (note2 != note1) {
-                        val newMomentFuel = calculatedAvgFuelOfTwoNotes(note1, note2)
-                        carItem = itCar.copy(
-                            momentFuel = newMomentFuel,
-                            avgFuel = calculateAvgFuelOfAll(listOfFuel)
-                        )
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun calculateAvgFuelOfAll(listOfFuel: List<NoteItem>): Double {
-        if (listOfFuel.size > 1) {
-            val allMileage = listOfFuel.first().mileage - listOfFuel.last().mileage
-            val allFuel = max(
-                listOfFuel.dropLast(1).sumOf { it.liters },
-                0.0
-            )
-
-            val res = (allFuel / allMileage.toDouble()) * 100
-            return if (res > 0) {
-                if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
-                else res
+            val newFuel = if (notes.isNotEmpty()) {
+                val fuel = notes.sumOf { it.liters }
+                if (fuel <= 0 ) 0.0
+                else fuel
             } else 0.0
+
+            carItem = itCar.copy(
+                allFuel = newFuel
+            )
         }
-        return 0.0
     }
 
-    private fun calculatedAvgFuelOfTwoNotes(n1: NoteItem, n2: NoteItem): Double {
-        val distance = maxOf(n1.mileage, n2.mileage) - minOf(n1.mileage, n2.mileage)
-        val res = (n1.liters / distance) * 100
-        return if (res > 0) {
-            if (res == Double.POSITIVE_INFINITY) Double.MAX_VALUE
-            else res
-        } else 0.0
-    }
-
-    private fun updateMileage(newMileage: Int) {
+    private fun calculateFuelPrice() {
         carItem?.let { itCar ->
-            val oldMileage = itCar.mileage
-            if (newMileage > oldMileage) {
-                carItem = itCar.copy(
-                    mileage = newMileage
-                )
-            }
-        }
+            val notes = getFuelNotes()
+            val newFuelPrice = if (notes.isNotEmpty()) {
+                val price = notes.sumOf { it.totalPrice }
+                if (price <= 0 ) 0.0
+                else price
+            } else 0.0
 
+            carItem = itCar.copy(
+                fuelPrice = newFuelPrice
+            )
+        }
     }
 
     private fun refactorFuel(id: Int): Fuel {
@@ -342,8 +275,9 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
 
     private fun getFuelNotes(): List<NoteItem> =
         notesListForCalculation.filter { it.type == NoteType.FUEL }
-    private fun getLastNotExtraNote(): NoteItem? =
-        notesListForCalculation.firstOrNull { it.type != NoteType.EXTRA }
+    private fun getNotExtraNotes(): List<NoteItem> {
+        return notesListForCalculation.filter { it.type != NoteType.EXTRA }
+    }
 
     companion object {
         private const val NOTE_TITLE_ID = R.string.text_refill

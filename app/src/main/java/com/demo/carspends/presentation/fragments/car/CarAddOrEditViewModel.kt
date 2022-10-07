@@ -21,6 +21,7 @@ import com.demo.carspends.domain.settings.GetSettingValueUseCase
 import com.demo.carspends.domain.settings.SetSettingUseCase
 import com.demo.carspends.domain.settings.SettingsRepository
 import com.demo.carspends.utils.*
+import com.demo.carspends.utils.dialogs.AppDialogContainer
 import com.demo.carspends.utils.files.fileSaver.DbSaver
 import com.demo.carspends.utils.ui.baseViewModel.BaseViewModel
 import com.demo.carspends.utils.ui.tipShower.TipModel

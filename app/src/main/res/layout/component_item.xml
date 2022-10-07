@@ -48,7 +48,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout_left_mileage"
-        app:layout_constraintEnd_toStartOf="@id/tv_date">
+        app:layout_constraintEnd_toStartOf="@id/ib_restore">
 
         <com.demo.carspends.utils.ui.layoutComponent.ExtendedTextView
             android:id="@+id/tv_title"
@@ -101,7 +101,6 @@
         style="@style/dateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/main_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -109,4 +108,22 @@
         android:layout_marginStart="10dp"
 
         tools:text="11.18.21" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/ib_restore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+
+        android:background="@null"
+        android:backgroundTint="@null"
+
+        android:src="@drawable/ic_restart"
+
+        android:visibility="gone"
+
+        app:layout_constraintStart_toEndOf="@+id/main_layout"
+        app:layout_constraintTop_toTopOf="@+id/tv_date"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_date"
+        app:layout_constraintEnd_toStartOf="@+id/tv_date"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.demo.carspends.presentation.fragments.componentsList.recycleView
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.demo.carspends.R
 import com.demo.carspends.utils.getFormattedDate
@@ -10,7 +11,10 @@ import com.demo.carspends.utils.getFormattedPercentAsStr
 import me.ibrahimyilmaz.kiel.adapterOf
 
 object ComponentItemAdapter {
-    fun get(onClickFunc: ((ExtendedComponentItem) -> Unit)? = null) =
+    fun get(
+        onItemClick: ((ExtendedComponentItem) -> Unit)? = null,
+        onRestoreClick: ((ExtendedComponentItem) -> Unit)? = null
+    ) =
         adapterOf<ExtendedComponentItem> {
             diff(
                 areContentsTheSame = { old, new -> old == new },
@@ -24,7 +28,7 @@ object ComponentItemAdapter {
                 viewHolder = ::ComponentItemViewHolder,
                 onBindViewHolder = { viewHolder, _, item ->
                     viewHolder.itemView.setOnClickListener {
-                        onClickFunc?.invoke(item)
+                        onItemClick?.invoke(item)
                     }
 
                     viewHolder.binding.apply {
@@ -47,6 +51,15 @@ object ComponentItemAdapter {
                                     )
                                 )
                                 tvDate.text = getFormattedDate(date)
+
+                                ibRestore.visibility =
+                                    if (leftResourcePercent < ExtendedComponentItem.MIN_PERCENTAGE)
+                                        View.VISIBLE
+                                    else View.GONE
+
+                                ibRestore.setOnClickListener {
+                                    onRestoreClick?.invoke(item)
+                                }
                             }
                         }
                     }

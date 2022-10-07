@@ -1,7 +1,6 @@
 package com.demo.carspends.presentation.fragments.statistics.graphics
 
 import android.content.Context
-import android.util.Log
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -19,7 +18,7 @@ import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 
 class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     override val binding: GraphicsFragmentBinding by viewBinding()
-    override val viewModel: GraphicsViewModel by viewModels { viewModelFactory }
+    override val vm: GraphicsViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDateChangeListener()
         setupRecyclerScrollListener()
@@ -37,7 +36,7 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     private fun setupRecyclerBind() {
         binding.rvGraphics.adapter = mainAdapter
 
-        viewModel::testGraphItem bind {
+        vm::testGraphItem bind {
             mainAdapter.submitList(it)
             if (it.isEmpty()) binding.tvEmptyGraphs.setVisibility(true)
             else binding.tvEmptyGraphs.setVisibility(false)
@@ -48,11 +47,7 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
     /**
      * Listener functions
      */
-    private fun setupDateChangeListener() {
-        binding.fbDate.setOnClickListener {
-            setupDateType()
-        }
-    }
+    private fun setupDateChangeListener() = binding.fbDate.setOnClickListener { vm.changeDate() }
 
     private fun setupRecyclerScrollListener() {
         binding.rvGraphics.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -71,23 +66,6 @@ class GraphicsFragment : BaseFragment(R.layout.graphics_fragment) {
      * Additional functions
      */
     private fun isFBDateShown(): Boolean = binding.fbDate.isVisible
-
-    private fun setupDateType() {
-        val popupmenu = PopupMenu(requireActivity(), binding.fbDate).apply {
-            inflate(R.menu.popup_menu)
-        }
-
-        popupmenu.setOnMenuItemClickListener {
-            viewModel.dateType = when(it.itemId) {
-                R.id.menu_week -> DATE_WEEK
-                R.id.menu_month -> DATE_MONTH
-                R.id.menu_year -> DATE_YEAR
-                else -> DATE_ALL_TIME
-            }
-            true
-        }
-        popupmenu.show()
-    }
 
     private fun setFBDateVisibility(visible: Boolean) {
         if (visible) binding.fbDate.show()

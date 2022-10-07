@@ -34,4 +34,7 @@ data class ExtendedComponentItem(
             }
         }
 
+    companion object {
+        const val MIN_PERCENTAGE = 10
+    }
 }

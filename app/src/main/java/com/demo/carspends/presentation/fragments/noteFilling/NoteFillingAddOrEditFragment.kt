@@ -14,7 +14,6 @@ import com.demo.carspends.domain.car.CarItem
 import com.demo.carspends.domain.note.NoteItem
 import com.demo.carspends.domain.others.Fuel
 import com.demo.carspends.utils.getFormattedDate
-import com.demo.carspends.utils.ui.baseFragment.BaseFragment
 import com.demo.carspends.utils.ui.baseFragment.NoteAddOrEditFragment
 import io.github.anderscheow.validator.Validator
 import io.github.anderscheow.validator.rules.common.NotBlankRule
@@ -26,7 +25,7 @@ import java.util.*
 class NoteFillingAddOrEditFragment :
     NoteAddOrEditFragment(R.layout.note_filling_add_edit_fragment) {
     override val binding: NoteFillingAddEditFragmentBinding by viewBinding()
-    override val viewModel: NoteFillingAddOrEditViewModel by viewModels { viewModelFactory }
+    override val vm: NoteFillingAddOrEditViewModel by viewModels { viewModelFactory }
     override var setupListeners: (() -> Unit)? = {
         setupDatePickerDialogListener()
         setupVolumeTextChangeListener()
@@ -92,20 +91,20 @@ class NoteFillingAddOrEditFragment :
      */
     override fun setupPicturesRecyclerViewBind() {
         binding.picturesRv.adapter = pictureAdapter
-        viewModel::pictures bind {
+        vm::pictures bind {
             pictureAdapter.submitList(it)
         }
     }
     private fun setupLastFuelTypeBind() =
-        viewModel::lastFuelType bind {
-            binding.spinnerFuelType.setSelection(viewModel.getFuelId(it))
+        vm::lastFuelType bind {
+            binding.spinnerFuelType.setSelection(vm.getFuelId(it))
         }
     private fun setupNoteDateBind() =
-        viewModel::nDate bind { binding.dateIb.text = getFormattedDate(it) }
+        vm::nDate bind { binding.dateIb.text = getFormattedDate(it) }
     private fun setupCanCloseScreenBind() =
-        viewModel::canCloseScreen bind { if (it) viewModel.goBack() }
+        vm::canCloseScreen bind { if (it) vm.goBack() }
     private fun setupFieldsBind() {
-        with(viewModel) {
+        with(vm) {
             with(binding) {
                 ::nVolume bind { it?.let { tietFuelLiters.setText(it) } }
                 ::nPrice bind { it?.let { tietFuelPrice.setText(it) } }
@@ -133,11 +132,11 @@ class NoteFillingAddOrEditFragment :
                 cal.set(Calendar.MONTH, monthOfYear)
                 cal.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-                viewModel.nDate = cal.time.time
+                vm.nDate = cal.time.time
             }
 
         binding.dateIb.setOnClickListener {
-            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = viewModel.nDate }
+            val cCal = GregorianCalendar.getInstance().apply { timeInMillis = vm.nDate }
             DatePickerDialog(
                 requireContext(), dateSetListener,
                 cCal.get(Calendar.YEAR),
@@ -165,19 +164,22 @@ class NoteFillingAddOrEditFragment :
                 validate(fuelVolumeValidation)
             }
 
-
             if (open) {
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_AMOUNT) viewModel.calculatePrice(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelLiters.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateTotalPrice(
-                        binding.tietFuelLiters.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_AMOUNT) {
+                        vm.calculatePrice(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelLiters.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_PRICE) {
+                        vm.calculateTotalPrice(
+                            binding.tietFuelLiters.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -194,7 +196,6 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.tietFuelTotalPrice.addTextChangedListener {
-
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -207,14 +208,18 @@ class NoteFillingAddOrEditFragment :
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculatePrice(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelLiters.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_PRICE) viewModel.calculateVolume(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_VOLUME) {
+                        vm.calculatePrice(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelLiters.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_PRICE) {
+                        vm.calculateVolume(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -231,7 +236,6 @@ class NoteFillingAddOrEditFragment :
             }
 
         binding.tietFuelPrice.addTextChangedListener {
-
             validator(requireActivity()) {
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {}
@@ -244,14 +248,18 @@ class NoteFillingAddOrEditFragment :
                 open = false
 
                 if (lastChanged != CHANGED_NULL && preLastChanged != CHANGED_NULL) {
-                    if (preLastChanged == CHANGED_VOLUME) viewModel.calculateTotalPrice(
-                        binding.tietFuelLiters.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
-                    else if (preLastChanged == CHANGED_AMOUNT) viewModel.calculateVolume(
-                        binding.tietFuelTotalPrice.text.toString(),
-                        binding.tietFuelPrice.text.toString()
-                    )
+                    if (preLastChanged == CHANGED_VOLUME) {
+                        vm.calculateTotalPrice(
+                            binding.tietFuelLiters.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
+                    else if (preLastChanged == CHANGED_AMOUNT) {
+                        vm.calculateVolume(
+                            binding.tietFuelTotalPrice.text.toString(),
+                            binding.tietFuelPrice.text.toString()
+                        )
+                    }
                 }
             }
             open = true
@@ -276,7 +284,7 @@ class NoteFillingAddOrEditFragment :
                 listener = object : Validator.OnValidateListener {
                     override fun onValidateSuccess(values: List<String>) {
                         with(binding) {
-                            viewModel.addOrEditNoteItem(
+                            vm.addOrEditNoteItem(
                                 spinnerFuelType.selectedItemPosition,
                                 tietFuelLiters.text.toString(),
                                 tietFuelTotalPrice.text.toString(),
@@ -310,9 +318,9 @@ class NoteFillingAddOrEditFragment :
         if (type != EDIT_MODE && type != ADD_MODE) throw Exception("Unknown mode argument for NoteFillingAddOrEditFragment: $type")
 
         if (!args.containsKey(CAR_ID_KEY)) throw Exception("CarItem id must be implemented for NoteFillingAddOrEditFragment")
-        viewModel.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
+        vm.carId = args.getInt(CAR_ID_KEY, CarItem.UNDEFINED_ID)
         if (type == EDIT_MODE && !args.containsKey(ID_KEY)) throw Exception("NoteItem id must be implemented for NoteFillingAddOrEditFragment")
-        viewModel.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
+        vm.noteId = args.getInt(ID_KEY, NoteItem.UNDEFINED_ID)
     }
 
 
@@ -333,7 +341,6 @@ class NoteFillingAddOrEditFragment :
         super.onViewCreated(view, savedInstanceState)
         setupFuelSpinnerAdapter()
     }
-
 
     companion object {
         private const val CHANGED_NULL = -1
