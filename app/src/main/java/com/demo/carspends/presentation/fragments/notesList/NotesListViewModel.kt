@@ -280,7 +280,7 @@ class NotesListViewModel @Inject constructor(
                 val mileage = abs(sorted.first().mileage - sorted[1].mileage)
                 val fuel = sorted.first().liters
                 if (fuel <= 0 || mileage <= 0) 0.0
-                else fuel / (mileage / 100)
+                else fuel / (mileage.toDouble() / 100)
             } else 0.0
 
             _carItem = itCar.copy(
