@@ -160,12 +160,12 @@
         app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_1"
 
         android:drawableEnd="@drawable/ic_chart"
-        android:drawableTint="@color/light_gray"
+        android:drawableTint="@color/gray"
 
         tools:text="Все записи"
         android:fontFamily="@font/gotham_pro_narrow"
         android:textSize="12sp"
-        android:textColor="@color/light_gray"
+        android:textColor="@color/gray"
         />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -182,12 +182,12 @@
         app:layout_constraintTop_toBottomOf="@+id/horizontal_div_line_1"
 
         android:drawableEnd="@drawable/ic_timer"
-        android:drawableTint="@color/light_gray"
+        android:drawableTint="@color/gray"
 
         tools:text="Всё время"
         android:fontFamily="@font/gotham_pro_narrow"
         android:textSize="12sp"
-        android:textColor="@color/light_gray"
+        android:textColor="@color/gray"
         />
 
     <View

@@ -121,7 +121,7 @@
                     app:layout_constraintStart_toStartOf="parent"
 
                     style="@style/entryUnitMainMenuText.NotAllCaps"
-                    android:textColor="@color/light_light_gray"
+                    android:textColor="@color/light_gray"
                     android:textAlignment="textStart"
                     android:maxLines="1"
                     android:ellipsize="end"
@@ -184,7 +184,7 @@
                     app:layout_constraintStart_toStartOf="parent"
 
                     style="@style/entryUnitMainMenuText.NotAllCaps"
-                    android:textColor="@color/light_light_gray"
+                    android:textColor="@color/light_gray"
                     android:textAlignment="textStart"
                     android:maxLines="1"
                     android:ellipsize="end"

@@ -176,7 +176,7 @@
                 app:layout_constraintStart_toStartOf="parent"
 
                 android:drawableEnd="@drawable/ic_gas_station"
-                android:drawableTint="@color/light_gray"
+                android:drawableTint="@color/gray"
                 android:drawablePadding="4dp"
 
                 android:fontFamily="@font/gotham_pro_narrow"
