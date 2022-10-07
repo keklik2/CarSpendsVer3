@@ -185,7 +185,7 @@ class NoteFillingAddOrEditViewModel @Inject constructor(
         carItem?.let { itCar ->
             val sorted = getFuelNotes().sortedByDescending { it.mileage }
             val newMomentFuel = if (sorted.size >= 2) {
-                val mileage = abs(sorted.first().mileage - sorted[sorted.size - 2].mileage)
+                val mileage = abs(sorted.first().mileage - sorted[1].mileage)
                 val fuel = sorted.first().liters
                 if (fuel <= 0 || mileage <= 0) 0.0
                 else fuel / (mileage / 100)
